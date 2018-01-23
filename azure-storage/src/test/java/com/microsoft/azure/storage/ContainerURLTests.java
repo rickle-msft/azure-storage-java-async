@@ -2,6 +2,7 @@ package com.microsoft.azure.storage;
 
 import com.microsoft.azure.storage.blob.*;
 import com.microsoft.azure.storage.models.ContainerCreateHeaders;
+import com.microsoft.azure.storage.models.ContainerDeleteHeaders;
 import com.microsoft.rest.v2.RestResponse;
 import com.microsoft.rest.v2.http.HttpPipeline;
 import io.reactivex.functions.Consumer;
@@ -30,6 +31,8 @@ public class ContainerURLTests {
 
         TestObserver<RestResponse<ContainerCreateHeaders, Void>> testObserver = new TestObserver<>();
         cu.createAsync(null, null).subscribe(testObserver);
+        TestObserver<RestResponse<ContainerDeleteHeaders, Void>> testObserver1 = new TestObserver<>();
+        cu.deleteAsync(null).subscribe(testObserver1);
 
 
         testObserver.awaitTerminalEvent();
