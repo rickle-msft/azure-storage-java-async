@@ -1,5 +1,10 @@
 package com.microsoft.azure.storage;
 
+import co.freeside.betamax.Betamax;
+import co.freeside.betamax.MatchRule;
+import co.freeside.betamax.Recorder;
+import co.freeside.betamax.TapeMode;
+import co.freeside.betamax.httpclient.BetamaxRoutePlanner;
 import com.microsoft.azure.storage.blob.*;
 import com.microsoft.azure.storage.blob.Base64;
 import com.microsoft.azure.storage.models.*;
@@ -9,8 +14,8 @@ import com.microsoft.rest.v2.util.FlowableUtil;
 import io.reactivex.Flowable;
 import org.joda.time.DateTime;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,8 +29,14 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class BlobStorageAPITests {
 
+    @Rule
+    public Recorder recorder = new Recorder();
+    // Can set the default mode to quickly turn recording on or off
+
+    @Betamax(tape="my-tape", mode=TapeMode.WRITE_ONLY)
     @Test
     public void TestPutBlobBasic() throws IOException, InvalidKeyException, InterruptedException {
+        BetamaxRoutePlanner.configure();
         /**
          * This library uses the Azure Rest Pipeline to make its requests. Details on this pipeline can be found here:
          * https://github.com/Azure/azure-pipeline-go/blob/master/pipeline/doc.go All references to HttpPipeline and
@@ -276,7 +287,7 @@ public class BlobStorageAPITests {
             try {
                 bu.deleteAsync(DeleteSnapshotsOptionType.INCLUDE, null).blockingGet();
             }
-            catch (Exception e) {
+            finally {
                 cu.deleteAsync(null).blockingGet();
             }
         }
