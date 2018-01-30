@@ -36,7 +36,7 @@ public class BlobStorageAPITests {
     @Betamax(tape="my-tape", mode=TapeMode.WRITE_ONLY)
     @Test
     public void TestPutBlobBasic() throws IOException, InvalidKeyException, InterruptedException {
-        BetamaxRoutePlanner.configure();
+        //BetamaxRoutePlanner.configure();
         /**
          * This library uses the Azure Rest Pipeline to make its requests. Details on this pipeline can be found here:
          * https://github.com/Azure/azure-pipeline-go/blob/master/pipeline/doc.go All references to HttpPipeline and

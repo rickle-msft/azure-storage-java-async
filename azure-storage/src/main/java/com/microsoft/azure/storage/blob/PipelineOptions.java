@@ -29,8 +29,9 @@ public final class PipelineOptions {
     public PipelineOptions() {
         this.telemetryOptions = new TelemetryOptions();
         HttpClient.Configuration configuration = new HttpClient.Configuration(
-                new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)));
-        this.client = HttpClient.createDefault(configuration); // Pass in configuration for Fiddler support.
+                new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 5555)));
+        this.client = HttpClient.createDefault(configuration); // Pass in configuration for Fiddler support. And change to 8888
+        //this.client = HttpClient.createDefault();
         this.logger = new HttpPipelineLogger() {
             @Override
             public HttpPipelineLogLevel minimumLogLevel() {
