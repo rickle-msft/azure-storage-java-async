@@ -88,15 +88,14 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <scope>test</scope>
-                <groupId>co.freeside</groupId>
-                <artifactId>betamax-core</artifactId>
-                <version>1.1.2</version>
+                <groupId>software.betamax</groupId>
+                <artifactId>betamax-junit</artifactId>
+                <version>2.0.1</version>
             </dependency>
             <dependency>
-                <groupId>co.freeside</groupId>
-                <artifactId>betamax</artifactId>
-                <version>1.1.2</version>
+                <groupId>software.betamax</groupId>
+                <artifactId>betamax-core</artifactId>
+                <version>2.0.1</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>

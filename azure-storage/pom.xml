@@ -56,8 +56,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>co.freeside</groupId>
-            <artifactId>betamax</artifactId>
+            <groupId>software.betamax</groupId>
+            <artifactId>betamax-junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>software.betamax</groupId>
+            <artifactId>betamax-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>

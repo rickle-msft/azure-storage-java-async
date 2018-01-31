@@ -1,10 +1,6 @@
 package com.microsoft.azure.storage;
 
-import co.freeside.betamax.Betamax;
-import co.freeside.betamax.MatchRule;
-import co.freeside.betamax.Recorder;
-import co.freeside.betamax.TapeMode;
-import co.freeside.betamax.httpclient.BetamaxRoutePlanner;
+
 import com.microsoft.azure.storage.blob.*;
 import com.microsoft.azure.storage.blob.Base64;
 import com.microsoft.azure.storage.models.*;
@@ -16,6 +12,12 @@ import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import software.betamax.Configuration;
+
+import software.betamax.TapeMode;
+import software.betamax.junit.Betamax;
+import software.betamax.junit.RecorderRule;
+import software.betamax.
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,10 +32,10 @@ import static org.junit.Assert.assertArrayEquals;
 public class BlobStorageAPITests {
 
     @Rule
-    public Recorder recorder = new Recorder();
+    public RecorderRule recorder = new RecorderRule(Configuration.builder().build());
     // Can set the default mode to quickly turn recording on or off
 
-    @Betamax(tape="my-tape", mode=TapeMode.WRITE_ONLY)
+    @Betamax(tape="my-tape", mode= TapeMode.READ_WRITE)
     @Test
     public void TestPutBlobBasic() throws IOException, InvalidKeyException, InterruptedException {
         //BetamaxRoutePlanner.configure();
