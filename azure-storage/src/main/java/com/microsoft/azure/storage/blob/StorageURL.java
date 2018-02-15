@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright Microsoft Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ import com.microsoft.rest.v2.http.HttpPipeline;
 import com.microsoft.rest.v2.http.HttpRequest;
 import com.microsoft.rest.v2.http.HttpResponse;
 import com.microsoft.rest.v2.http.UrlBuilder;
+import com.microsoft.rest.v2.policy.DecodingPolicyFactory;
 import com.microsoft.rest.v2.policy.RequestPolicy;
 import com.microsoft.rest.v2.policy.RequestPolicyFactory;
 import com.microsoft.rest.v2.policy.RequestPolicyOptions;
@@ -26,10 +27,12 @@ import io.reactivex.Single;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 
-import static com.microsoft.azure.storage.blob.Utility.getGMTTime;
-
+/**
+ * Represents a URL to a Azure storage object.
+ */
 public abstract class StorageURL {
 
     protected final StorageClientImpl storageClient;
@@ -46,27 +49,20 @@ public abstract class StorageURL {
         this.storageClient.withUrl(url.toString());
     }
 
-    public static HttpPipeline CreatePipeline(ICredentials credentials, PipelineOptions pipelineOptions) {
-        LoggingFactory loggingFactory = new LoggingFactory(pipelineOptions.loggingOptions);
-        RequestIDFactory requestIDFactory = new RequestIDFactory();
-        RequestRetryFactory requestRetryFactory = new RequestRetryFactory(new RequestRetryOptions());
-        TelemetryFactory telemetryFactory = new TelemetryFactory(pipelineOptions.telemetryOptions);
-        AddDatePolicy addDate = new AddDatePolicy();
-        return HttpPipeline.build(
-                pipelineOptions.client, telemetryFactory, requestIDFactory, requestRetryFactory, addDate, credentials,
-                loggingFactory);
-    }
-
     @Override
     public String toString() {
         return this.storageClient.url();
     }
 
+    /**
+     * @return
+     *      The underlying url to the resource.
+     */
     public URL toURL() {
         try {
             return new URL(this.storageClient.url());
         } catch (MalformedURLException e) {
-            // TODO: remove and update toString.
+            // TODO: remove and update getLeaseId.
         }
         return null;
     }
@@ -80,7 +76,7 @@ public abstract class StorageURL {
      * @return
      *      A {@code String} with the name appended to the URL.
      */
-    protected URL appendToURLPath(URL baseURL, String name) throws MalformedURLException {
+    protected static URL appendToURLPath(URL baseURL, String name) throws MalformedURLException {
         UrlBuilder url = UrlBuilder.parse(baseURL.toString());
         if(url.path() == null) {
             url.withPath("/"); // .path() will return null if it is empty, so we have to process separately from below.
@@ -92,7 +88,47 @@ public abstract class StorageURL {
         return new URL(url.toString()); // TODO: modify when toURL is released.
     }
 
-    static class AddDatePolicy implements RequestPolicyFactory {
+    // TODO: Move this? Not discoverable.
+
+    /**
+     * Creates an pipeline to process the HTTP requests and Responses.
+     *
+     * @param credentials
+     *      The credentials the pipeline will use to authenticate the requests.
+     * @param pipelineOptions
+     *      Configurations for each policy in the pipeline.
+     * @return
+     *      The pipeline.
+     */
+    public static HttpPipeline createPipeline(ICredentials credentials, PipelineOptions pipelineOptions) {
+        /*
+        PipelineOptions is mutable, but its fields refer to immutable objects. This method can pass the fields to other
+        methods, but the PipelineOptions object itself can only be used for the duration of this call; it must not be
+        passed to anything with a longer lifetime.
+         */
+        if (credentials == null) {
+            throw new IllegalArgumentException(
+                    "Credentials cannot be null. For anonymous access use Anonymous Credentials.");
+        }
+
+        // Closest to API goes first, closest to wire goes last.
+        ArrayList<RequestPolicyFactory> factories = new ArrayList<>();
+        factories.add(new TelemetryFactory(pipelineOptions.telemetryOptions));
+        factories.add(new RequestIDFactory());
+        factories.add(new RequestRetryFactory(pipelineOptions.requestRetryOptions));
+        factories.add(new AddDatePolicy());
+        if (!(credentials instanceof AnonymousCredentials)) {
+            factories.add(credentials);
+        }
+        factories.add(new DecodingPolicyFactory());
+        factories.add(new LoggingFactory(pipelineOptions.loggingOptions));
+
+        return HttpPipeline.build(pipelineOptions.client,
+                factories.toArray(new RequestPolicyFactory[factories.size()]));
+    }
+
+    // TODO: revisit.
+    private static class AddDatePolicy implements RequestPolicyFactory {
 
         @Override
         public RequestPolicy create(RequestPolicy next, RequestPolicyOptions options) {
@@ -108,7 +144,7 @@ public abstract class StorageURL {
 
             @Override
             public Single<HttpResponse> sendAsync(HttpRequest request) {
-                request.headers().set(Constants.HeaderConstants.DATE, getGMTTime(new Date()));
+                request.headers().set(Constants.HeaderConstants.DATE, Utility.RFC1123GMTDateFormat.format(new Date()));
                 return this.next.sendAsync(request);
             }
         }

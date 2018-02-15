@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright Microsoft Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ final class SR {
     public static final String ACCOUNT_NAME_MISMATCH = "The account name does not match the existing account name on the credentials.";
     public static final String ARGUMENT_NULL_OR_EMPTY = "The argument must not be null or an empty string. Argument name: %s.";
     public static final String ARGUMENT_OUT_OF_RANGE_ERROR = "The argument is out of range. Argument name: %s, Value passed: %s.";
-    public static final String BLOB_OVER_MAX_BLOCK_LIMIT = "The total blocks for this upload exceeds the maximum allowable limit. Please increase the block size.";
+    public static final String BLOB_OVER_MAX_BLOCK_LIMIT = "The total blocks for this upload exceeds the maximum allowable limit.";
     public static final String BLOB_DATA_CORRUPTED = "Blob data corrupted (integrity check failed), Expected value is %s, retrieved %s";
     public static final String BLOB_ENDPOINT_NOT_CONFIGURED = "No blob endpoint configured.";
     public static final String BLOB_HASH_MISMATCH = "Blob hash mismatch (integrity check failed), Expected value is %s, retrieved %s.";
@@ -42,14 +42,14 @@ final class SR {
     public static final String ETAG_INVALID_FOR_DELETE = "Delete requires a valid ETag (which may be the '*' wildcard).";
     public static final String ETAG_INVALID_FOR_MERGE = "Merge requires a valid ETag (which may be the '*' wildcard).";
     public static final String ETAG_INVALID_FOR_UPDATE = "Replace requires a valid ETag (which may be the '*' wildcard).";
-    public static final String ENUM_COULD_NOT_BE_PARSED = "%s could not be parsed from '%s'.";
+    public static final String ENUM_COULD_NOT_BE_PARSED_INVALID_VALUE = "%s could not be parsed from '%s' due to invalid value %s.";
     public static final String INCORRECT_STREAM_LENGTH = "An incorrect stream length was specified, resulting in an authentication failure. Please specify correct length, or -1.";
     public static final String INPUT_STREAM_SHOULD_BE_MARKABLE = "Input stream must be markable.";
     public static final String INVALID_ACCOUNT_NAME = "Invalid account name.";
     public static final String INVALID_ACL_ACCESS_TYPE = "Invalid acl public access type returned '%s'. Expected blob or container.";
     public static final String INVALID_BLOB_TYPE = "Incorrect Blob type, please use the correct Blob type to access a blob on the server. Expected %s, actual %s.";
     public static final String INVALID_BLOCK_ID = "Invalid blockID, blockID must be a valid Base64 String.";
-    public static final String INVALID_BLOCK_SIZE = "Append block data should not exceed the maximum blob size condition value.";
+    public static final String INVALID_BLOCK_SIZE = "Block data should not exceed BlockBlobURL.MAX_PUT_BLOCK_BYTES";
     public static final String INVALID_CONDITIONAL_HEADERS = "The conditionals specified for this operation did not match server.";
     public static final String INVALID_CONNECTION_STRING = "Invalid connection string.";
     public static final String INVALID_CONNECTION_STRING_DEV_STORE_NOT_TRUE = "Invalid connection string, the UseDevelopmentStorage key must always be paired with 'true'.  Remove the flag entirely otherwise.";

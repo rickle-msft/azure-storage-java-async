@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright Microsoft Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,39 +19,24 @@ package com.microsoft.azure.storage.blob;
  */
 public final class TelemetryOptions {
 
-    /**
-     * userAgentPrefix is a string prepended to each request's User-Agent and sent to the service. The service records.
-     * the user-agent in logs for diagnostics and tracking of client requests.
-     */
+    public static final TelemetryOptions DEFAULT = new TelemetryOptions(Constants.EMPTY_STRING);
+
     private final String userAgentPrefix;
 
-    public TelemetryOptions() { this(Constants.EMPTY_STRING); }
-
+    /**
+     * @param userAgentPrefix
+     *      A string prepended to each request's User-Agent and sent to the service. The service records.
+     *      the user-agent in logs for diagnostics and tracking of client requests.
+     */
     public TelemetryOptions(String userAgentPrefix) {
         this.userAgentPrefix = userAgentPrefix;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj) {
-            return true;
-        }
-        if (!(obj instanceof TelemetryOptions)) {
-            return false;
-        }
-        if (this.userAgentPrefix == null) {
-            return obj == null;
-        }
-
-        return this.userAgentPrefix.equals(obj);
-    }
-
-    @Override
-    public String toString() {
-        return this.userAgentPrefix;
-    }
-
-    public String UserAgentPrefix() {
+    /**
+     * @return
+     *      The user agent prefix.
+     */
+    public String getUserAgentPrefix() {
         return this.userAgentPrefix;
     }
 }

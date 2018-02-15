@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright Microsoft Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,29 +26,37 @@ import io.reactivex.functions.Consumer;
 import java.net.HttpURLConnection;
 
 /**
- * Factory for logging requests and responses
+ * Factory for logging requests and responses.
  */
 public final class LoggingFactory implements RequestPolicyFactory {
 
     private final LoggingOptions loggingOptions;
 
+    /**
+     * Creates a factory which can create LoggingPolicy objects to insert in the pipeline. This will allow for logging
+     * requests and responses.
+     *
+     * @param loggingOptions
+     *      The configurations for this factory.
+     */
     public LoggingFactory(LoggingOptions loggingOptions) {
-        this.loggingOptions = loggingOptions;
+        this.loggingOptions = loggingOptions == null ? LoggingOptions.DEFAULT : loggingOptions;
     }
 
     private final class LoggingPolicy implements RequestPolicy {
 
+        private final LoggingFactory factory;
+
+        private final RequestPolicy nextPolicy;
+
+        private final RequestPolicyOptions options;
+
+        // The following fields are not final because they are updated by the policy.
         private int tryCount;
 
         private long operationStartTime;
 
-        private RequestPolicyOptions options;
-
-        private final RequestPolicy nextPolicy;
-
-        final private LoggingFactory factory;
-
-        private Long requestStartTime;
+        private long requestStartTime;
 
         /**
          * Creates a policy which configures the logging behavior within the
@@ -61,17 +69,17 @@ public final class LoggingFactory implements RequestPolicyFactory {
          * @param factory
          *      A {@link LoggingFactory} object.
          */
-        LoggingPolicy(RequestPolicy nextPolicy, RequestPolicyOptions options, LoggingFactory factory) {
+        private LoggingPolicy(LoggingFactory factory, RequestPolicy nextPolicy, RequestPolicyOptions options) {
+            this.factory = factory;
             this.nextPolicy = nextPolicy;
             this.options = options;
-            this.factory = factory;
         }
 
         /**
-         * Signed the request.
+         * Logs as appropriate.
          *
          * @param request
-         *      The request to sign.
+         *      The request to log.
          * @return
          *      A {@link Single} representing the {@link HttpResponse} that will arrive asynchronously.
          */
@@ -163,6 +171,6 @@ public final class LoggingFactory implements RequestPolicyFactory {
 
     @Override
     public RequestPolicy create(RequestPolicy next, RequestPolicyOptions options) {
-        return new LoggingPolicy(next, options, this);
+        return new LoggingPolicy(this, next, options);
     }
 }
