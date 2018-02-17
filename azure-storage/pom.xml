@@ -34,6 +34,10 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -41,14 +45,7 @@
             <groupId>com.microsoft.rest.v2</groupId>
             <artifactId>client-runtime</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>com.microsoft.azure.v2</groupId>
-            <artifactId>azure-client-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.microsoft.azure.v2</groupId>
-            <artifactId>azure-client-authentication</artifactId>
-        </dependency>-->
+
 
         <dependency>
             <groupId>junit</groupId>
@@ -67,7 +64,11 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.github.linkedin</groupId>
+            <artifactId>flashback</artifactId>
+            <version>master</version>
+        </dependency>
     </dependencies>
 
     <build>

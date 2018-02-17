@@ -18,9 +18,6 @@ import com.microsoft.rest.v2.http.HttpClient;
 import com.microsoft.rest.v2.http.HttpPipelineLogLevel;
 import com.microsoft.rest.v2.http.HttpPipelineLogger;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class PipelineOptions {
