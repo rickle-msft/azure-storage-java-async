@@ -18,7 +18,6 @@ import io.reactivex.Flowable;
 import io.reactivex.functions.BiConsumer;
 import org.joda.time.DateTime;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 
 import javax.xml.bind.DatatypeConverter;
@@ -552,35 +551,31 @@ public class BlobStorageAPITests {
 
         FlashbackRunner flashbackRunner = null;
         try {
-            // Creating a pipeline requires a credentials object and a structure of pipeline options to customize the behavior.
-            // Set your system environment variables of ACCOUNT_NAME and ACCOUNT_KEY to pull the appropriate credentials.
-            // Credentials may be SharedKey as shown here or Anonymous as shown below.
+
             SharedKeyCredentials creds = new SharedKeyCredentials(System.getenv().get("ACCOUNT_NAME"),
                     System.getenv().get("ACCOUNT_KEY"));
 
-            // Currently only the default PipelineOptions are supported.
+
             PipelineOptions po = new PipelineOptions();
             HttpClient.Configuration configuration = new HttpClient.Configuration(
                     new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 1234)));
             po.client = HttpClient.createDefault(configuration);
             HttpPipeline pipeline = StorageURL.createPipeline(creds, po);
 
-            // Create a reference to the service.
+
             ServiceURL su = new ServiceURL(
                     new URL("http://" + System.getenv().get("ACCOUNT_NAME") + ".blob.core.windows.net"), pipeline);
 
-            // Create a reference to a container. Using the ServiceURL to create the ContainerURL appends
-            // the container name to the ServiceURL. A ContainerURL may also be created by calling its
-            // constructor with a full path to the container and a pipeline.
+
             String containerName = "javatestcontainer";
             ContainerURL cu = su.createContainerURL(containerName);
 
-            // Create a reference to a blob. Same pattern as containers.
+
             BlockBlobURL bu = cu.createBlockBlobURL("javatestblob");
 
             String filePath = "C:\\Users\\frley\\Documents\\azure-storage-java-async\\azure-storage\\src\\test\\resources\\recordings";
             String sceneName = "TestScene";
-            SceneMode sceneMode = SceneMode.PLAYBACK;
+            SceneMode sceneMode = SceneMode.RECORD;
             String proxyHost = "localhost";
             int port = 1234;
 
@@ -601,13 +596,6 @@ public class BlobStorageAPITests {
                     .build();
             flashbackRunner.start();
             try {
-                // Calls to blockingGet force the call to be synchronous. This whole test is synchronous.
-                // APIs will typically return a RestResponse<*HeadersType*, *BodyType*>. It is therefore possible to
-                // retrieve the headers and the deserialized body of every request. If there is no body in the request,
-                // the body type will be Void.
-                // Errors are thrown as exceptions in the synchronous (blockingGet) case.
-
-                // Create the container. NOTE: Metadata is not currently supported on any resource.
                 cu.create(null, PublicAccessType.BLOB).blockingGet();
             }
             finally {
@@ -619,8 +607,5 @@ public class BlobStorageAPITests {
                 flashbackRunner.close();
             }
         }
-
-
-
     }
 }
