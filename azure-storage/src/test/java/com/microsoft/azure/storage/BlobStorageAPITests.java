@@ -575,7 +575,7 @@ public class BlobStorageAPITests {
 
             String filePath = "C:\\Users\\frley\\Documents\\azure-storage-java-async\\azure-storage\\src\\test\\resources\\recordings";
             String sceneName = "TestScene";
-            SceneMode sceneMode = SceneMode.RECORD;
+            SceneMode sceneMode = SceneMode.PLAYBACK;
             String proxyHost = "localhost";
             int port = 1234;
 
