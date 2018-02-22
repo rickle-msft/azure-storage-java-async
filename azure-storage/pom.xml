@@ -66,21 +66,11 @@
             <artifactId>flashback</artifactId>
             <version>commasInSingleValueHeaders-SNAPSHOT</version>
         </dependency>
-        <!--dependency>
-            <groupId>linkedin</groupId>
-            <artifactId>flashback</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>C:\Users\frley\Documents\flashback\flashback-core-impl\build\libs\flashback-core-impl.jar</systemPath>
-        </dependency>
         <dependency>
-            <groupId>linkedin</groupId>
-            <artifactId>flashback</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>C:\Users\frley\Documents\flashback\flashback-smartproxy\build\libs\flashback-smartproxy.jar</systemPath>
-        </dependency-->
-
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
