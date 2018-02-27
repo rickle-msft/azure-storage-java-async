@@ -6,6 +6,7 @@ import com.linkedin.flashback.matchrules.CompositeMatchRule
 import com.linkedin.flashback.matchrules.MatchBody
 import com.linkedin.flashback.matchrules.MatchMethod
 import com.linkedin.flashback.matchrules.MatchRuleUtils
+import com.linkedin.flashback.scene.Scene
 import com.linkedin.flashback.scene.SceneConfiguration
 import com.linkedin.flashback.scene.SceneMode
 import com.linkedin.flashback.smartproxy.FlashbackRunner
@@ -26,35 +27,28 @@ import com.microsoft.rest.v2.RestException
 import com.microsoft.rest.v2.http.HttpClient
 import com.microsoft.rest.v2.http.HttpPipeline
 import org.joda.time.DateTime
+import org.testng.annotations.Test
 import spock.lang.*
-
-import java.nio.channels.Pipe
 
 class ContainerAPI extends Specification {
 
     static ServiceURL su
 
-    static boolean enableDebugging = false
-
-    static boolean enableRecordings = true
-
-    static String containerPrefix = "javatestcontainer"
-
     @Shared
     int testNo = 0 // Used to generate stable container names for recordings
 
-    String containerName = enableRecordings ? containerPrefix + testNo : containerPrefix + System.currentTimeMillis()
+    String containerName = TestUtility.enableRecordings ? TestUtility.containerPrefix + testNo :
+            TestUtility.containerPrefix + System.currentTimeMillis()
 
     ContainerURL cu
 
-    static SceneMode sceneMode = SceneMode.PLAYBACK
-
-    static String recordingsDir = "C:\\Users\\frley\\Documents\\azure-storage-java-async\\azure-storage\\src\\test\\resources\\recordings";
-
-    static String sceneName = "GroovyScene";
+    String sceneName = "WillNeverBeWrittenTo" // Because the the setup for the first test will change the file
 
     @Shared
     FlashbackRunner flashbackRunner
+
+    @Shared
+    CompositeMatchRule rule
 
     /*
     The values below are used to create data-driven tests for access conditions.
@@ -82,16 +76,16 @@ class ContainerAPI extends Specification {
                 System.getenv().get("ACCOUNT_KEY"))
 
         PipelineOptions po = new PipelineOptions()
-        if (enableDebugging) {
+        if (TestUtility.enableDebugging) {
             HttpClient.Configuration configuration = new HttpClient.Configuration(
                     new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)))
             po.client = HttpClient.createDefault(configuration)
         }
-        else if (enableRecordings) {
+        else if (TestUtility.enableRecordings) {
             HttpClient.Configuration configuration = new HttpClient.Configuration(
                     new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 1234)))
             po.client = HttpClient.createDefault(configuration)
-            configureRecordings()
+            configureMatchRule()
         }
 
         HttpPipeline pipeline = StorageURL.createPipeline(creds, po)
@@ -100,65 +94,48 @@ class ContainerAPI extends Specification {
                 new URL("http://" + System.getenv().get("ACCOUNT_NAME") + ".blob.core.windows.net"), pipeline)
     }
 
-    def configureRecordings() {
-        String proxyHost = "localhost"
-        int port = 1234
-
-        CompositeMatchRule rule = new CompositeMatchRule()
+    def configureMatchRule() {
+        rule = new CompositeMatchRule()
         rule.addRule(new MatchBody())
         rule.addRule(new MatchMethod())
 
         /*
-         We can ignore the access condition headers because they will be distinguished by the container name when the
-         test unrolls.
+         We can ignore the access condition headers because they will be
+         distinguished by the container name when the test unrolls.
          */
         HashSet<String> blacklistHeaders = new HashSet<>()
         blacklistHeaders.add("Authorization")
         blacklistHeaders.add("x-ms-date")
         blacklistHeaders.add("x-ms-client-request-id")
-        /*
-         The scene will not get serialized correctly if we blacklist the headers on the way out
-         (the responses get recorded with the wrong status code for some reason, possibly because
-         the proxy was actually modifying the outgoing request?), but we must ignore these values
-         during playback for proper matching.
-         */
-        if (sceneMode == SceneMode.PLAYBACK) {
-            blacklistHeaders.add("If-Modified-Since")
-            blacklistHeaders.add("If-Unmodified-Since")
-            blacklistHeaders.add("If-Match")
-            blacklistHeaders.add("If-None-Match")
-        }
+        blacklistHeaders.add("If-Modified-Since")
+        blacklistHeaders.add("If-Unmodified-Since")
+        blacklistHeaders.add("If-Match")
+        blacklistHeaders.add("If-None-Match")
         rule.addRule(MatchRuleUtils.matchHeadersWithBlacklist(blacklistHeaders))
 
         HashSet<String> blacklistQuery = new HashSet<>()
         blacklistQuery.add("sig")
-        rule.addRule(MatchRuleUtils.matchUriWithQueryBlacklist(blacklistQuery))
 
-        SceneConfiguration sceneConfig = new SceneConfiguration(recordingsDir, sceneMode, sceneName);
-        flashbackRunner = new FlashbackRunner.Builder().host(proxyHost).port(port).mode(sceneMode)
-                .sceneAccessLayer(new SceneAccessLayer(SceneFactory.create(sceneConfig), rule))
-                .build()
-        flashbackRunner.start()
+        rule.addRule(MatchRuleUtils.matchUriWithQueryBlacklist(blacklistQuery))
     }
 
     def cleanupSpec() {
-        if (flashbackRunner != null) {
+        if (TestUtility.enableRecordings) {
             flashbackRunner.close()
         }
 
         // We don't need to clean up containers if we are playing back
-        if (!(enableRecordings && sceneMode.equals(SceneMode.PLAYBACK))) {
-            // Clean up containers
-            // Create a new pipline without any proxies
+        if (!(TestUtility.enableRecordings && TestUtility.sceneMode.equals(SceneMode.PLAYBACK))) {
+            // Create a new pipeline without any proxies
             HttpPipeline pipeline = StorageURL.createPipeline(creds, new PipelineOptions())
 
             ServiceURL serviceURL = new ServiceURL(
                     new URL("http://" + System.getenv().get("ACCOUNT_NAME") + ".blob.core.windows.net"), pipeline)
             // There should not be more than 50000 containers from these tests
             for (Container c : serviceURL.listContainers(null,
-                    new ListContainersOptions(null, containerPrefix, null)).blockingGet().body()
+                    new ListContainersOptions(null, TestUtility.containerPrefix, null)).blockingGet().body()
                     .containers()) {
-                ContainerURL containerURL = su.createContainerURL(c.name())
+                ContainerURL containerURL = serviceURL.createContainerURL(c.name())
                 containerURL.delete(null).blockingGet()
             }
         }
@@ -166,10 +143,29 @@ class ContainerAPI extends Specification {
 
     def setup() {
         cu = su.createContainerURL(containerName)
+
+        if (TestUtility.enableRecordings) {
+            sceneName = specificationContext.getCurrentIteration().name
+            SceneConfiguration sceneConfig =
+                    new SceneConfiguration(TestUtility.sceneDir, TestUtility.sceneMode, sceneName)
+            flashbackRunner = new FlashbackRunner.Builder().host("localhost").port(1234)
+                    .mode(TestUtility.sceneMode)
+                    .sceneAccessLayer(new SceneAccessLayer(SceneFactory.create(sceneConfig), rule))
+                    .build()
+            flashbackRunner.start()
+        }
     }
 
     def cleanup() {
         testNo++
+        // TODO: If this there is a new test, this will fail because the file isn't created until
+        // the flashbackRunner closes and writes. Should move this to the cleanupSpec and list out the dir?
+        // In that case I'll need a different dir per spec, which is fine.
+        //TestUtility.scrubAuthHeader(sceneName)
+        if (TestUtility.enableRecordings) {
+            flashbackRunner.close()
+        }
+
     }
 
     @Unroll
@@ -182,7 +178,7 @@ class ContainerAPI extends Specification {
         ContainerAccessConditions cac = new ContainerAccessConditions(
                 new HTTPAccessConditions(modified, unmodified, match, noneMatch), LeaseAccessConditions.NONE)
         int code = 0
-        //TODO: Have to use this to actually check the exceptio message in the expect section
+        //TODO: Have to use this to actually check the exception message in the expect section
         String message = ""
         try{
             code = cu.delete(cac).blockingGet().statusCode()
@@ -198,6 +194,10 @@ class ContainerAPI extends Specification {
         expect:
         code == statusCode
 
+        /*
+        For some reason, putting the 400 cases first works fine but putting them later in the sequence
+        yields some sort of timeout error.
+         */
         where:
         modified           | unmodified      | match          | noneMatch        || statusCode
         newDate            | null            | null           | null             || 412
@@ -207,10 +207,6 @@ class ContainerAPI extends Specification {
         null               | newDate         | null           | null             || 202
         null               | null            | receivedEtag   | null             || 0
         null               | null            | null           | garbageEtag      || 0
-        /*
-         Note that the value of receivedEtag is overwritten. It merely indicates that the received ETag
-         will be used for the test once it is received.
-         */
     }
 
     def "Test the failed data driven case"() {
