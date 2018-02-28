@@ -1,22 +1,15 @@
 package com.microsoft.azure.storage
 
-import com.linkedin.flashback.scene.SceneMode
-import com.linkedin.flashback.smartproxy.FlashbackRunner
 import com.microsoft.azure.storage.blob.ContainerAccessConditions
 import com.microsoft.azure.storage.blob.ContainerURL
 import com.microsoft.azure.storage.blob.ETag
 import com.microsoft.azure.storage.blob.HTTPAccessConditions
 import com.microsoft.azure.storage.blob.LeaseAccessConditions
-import com.microsoft.azure.storage.blob.ListContainersOptions
-import com.microsoft.azure.storage.blob.PipelineOptions
-import com.microsoft.azure.storage.blob.ServiceURL
-import com.microsoft.azure.storage.blob.SharedKeyCredentials
-import com.microsoft.azure.storage.blob.StorageURL
-import com.microsoft.azure.storage.models.Container
+import com.microsoft.azure.storage.blob.Metadata
 import com.microsoft.azure.storage.models.ContainerCreateHeaders
 import com.microsoft.azure.storage.models.PublicAccessType
 import com.microsoft.rest.v2.RestException
-import com.microsoft.rest.v2.http.HttpPipeline
+import com.microsoft.rest.v2.RestResponse
 import spock.lang.*
 
 class ContainerAPI extends Specification {
@@ -47,8 +40,48 @@ class ContainerAPI extends Specification {
         TestUtility.cleanupFeatureRecording()
     }
 
+    def "Container create all null" () {
+        when:
+        RestResponse<ContainerCreateHeaders, Void> response = cu.create(null, null).blockingGet()
+
+        then:
+        response.statusCode() == 201
+        response.headers().eTag() != null
+        response.headers().dateProperty() != null
+        response.headers().lastModified() != null
+        response.headers().requestId() != null
+        response.headers().version() != null
+    }
+
+    def "Container create metadata" () {
+        setup:
+        Metadata metadata = new Metadata()
+        metadata.put("foo", "bar")
+        metadata.put("fizz", "buzz")
+
+        when:
+        int statusCode = cu.create(metadata, null).blockingGet().statusCode()
+        Map<String, String> receivedMetadata =
+                cu.getPropertiesAndMetadata(null).blockingGet().headers().metadata()
+
+        then:
+        statusCode == 201
+        receivedMetadata.equals(metadata)
+    }
+
+    def "Container create publicAccess Blob" () {
+        when:
+        int statusCode = cu.create(null, PublicAccessType.BLOB).blockingGet().statusCode()
+        PublicAccessType access =
+                cu.getPropertiesAndMetadata(null).blockingGet().headers().blobPublicAccess()
+
+        then:
+        statusCode == 201
+        access == PublicAccessType.BLOB
+    }
+
     @Unroll
-    def "Delete container with access conditions"() {
+    def "Container delete with access conditions"() {
         setup:
         ContainerCreateHeaders headers = cu.create(null, PublicAccessType.BLOB).blockingGet().headers()
         if (match.equals(TestUtility.receivedEtag)) {
