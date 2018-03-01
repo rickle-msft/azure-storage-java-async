@@ -23,17 +23,18 @@ import com.microsoft.rest.v2.http.HttpClient
 import com.microsoft.rest.v2.http.HttpPipeline
 import org.joda.time.DateTime
 import org.spockframework.lang.ISpecificationContext
-import org.spockframework.runtime.SpecificationContext
 
 import java.security.InvalidKeyException
 
 class TestUtility {
 
-    public static final boolean enableDebugging = true
+    public static final boolean enableDebugging = false
 
-    public static final boolean enableRecordings = false
+    public static final boolean enableRecordings = true
 
     public static final String containerPrefix = "javatestcontainer"
+
+    public static final String blobPrefix = "javablob"
 
     public static final SceneMode sceneMode = SceneMode.PLAYBACK
 
@@ -100,21 +101,58 @@ class TestUtility {
         return matchRule
     }
 
-    /**
-     * @param prefix
-     *      Used for preserving ordering when listing.
-     * @param core
-     *      Typically the test name.
-     * @param suffix
-     *      Used to uniquely identify containers created with the same test name (as in data driven tests).
-     * @return
-     */
-    static String generateContainerName(String prefix, String core, String suffix) {
-        return containerPrefix + prefix + core + suffix
-    }
-
     static String getTestName(ISpecificationContext ctx) {
         return ctx.getCurrentFeature().name.replace(' ', '').toLowerCase()
+    }
+
+    /**
+     * This function generates an entity name by concatenating the passed prefix, the name of the test requesting the
+     * entity name, and some unique suffix. This ensures that the entity name is unique for each test so there are
+     * no conflicts on the service. If we are not recording, we can just use the time. If we are recording, the suffix
+     * must always be the same so we can match requests. To solve this, we use the entityNo for how many entities have
+     * already been created by this test so far. This would sufficiently distinguish entities within a recording, but
+     * could still yield duplicates on the service for data-driven tests. Therefore, we also add the iteration number
+     * of the data driven tests.
+     *
+     * @param specificationContext
+     *      Used to obtain the name of the test running.
+     * @param prefix
+     *      Used to group all entities created by these tests under common prefixes. Useful for listing.
+     * @param iterationNo
+     *      Indicates which iteration of a data-driven test is being executed.
+     * @param entityNo
+     *      Indicates how man entities have been created by the test so far. This distinguishes multiple containers
+     *      or multiple blobs created by the same test. Only used when dealing with recordings.
+     * @return
+     */
+    static String generateResourceName(ISpecificationContext specificationContext, String prefix, int iterationNo,
+                                       int entityNo){
+        String suffix = ""
+        if (enableRecordings) {
+            suffix += iterationNo
+            suffix += entityNo
+        }
+        else {
+            suffix = System.currentTimeMillis()
+        }
+        return prefix + getTestName(specificationContext) + suffix
+    }
+
+    static int updateIterationNo(ISpecificationContext specificationContext, int iterationNo){
+        if (specificationContext.currentIteration.estimatedNumIterations > 1) {
+            return iterationNo + 1
+        }
+        else {
+            return 0
+        }
+    }
+
+    static String generateContainerName(ISpecificationContext specificationContext, int iterationNo, int entityNo) {
+        return generateResourceName(specificationContext, containerPrefix, iterationNo, entityNo)
+    }
+
+    static String generateBlobName(ISpecificationContext specificationContext, int iterationNo, int entityNo) {
+        return generateResourceName(specificationContext, blobPrefix, iterationNo, entityNo)
     }
 
     static void setupFeatureRecording(String sceneName) {

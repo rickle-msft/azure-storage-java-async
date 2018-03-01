@@ -6,6 +6,8 @@ import com.microsoft.azure.storage.blob.ETag
 import com.microsoft.azure.storage.blob.HTTPAccessConditions
 import com.microsoft.azure.storage.blob.LeaseAccessConditions
 import com.microsoft.azure.storage.blob.Metadata
+import com.microsoft.azure.storage.blob.PageBlobURL
+import com.microsoft.azure.storage.models.Blob
 import com.microsoft.azure.storage.models.ContainerCreateHeaders
 import com.microsoft.azure.storage.models.ContainerGetPropertiesHeaders
 import com.microsoft.azure.storage.models.ContainerLeaseHeaders
@@ -14,51 +16,8 @@ import com.microsoft.rest.v2.RestException
 import com.microsoft.rest.v2.RestResponse
 import spock.lang.*
 
-class ContainerAPI extends Specification {
+class ContainerAPI extends APISpec {
 
-    @Shared
-    int iterationNo = 0 // Used to generate stable container names for recording tests with multiple iterations.l
-
-    int containerNo = 0 // Used to generate stable container names for recording tests requiring multiple containers.
-
-    ContainerURL cu
-
-    def generateContainerName() {
-        /*
-        The container name suffix ensures that the container name is unique for each test so there are no conflicts.
-        If we are not recording, we can just use the time. If we are recording, the suffix must always be the same
-        so we can match requests. To solve this, we use the iteration number of the test we are on.
-         */
-        String suffix = ""
-        if (TestUtility.enableRecordings) {
-            if (specificationContext.currentIteration.estimatedNumIterations > 1) {
-                suffix += iterationNo++
-            }
-            else {
-                iterationNo = 0
-                suffix += iterationNo
-            }
-            suffix += containerNo++
-        }
-        else {
-            suffix = System.currentTimeMillis()
-        }
-        TestUtility.generateContainerName("", TestUtility.getTestName(specificationContext), suffix.toString())
-    }
-
-    def cleanupSpec() {
-        TestUtility.cleanupContainers()
-    }
-
-    def setup() {
-        cu = TestUtility.getPrimaryServiceURL().createContainerURL(generateContainerName())
-        cu.create(null, null).blockingGet()
-        TestUtility.setupFeatureRecording(specificationContext.getCurrentIteration().name)
-    }
-
-    def cleanup() {
-        TestUtility.cleanupFeatureRecording()
-    }
 
     def "Container create all null"() {
         setup:
@@ -167,6 +126,31 @@ class ContainerAPI extends Specification {
     }
 
     @Unroll
+    def "Container set public access"() {
+        setup:
+        cu.setPermissions(access, null, null).blockingGet()
+
+        expect:
+        cu.getPropertiesAndMetadata(null).blockingGet()
+                .headers().blobPublicAccess().toString() == accessStr
+
+        where:
+        access                     | accessStr
+        PublicAccessType.BLOB      | "blob"
+        PublicAccessType.CONTAINER | "container"
+        null                       | "null" // Calling .toString() on a null object gives "null"
+
+    }
+
+    def "Container get acl"() {
+        setup:
+        cu.setPermissions(PublicAccessType.BLOB, null, null).blockingGet()
+
+        expect:
+        cu.getPermissions(null).blockingGet().headers().blobPublicAccess().toString() == "blob"
+    }
+
+    @Unroll
     def "Container delete AC"() {
         setup:
         ContainerGetPropertiesHeaders headers =
@@ -215,5 +199,18 @@ class ContainerAPI extends Specification {
         null                | null                | null                     | TestUtility.garbageEtag | null                        || 0          | true
         null                | null                | null                     | null                    | TestUtility.garbageLeaseID  || 412        | false
         null                | null                | null                     | null                    | TestUtility.receivedLeaseID || 202        | false
+    }
+
+    def "container list blobs"() {
+        setup:
+        PageBlobURL bu = cu.createPageBlobURL("page")
+        bu.create(512, null, null, null, null).blockingGet()
+
+        when:
+        List<Blob> blobs = cu.listBlobs(null, null).blockingGet().body().blobs().blob()
+
+        then:
+        blobs.size() == 1
+        blobs.get(0).name().equals("page")
     }
 }
