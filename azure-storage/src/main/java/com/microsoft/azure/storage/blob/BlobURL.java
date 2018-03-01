@@ -443,7 +443,7 @@ public class BlobURL extends StorageURL {
             Integer breakPeriodInSeconds, HTTPAccessConditions httpAccessConditions) {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
 
-        return this.storageClient.blobs().leaseWithRestResponseAsync(LeaseActionType.RENEW, null,
+        return this.storageClient.blobs().leaseWithRestResponseAsync(LeaseActionType.BREAK, null,
                 null, breakPeriodInSeconds, null, null,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),

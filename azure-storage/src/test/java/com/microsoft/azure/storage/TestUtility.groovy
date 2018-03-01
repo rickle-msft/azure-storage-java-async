@@ -28,9 +28,10 @@ import java.security.InvalidKeyException
 
 class TestUtility {
 
-    public static final boolean enableDebugging = false
+    // If debugging is enabled, recordings cannot run as there can only be one proxy at a time.
+    public static final boolean enableDebugging = true
 
-    public static final boolean enableRecordings = true
+    public static final boolean enableRecordings = false
 
     public static final String containerPrefix = "javatestcontainer"
 

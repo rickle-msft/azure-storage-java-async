@@ -18,7 +18,6 @@ import spock.lang.*
 
 class ContainerAPI extends APISpec {
 
-
     def "Container create all null"() {
         setup:
         // Overwrite the existing cu, which has already been created
