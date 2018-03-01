@@ -18,17 +18,20 @@ import com.microsoft.azure.storage.blob.ServiceURL
 import com.microsoft.azure.storage.blob.SharedKeyCredentials
 import com.microsoft.azure.storage.blob.StorageURL
 import com.microsoft.azure.storage.models.Container
+import com.microsoft.azure.storage.models.LeaseStateType
 import com.microsoft.rest.v2.http.HttpClient
 import com.microsoft.rest.v2.http.HttpPipeline
 import org.joda.time.DateTime
+import org.spockframework.lang.ISpecificationContext
+import org.spockframework.runtime.SpecificationContext
 
 import java.security.InvalidKeyException
 
 class TestUtility {
 
-    public static final boolean enableDebugging = false
+    public static final boolean enableDebugging = true
 
-    public static final boolean enableRecordings = true
+    public static final boolean enableRecordings = false
 
     public static final String containerPrefix = "javatestcontainer"
 
@@ -55,8 +58,15 @@ class TestUtility {
      */
     public static final ETag receivedEtag = new ETag("received")
 
-
     public static final ETag garbageEtag = new ETag("garbage")
+
+    /*
+    Note that this value is only used to check if we are depending on the received etag. This value will not actually
+    be used.
+     */
+    public static final String receivedLeaseID = "received"
+
+    public static final String garbageLeaseID = UUID.randomUUID().toString()
 
     private static ServiceURL primaryServiceURL = null
 
@@ -90,8 +100,21 @@ class TestUtility {
         return matchRule
     }
 
+    /**
+     * @param prefix
+     *      Used for preserving ordering when listing.
+     * @param core
+     *      Typically the test name.
+     * @param suffix
+     *      Used to uniquely identify containers created with the same test name (as in data driven tests).
+     * @return
+     */
     static String generateContainerName(String prefix, String core, String suffix) {
         return containerPrefix + prefix + core + suffix
+    }
+
+    static String getTestName(ISpecificationContext ctx) {
+        return ctx.getCurrentFeature().name.replace(' ', '').toLowerCase()
     }
 
     static void setupFeatureRecording(String sceneName) {
@@ -176,6 +199,9 @@ class TestUtility {
                     new ListContainersOptions(null, containerPrefix, null)).blockingGet()
                     .body().containers()) {
                 ContainerURL containerURL = serviceURL.createContainerURL(c.name())
+                if (c.properties().leaseState().equals(LeaseStateType.LEASED)) {
+                    containerURL.breakLease(0, null).blockingGet()
+                }
                 containerURL.delete(null).blockingGet()
             }
         }

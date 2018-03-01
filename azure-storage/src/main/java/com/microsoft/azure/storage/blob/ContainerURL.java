@@ -386,7 +386,7 @@ public final class ContainerURL extends StorageURL {
      *      {@code Void} body if successful.
      */
     public Single<RestResponse<ContainerLeaseHeaders, Void>> breakLease(
-            HTTPAccessConditions httpAccessConditions) {
+            Integer breakPeriodInSeconds, HTTPAccessConditions httpAccessConditions) {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
         if (!this.validateLeaseOperationAccessConditions(httpAccessConditions)) {
             // Throwing is preferred to Single.error because this will error out immediately instead of waiting until
@@ -396,7 +396,7 @@ public final class ContainerURL extends StorageURL {
         }
 
         return this.storageClient.containers().leaseWithRestResponseAsync(LeaseActionType.BREAK,
-                null, null, null, null, null,
+                null, null, breakPeriodInSeconds, null, null,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 null);
