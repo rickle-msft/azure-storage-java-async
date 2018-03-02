@@ -21,7 +21,7 @@ class ContainerAPI extends APISpec {
     def "Container create all null"() {
         setup:
         // Overwrite the existing cu, which has already been created
-        cu = TestUtility.getPrimaryServiceURL().createContainerURL(generateContainerName())
+        cu = TestUtility.primaryServiceURL.createContainerURL(generateContainerName())
 
         when:
         RestResponse<ContainerCreateHeaders, Void> response = cu.create(null, null).blockingGet()
@@ -37,7 +37,7 @@ class ContainerAPI extends APISpec {
 
     def "Container create metadata"() {
         setup:
-        cu = TestUtility.getPrimaryServiceURL().createContainerURL(generateContainerName())
+        cu = TestUtility.primaryServiceURL.createContainerURL(generateContainerName())
 
         Metadata metadata = new Metadata()
         metadata.put("foo", "bar")
@@ -55,7 +55,7 @@ class ContainerAPI extends APISpec {
 
     def "Container create publicAccess Blob"() {
         setup:
-        cu = TestUtility.getPrimaryServiceURL().createContainerURL(generateContainerName())
+        cu = TestUtility.primaryServiceURL.createContainerURL(generateContainerName())
 
         when:
         int statusCode = cu.create(null, PublicAccessType.BLOB).blockingGet().statusCode()

@@ -2,10 +2,14 @@ package com.microsoft.azure.storage
 
 import com.microsoft.azure.storage.blob.BlobHTTPHeaders
 import com.microsoft.azure.storage.blob.BlobURL
+
+import com.microsoft.azure.storage.blob.ContainerURL
 import com.microsoft.azure.storage.blob.Metadata
 import com.microsoft.azure.storage.models.BlobGetPropertiesHeaders
 import com.microsoft.azure.storage.models.BlobType
+import com.microsoft.azure.storage.models.CopyStatusType
 import com.microsoft.azure.storage.models.LeaseStateType
+import com.microsoft.azure.storage.models.PublicAccessType
 import com.microsoft.rest.v2.util.FlowableUtil
 import io.reactivex.Flowable
 import spock.lang.Shared
@@ -17,12 +21,6 @@ import java.security.MessageDigest
 
 class BlobAPI extends APISpec{
     BlobURL bu
-
-    @Shared
-    String defaultText = "d"
-
-    @Shared
-    ByteBuffer defaultData = ByteBuffer.wrap(defaultText.bytes)
 
     def setup() {
         bu = cu.createBlockBlobURL(generateBlobName())
@@ -152,5 +150,50 @@ class BlobAPI extends APISpec{
 
         expect:
         bu.releaseLease(leaseID, null).blockingGet().statusCode() == 200
+    }
+
+    def "Blob snapshot"() {
+        when:
+        String snapshot = bu.createSnapshot(null, null).blockingGet().headers().snapshot()
+
+        then:
+        bu.withSnapshot(snapshot).getPropertiesAndMetadata(null).blockingGet().statusCode() == 200
+    }
+
+    def "Blob copy"() {
+        setup:
+        BlobURL bu2 = cu.createBlockBlobURL(generateBlobName())
+        bu2.startCopy(bu.toURL(), null, null, null).blockingGet()
+
+        when:
+        CopyStatusType status = bu2.getPropertiesAndMetadata(null).blockingGet().headers().copyStatus()
+
+        then:
+        status.equals(CopyStatusType.SUCCESS) || status.equals(CopyStatusType.PENDING)
+
+    }
+
+    def "Blob abort copy"() {
+        setup:
+        ByteBuffer data = TestUtility.getRandomData(8*1024*1024)
+        bu.toBlockBlobURL().putBlob(Flowable.just(data), 8*1024*1024, null, null, null)
+        // So we don't have to create a SAS.
+        cu.setPermissions(PublicAccessType.BLOB, null, null).blockingGet()
+
+        ContainerURL cu2 = TestUtility.alternateServiceURL.createContainerURL(generateBlobName())
+        cu2.create(null, null).blockingGet()
+        BlobURL bu2 = cu2.createBlobURL(generateBlobName())
+
+        when:
+        String copyID = bu2.startCopy(bu.toURL(), null, null, null)
+                .blockingGet().headers().copyId()
+
+        then:
+        bu2.abortCopy(copyID, null).blockingGet().statusCode() == 204
+    }
+
+    def "Blob delete"() {
+        expect:
+        bu.delete(null, null).blockingGet().statusCode() == 202
     }
 }

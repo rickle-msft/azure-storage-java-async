@@ -24,6 +24,7 @@ import com.microsoft.rest.v2.http.HttpPipeline
 import org.joda.time.DateTime
 import org.spockframework.lang.ISpecificationContext
 
+import java.nio.ByteBuffer
 import java.security.InvalidKeyException
 
 class TestUtility {
@@ -70,9 +71,13 @@ class TestUtility {
 
     public static final String garbageLeaseID = UUID.randomUUID().toString()
 
-    private static ServiceURL primaryServiceURL = null
+    static SharedKeyCredentials primaryCreds = getGenericCreds("")
 
-    private static SharedKeyCredentials primaryCreds = null
+    static ServiceURL primaryServiceURL = getGenericServiceURL(primaryCreds)
+
+    static SharedKeyCredentials alternateCreds = getGenericCreds("SECONDARY_")
+
+    static ServiceURL alternateServiceURL = getGenericServiceURL(alternateCreds)
 
     static MatchRule getMatchRule() {
         if (matchRule == null) {
@@ -196,33 +201,28 @@ class TestUtility {
         }*/
     }
 
-    static SharedKeyCredentials getPrimaryCreds() throws InvalidKeyException {
-        if (primaryCreds == null) {
-            primaryCreds = new SharedKeyCredentials(System.getenv().get("ACCOUNT_NAME"),
-                    System.getenv().get("ACCOUNT_KEY"))
-        }
-        return primaryCreds
+    static getGenericCreds(String accountType) {
+        return new SharedKeyCredentials(System.getenv().get(accountType + "ACCOUNT_NAME"),
+                System.getenv().get(accountType + "ACCOUNT_KEY"))
     }
 
-    static ServiceURL getPrimaryServiceURL() throws InvalidKeyException, MalformedURLException {
-        if (primaryServiceURL == null) {
-            PipelineOptions po = new PipelineOptions()
-            if (enableDebugging) {
-                HttpClient.Configuration configuration = new HttpClient.Configuration(
-                        new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)))
-                po.client = HttpClient.createDefault(configuration)
-            } else if (enableRecordings) {
-                HttpClient.Configuration configuration = new HttpClient.Configuration(
-                        new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 1234)))
-                po.client = HttpClient.createDefault(configuration)
-            }
+    static ServiceURL getGenericServiceURL(SharedKeyCredentials creds) {
 
-            HttpPipeline pipeline = StorageURL.createPipeline(getPrimaryCreds(), po)
-
-            primaryServiceURL = new ServiceURL(
-                    new URL("http://" + getPrimaryCreds().getAccountName() + ".blob.core.windows.net"), pipeline)
+        PipelineOptions po = new PipelineOptions()
+        if (enableDebugging) {
+            HttpClient.Configuration configuration = new HttpClient.Configuration(
+                    new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)))
+            po.client = HttpClient.createDefault(configuration)
+        } else if (enableRecordings) {
+            HttpClient.Configuration configuration = new HttpClient.Configuration(
+                    new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 1234)))
+            po.client = HttpClient.createDefault(configuration)
         }
-        return primaryServiceURL
+
+        HttpPipeline pipeline = StorageURL.createPipeline(creds, po)
+
+        return new ServiceURL(new URL("http://" + creds.getAccountName() + ".blob.core.windows.net"), pipeline)
+
     }
 
     static void cleanupContainers() throws MalformedURLException {
@@ -244,5 +244,19 @@ class TestUtility {
                 containerURL.delete(null).blockingGet()
             }
         }
+    }
+
+    static ByteBuffer getRandomData(long size) {
+        Random rand = new Random(getRandomSeed())
+        byte[] data = new byte[size]
+        rand.nextBytes(data)
+        return ByteBuffer.wrap(data)
+    }
+
+    static long getRandomSeed() {
+        if (enableRecordings) {
+            return 0
+        }
+        return System.currentTimeMillis()
     }
 }
