@@ -41,4 +41,10 @@ class BlockBlobAPI extends APISpec{
         bu.getBlockList(BlockListType.ALL, null).blockingGet()
                 .body().uncommittedBlocks().get(0).name().equals(blockID)
     }
+
+    def "Block blob put"() {
+        expect:
+        bu.putBlob(Flowable.just(defaultData), defaultData.remaining(),
+                null, null, null).blockingGet().statusCode() == 201
+    }
 }

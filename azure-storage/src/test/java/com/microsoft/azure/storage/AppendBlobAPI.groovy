@@ -3,6 +3,7 @@ package com.microsoft.azure.storage
 import com.microsoft.azure.storage.blob.AppendBlobURL
 import com.microsoft.azure.storage.models.BlobPutHeaders
 import com.microsoft.rest.v2.RestResponse
+import io.reactivex.Flowable
 
 class AppendBlobAPI extends APISpec {
     AppendBlobURL bu
@@ -12,7 +13,7 @@ class AppendBlobAPI extends APISpec {
         bu.create(null, null, null).blockingGet()
     }
 
-    def "Blob create all null"() {
+    def "Append blob create all null"() {
         setup:
         bu = cu.createAppendBlobURL(generateBlobName())
 
@@ -28,4 +29,12 @@ class AppendBlobAPI extends APISpec {
         response.headers().requestId() != null
         response.headers().version() != null
     }
+
+    def "Append blob append block"() {
+        expect:
+        bu.appendBlock(Flowable.just(defaultData), defaultData.remaining(), null).blockingGet()
+                .statusCode() == 201
+    }
+
+
 }
