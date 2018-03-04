@@ -38,14 +38,14 @@ class PageBlobAPI extends APISpec {
     def "Page blob put page"() {
         expect:
         bu.putPages(new PageRange().withStart(0).withEnd(511),
-                Flowable.just(TestUtility.getRandomData(512)), null).blockingGet()
+                Flowable.just(getRandomData(512)), null).blockingGet()
                 .statusCode() == 201
     }
 
     def "Page blob clear page"() {
         setup:
         bu.putPages(new PageRange().withStart(0).withEnd(511),
-                Flowable.just(TestUtility.getRandomData(512)), null).blockingGet()
+                Flowable.just(getRandomData(512)), null).blockingGet()
 
         when:
         bu.clearPages(new PageRange().withStart(0).withEnd(511), null).blockingGet()
@@ -58,7 +58,7 @@ class PageBlobAPI extends APISpec {
     def "Page blob get page ranges"() {
         setup:
         bu.putPages(new PageRange().withStart(0).withEnd(511),
-                Flowable.just(TestUtility.getRandomData(512)),null).blockingGet()
+                Flowable.just(getRandomData(512)),null).blockingGet()
         expect:
         bu.getPageRanges(new BlobRange(0, 512), null).blockingGet().body()
                 .pageRange().size() == 1
@@ -68,7 +68,7 @@ class PageBlobAPI extends APISpec {
         setup:
         String snapshot = bu.createSnapshot(null, null).blockingGet().headers().snapshot()
         bu.putPages(new PageRange().withStart(0).withEnd(511),
-                Flowable.just(TestUtility.getRandomData(512)),null).blockingGet()
+                Flowable.just(getRandomData(512)),null).blockingGet()
 
         expect:
         bu.getPageRangesDiff(new BlobRange(0,512), snapshot, null).blockingGet().body()

@@ -175,12 +175,12 @@ class BlobAPI extends APISpec{
 
     def "Blob abort copy"() {
         setup:
-        ByteBuffer data = TestUtility.getRandomData(8*1024*1024)
+        ByteBuffer data = getRandomData(8*1024*1024)
         bu.toBlockBlobURL().putBlob(Flowable.just(data), 8*1024*1024, null, null, null)
         // So we don't have to create a SAS.
         cu.setPermissions(PublicAccessType.BLOB, null, null).blockingGet()
 
-        ContainerURL cu2 = TestUtility.alternateServiceURL.createContainerURL(generateBlobName())
+        ContainerURL cu2 = alternateServiceURL.createContainerURL(generateBlobName())
         cu2.create(null, null).blockingGet()
         BlobURL bu2 = cu2.createBlobURL(generateBlobName())
 

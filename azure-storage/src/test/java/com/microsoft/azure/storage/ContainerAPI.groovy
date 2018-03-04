@@ -21,7 +21,7 @@ class ContainerAPI extends APISpec {
     def "Container create all null"() {
         setup:
         // Overwrite the existing cu, which has already been created
-        cu = TestUtility.primaryServiceURL.createContainerURL(generateContainerName())
+        cu = primaryServiceURL.createContainerURL(generateContainerName())
 
         when:
         RestResponse<ContainerCreateHeaders, Void> response = cu.create(null, null).blockingGet()
@@ -37,7 +37,7 @@ class ContainerAPI extends APISpec {
 
     def "Container create metadata"() {
         setup:
-        cu = TestUtility.primaryServiceURL.createContainerURL(generateContainerName())
+        cu = primaryServiceURL.createContainerURL(generateContainerName())
 
         Metadata metadata = new Metadata()
         metadata.put("foo", "bar")
@@ -55,7 +55,7 @@ class ContainerAPI extends APISpec {
 
     def "Container create publicAccess Blob"() {
         setup:
-        cu = TestUtility.primaryServiceURL.createContainerURL(generateContainerName())
+        cu = primaryServiceURL.createContainerURL(generateContainerName())
 
         when:
         int statusCode = cu.create(null, PublicAccessType.BLOB).blockingGet().statusCode()
@@ -85,7 +85,7 @@ class ContainerAPI extends APISpec {
         ContainerLeaseHeaders headers =
                 cu.acquireLease(UUID.randomUUID().toString(), -1, null)
                         .blockingGet().headers()
-        if (leaseID.equals(TestUtility.receivedLeaseID)) {
+        if (leaseID.equals(receivedLeaseID)) {
             leaseID = headers.leaseId()
         }
 
@@ -101,10 +101,10 @@ class ContainerAPI extends APISpec {
         code == statusCode
 
         where:
-        leaseID                     || statusCode
-        null                        || 200
-        TestUtility.garbageLeaseID  || 412
-        TestUtility.receivedLeaseID || 200
+        leaseID         || statusCode
+        null            || 200
+        garbageLeaseID  || 412
+        receivedLeaseID || 200
 
     }
 
@@ -154,13 +154,13 @@ class ContainerAPI extends APISpec {
         setup:
         ContainerGetPropertiesHeaders headers =
                 cu.getPropertiesAndMetadata(null).blockingGet().headers()
-        if (match.equals(TestUtility.receivedEtag)) {
+        if (match.equals(receivedEtag)) {
             match = new ETag(headers.eTag())
         }
         if (leaseID != null) {
             ContainerLeaseHeaders headers2 =
                     cu.acquireLease(UUID.randomUUID().toString(), -1, null).blockingGet().headers()
-            if (leaseID.equals(TestUtility.receivedLeaseID)) {
+            if (leaseID.equals(receivedLeaseID)) {
                 leaseID = headers2.leaseId()
             }
         }
@@ -188,18 +188,17 @@ class ContainerAPI extends APISpec {
         yields some sort of timeout error.
          */
         where:
-        modified            | unmodified          | match                    | noneMatch               | leaseID                     || statusCode | foundMessage
-        TestUtility.newDate | null                | null                     | null                    | null                        || 412        | false
-        null                | TestUtility.oldDate | null                     | null                    | null                        || 412        | false
-        null                | null                | null                     | null                    | null                        || 202        | false
-        TestUtility.oldDate | null                | null                     | null                    | null                        || 202        | false
-        null                | TestUtility.newDate | null                     | null                    | null                        || 202        | false
-        null                | null                | TestUtility.receivedEtag | null                    | null                        || 0          | true
-        null                | null                | null                     | TestUtility.garbageEtag | null                        || 0          | true
-        null                | null                | null                     | null                    | TestUtility.garbageLeaseID  || 412        | false
-        null                | null                | null                     | null                    | TestUtility.receivedLeaseID || 202        | false
+        modified | unmodified | match        | noneMatch   | leaseID         || statusCode | foundMessage
+        newDate  | null       | null         | null        | null            || 412        | false
+        null     | oldDate    | null         | null        | null            || 412        | false
+        null     | null       | null         | null        | null            || 202        | false
+        oldDate  | null       | null         | null        | null            || 202        | false
+        null     | newDate    | null         | null        | null            || 202        | false
+        null     | null       | receivedEtag | null        | null            || 0          | true
+        null     | null       | null         | garbageEtag | null            || 0          | true
+        null     | null       | null         | null        | garbageLeaseID  || 412        | false
+        null     | null       | null         | null        | receivedLeaseID || 202        | false
     }
-
     def "container list blobs"() {
         setup:
         PageBlobURL bu = cu.createPageBlobURL("page")
