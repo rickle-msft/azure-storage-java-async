@@ -14,11 +14,20 @@
  */
 package com.microsoft.azure.storage.blob;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.util.Date;
 
+/**
+ * ServiceSASSignatureValues is used to generate a Shared Access Signature (SAS) for an Azure Storage service. Once
+ * all the values here are set appropriately, call generateSASQueryParameters to obtain a representation of the SAS
+ * which can actually be applied to blob urls. Note: that both this class and {@link SASQueryParameters} exist because
+ * the former is mutable and a logical representation while the latter is immutable and used to generate actual REST
+ * requests.
+ *
+ * Please refer to the following for more conceptual information on SAS:
+ * https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1
+ * https://docs.microsoft.com/en-us/rest/api/storageservices/constructing-a-service-sas
+ */
 public final class ServiceSASSignatureValues {
 
     /**

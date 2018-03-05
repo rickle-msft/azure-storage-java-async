@@ -23,10 +23,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Represents a URL to an Azure Storage Blob Service.
+ * Represents a URL to a blob service. This class does not hold any state about a particular storage account but is
+ * instead a convenient way of sending off appropriate requests to the resource on the service.
+ * It may also be used to construct URLs to blobs and containers.
+ * Please refer to the following for more information on containers:
+ * https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction
  */
 public final class ServiceURL extends StorageURL {
 
+    /**
+     * Creates a {@code ServiceURL} object pointing to the account specified by the URL and using the provided pipeline
+     * to make HTTP requests.
+     * @param url
+     *      A url to an Azure Storage account.
+     * @param pipeline
+     *      A pipeline which configures the behavior of HTTP exchanges. Please refer to the createPipeline method on
+     *      {@link StorageURL} for more information.
+     */
     public ServiceURL(URL url, HttpPipeline pipeline) {
         super(url, pipeline);
     }

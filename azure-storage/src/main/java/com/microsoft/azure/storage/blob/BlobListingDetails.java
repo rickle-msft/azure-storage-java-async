@@ -19,7 +19,9 @@ import com.microsoft.azure.storage.models.ListBlobsIncludeItem;
 import java.util.ArrayList;
 
 /**
- * Details indicating what additional information the service should return with each blob.
+ * This type allows users to specify additional information the service should return with each blob when listing blobs
+ * in a container (via a {@link ContainerURL} object). This type is immutable to ensure thread-safety of requests, so
+ * changing the details for a different listing operation requires construction of a new object.
  */
 public final class BlobListingDetails {
 

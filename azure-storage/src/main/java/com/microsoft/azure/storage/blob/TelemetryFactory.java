@@ -14,6 +14,7 @@
  */
 package com.microsoft.azure.storage.blob;
 
+import com.microsoft.rest.v2.http.HttpPipeline;
 import com.microsoft.rest.v2.http.HttpRequest;
 import com.microsoft.rest.v2.http.HttpResponse;
 import com.microsoft.rest.v2.policy.RequestPolicy;
@@ -24,7 +25,10 @@ import io.reactivex.Single;
 import java.util.Locale;
 
 /**
- * Used to add telemetry to outgoing HTTP requests.
+ * This is a factory which creates policies in an {@link HttpPipeline} for adding telemetry to a given HTTP request. In
+ * most cases, it is sufficient to configure a {@link TelemetryOptions} object and set those as a field on a
+ * {@link PipelineOptions} object to configure a default pipeline. The factory and policy must only be used directly
+ * when creating a custom pipeline.
  */
 public final class TelemetryFactory implements RequestPolicyFactory {
 

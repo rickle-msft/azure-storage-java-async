@@ -27,7 +27,11 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
- * Represents a URL to a block blob.
+ * Represents a URL to a block blob. It may be obtained by direct construction or via the create method on a
+ * {@link ContainerURL} object. This class does not hold any state about a particular blob but is instead a convenient
+ * way of sending off appropriate requests to the resource on the service. Please refer to the following for more
+ * information on block blobs:
+ * https://docs.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs
  */
 public final class BlockBlobURL extends BlobURL {
 

@@ -24,8 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A BlobURLParts object represents the components that make up an Azure Storage Container/Blob URL. You parse an
- * existing URL into its parts by calling NewBlobURLParts(). You construct a URL from parts by calling toURL().
+ * A BlobURLParts object represents the components that make up an Azure Storage Container/Blob URL. You may parse an
+ * existing URL into its parts with the {@link URLParser} class. You may construct a URL from parts by calling toURL().
+ * It is also possible to use the empty constructor to build a blobURL from scratch.
  * NOTE: Changing any SAS-related field requires computing a new SAS signature.
  */
 public final class BlobURLParts {
@@ -69,6 +70,8 @@ public final class BlobURLParts {
 
     /**
      * Initializes a BlobURLParts object with all fields set to null, except unparsedParameters, which is an empty map.
+     * This may be useful for constructing a URL to a blob storage resource from scratch when the constituent parts are
+     * already known.
      */
     public BlobURLParts() {
         unparsedParameters = new HashMap<>();

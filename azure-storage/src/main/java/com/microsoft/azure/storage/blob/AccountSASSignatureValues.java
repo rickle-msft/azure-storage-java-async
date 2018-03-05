@@ -20,7 +20,15 @@ import java.security.InvalidKeyException;
 import java.util.Date;
 
 /**
- * AccountSASSignatureValues is used to generate a Shared Access Signature (SAS) for an Azure Storage account.
+ * AccountSASSignatureValues is used to generate a Shared Access Signature (SAS) for an Azure Storage account. Once
+ * all the values here are set appropriately, call generateSASQueryParameters to obtain a representation of the SAS
+ * which can actually be applied to blob urls. Note: that both this class and {@link SASQueryParameters} exist because
+ * the former is mutable and a logical representation while the latter is immutable and used to generate actual REST
+ * requests.
+ *
+ * Please refer to the following for more conceptual information on SAS:
+ * https://docs.microsoft.com/en-us/azure/storage/common/storage-dotnet-shared-access-signature-part-1
+ * https://docs.microsoft.com/en-us/rest/api/storageservices/constructing-an-account-sas
  */
 public final class AccountSASSignatureValues {
 
@@ -69,13 +77,13 @@ public final class AccountSASSignatureValues {
 
     /**
      * Initializes an {@code AccountSASSignatureValues} object with the version number set to the default and all
-     * other values empty. For more information on how to use this class, please refer to
-     * https://docs.microsoft.com/en-us/rest/api/storageservices/constructing-an-account-sas
+     * other values empty.
      */
     public AccountSASSignatureValues() { }
 
     /**
-     * Generates {@link SASQueryParameters} object which contains all SAS query parameters.
+     * Generates a {@link SASQueryParameters} object which contains all SAS query parameters needed to make an actual
+     * REST request.
      *
      * @param sharedKeyCredentials
      *      A {@link SharedKeyCredentials} object for the storage account and corresponding primary or secondary key.

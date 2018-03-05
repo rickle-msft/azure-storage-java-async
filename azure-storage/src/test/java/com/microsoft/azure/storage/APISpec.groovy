@@ -5,7 +5,6 @@ import com.linkedin.flashback.factory.SceneFactory
 import com.linkedin.flashback.matchrules.CompositeMatchRule
 import com.linkedin.flashback.matchrules.MatchBody
 import com.linkedin.flashback.matchrules.MatchMethod
-import com.linkedin.flashback.matchrules.MatchRule
 import com.linkedin.flashback.matchrules.MatchRuleUtils
 import com.linkedin.flashback.scene.SceneConfiguration
 import com.linkedin.flashback.scene.SceneMode
@@ -45,13 +44,13 @@ class APISpec extends Specification {
     // If debugging is enabled, recordings cannot run as there can only be one proxy at a time.
     public static final boolean enableDebugging = true
 
-    public static final boolean enableRecordings = false
+    public static final boolean enableRecordings = true
 
     public static final String containerPrefix = "javatestcontainer"
 
     public static final String blobPrefix = "javablob"
 
-    public static final SceneMode sceneMode = SceneMode.PLAYBACK
+    public static final SceneMode sceneMode = SceneMode.RECORD
 
     public static final String sceneDir =
             "C:\\Users\\frley\\Documents\\azure-storage-java-async\\azure-storage\\src\\test\\resources\\recordings\\"
@@ -182,33 +181,7 @@ class APISpec extends Specification {
     }
 
     static void setupFeatureRecording(String sceneName) {
-        if (enableRecordings) {
-            try {
-                SceneConfiguration sceneConfig =
-                        new SceneConfiguration(sceneDir, sceneMode, sceneName)
-                FlashbackRunner runner = new FlashbackRunner.Builder().host("localhost").port(1234)
-                        .mode(sceneMode)
-                        .sceneAccessLayer(new SceneAccessLayer(SceneFactory.create(sceneConfig), getMatchRule()))
-                        .build()
-                runner.start()
-                flashbackRunner = runner
-            }
-            catch (IOException | InterruptedException e) {
-                throw new Error(e)
-            }
-        }
-    }
 
-    static void cleanupFeatureRecording() {
-        if (enableRecordings) {
-            flashbackRunner.close()
-        }
-        if (enableRecordings) {
-            if (sceneMode.equals(SceneMode.RECORD)) {
-                // TODO: Needed?
-                //TestUtility.scrubAuthHeader(sceneName)
-            }
-        }
     }
 
     static void scrubAuthHeader(String sceneName) {
@@ -275,23 +248,53 @@ class APISpec extends Specification {
 
     static long getRandomSeed() {
         if (enableRecordings) {
-            return 0
+            return 5
         }
         return System.currentTimeMillis()
     }
 
+    def setupSpec() {
+        if (enableRecordings) {
+            try {
+                /*
+                 Set the scene to dummy scene in case we are in playback mode, which expecs the file to exist. This will
+                 be overwritten in the feature setup.
+                 */
+                SceneConfiguration sceneConfig =
+                        new SceneConfiguration(sceneDir, sceneMode, "dummyscene.txt")
+                FlashbackRunner runner = new FlashbackRunner.Builder().host("localhost").port(1234)
+                        .mode(sceneMode)
+                        .sceneAccessLayer(new SceneAccessLayer(SceneFactory.create(sceneConfig), getMatchRule()))
+                        .build()
+                runner.start()
+                flashbackRunner = runner
+            }
+            catch (IOException | InterruptedException e) {
+                throw new Error(e)
+            }
+        }
+    }
+
     def cleanupSpec() {
+        if (enableRecordings) {
+            flashbackRunner.close()
+        }
         cleanupContainers()
     }
 
     def setup() {
-        setupFeatureRecording(specificationContext.getCurrentIteration().name)
+        // Set up feature recording.
+        if (enableRecordings) {
+            flashbackRunner.setScene(SceneFactory.create(
+                    new SceneConfiguration(sceneDir, sceneMode, specificationContext.getCurrentIteration().name)))
+            flashbackRunner.setMatchRule(matchRule)
+        }
         cu = primaryServiceURL.createContainerURL(generateContainerName())
         cu.create(null, null).blockingGet()
     }
 
     def cleanup() {
-        cleanupFeatureRecording()
+        // TODO: Scrub auth header here?
         iterationNo = updateIterationNo(specificationContext, iterationNo)
     }
 }

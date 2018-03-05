@@ -19,7 +19,11 @@ import org.joda.time.DateTime;
 import java.util.Date;
 
 /**
- * HTTP Access Conditions.
+ * This type contains standard HTTP Access Conditions. Some methods do take this structure on its own, but it is most
+ * commonly used as a member of {@link BlobAccessConditions} or {@link ContainerAccessConditions}. Specifying these
+ * conditions is entirely optional, and null may be passed for this structure or any individual field to indicate that
+ * none of the conditions should be set. Please refer to the following for more information:
+ * https://docs.microsoft.com/en-us/rest/api/storageservices/Specifying-Conditional-Headers-for-Blob-Service-Operations?redirectedfrom=MSDN
  */
 public final class HTTPAccessConditions {
 

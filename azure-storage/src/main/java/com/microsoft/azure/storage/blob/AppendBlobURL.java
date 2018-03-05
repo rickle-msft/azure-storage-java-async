@@ -29,7 +29,11 @@ import java.nio.ByteBuffer;
 
 
 /**
- * Represents a URL to a append blob.
+ * Represents a URL to an append blob. It may be obtained by direct construction or via the create method on a
+ * {@link ContainerURL} object. This class does not hold any state about a particular append blob but is instead a
+ * convenient way of sending off appropriate requests to the resource on the service. Please refer to the following for
+ * more information on append blobs:
+ * https://docs.microsoft.com/en-us/rest/api/storageservices/understanding-block-blobs--append-blobs--and-page-blobs
  */
 public final class AppendBlobURL extends BlobURL {
 

@@ -8,7 +8,8 @@ import java.util.Date;
 
 /**
  * A generic wrapper for any type of blob REST API response. Used and returned by methods in the {@link Highlevel}
- * class.
+ * class. The methods there return this type because they represent composite operations which may conclude with any of
+ * several possible REST calls depending on the data provided.
  */
 public final class CommonRestResponse {
 

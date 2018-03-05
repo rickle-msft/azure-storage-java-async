@@ -17,7 +17,8 @@ package com.microsoft.azure.storage.blob;
 import java.net.Inet4Address;
 
 /**
- * A continuous range of IP addresses.
+ * This type specifies a continuous range of IP addresses. It is used to limit permissions on SAS tokens. Please refer
+ * {@link AccountSASSignatureValues} or {@link ServiceSASSignatureValues} for more information.xs
  */
 public final class IPRange {
 

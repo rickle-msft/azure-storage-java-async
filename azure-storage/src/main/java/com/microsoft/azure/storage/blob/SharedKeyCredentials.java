@@ -31,6 +31,13 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
+/**
+ * SharedKeyCredentials are a means of signing and authenticating storage requests. The key can be obtained from the
+ * Azure portal. This factory will create policies which take care of all the details of creating strings to sign,
+ * signing them, and setting the Authentication header. While this is a common way of authenticating with the service,
+ * recommended practice is using {@link TokenCredentials}. Pass this as the credentials in the construction of a new
+ * {@link HttpPipeline} via the {@link StorageURL} type.
+ */
 public final class SharedKeyCredentials implements ICredentials {
 
     private final String accountName;

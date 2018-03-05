@@ -15,7 +15,8 @@
 package com.microsoft.azure.storage.blob;
 
 /**
- * Blob HTTP headers for getting and setting blob properties.
+ * Most often used when creating a blob or setting its properties, this class contains fields for typical HTTP
+ * properties. Null may be passed to any API which takes this type to indicate that no properties should be set.
  */
 public final class BlobHTTPHeaders {
 

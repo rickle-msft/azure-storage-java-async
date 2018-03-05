@@ -24,7 +24,11 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * Represents a URL to the Azure Storage container allowing you to manipulate its blobs.
+ * Represents a URL to a container. It may be obtained by direct construction or via the create method on a
+ * {@link ServiceURL} object. This class does not hold any state about a particular blob but is instead a convenient way
+ * of sending off appropriate requests to the resource on the service. It may also be used to construct URLs to blobs.
+ * Please refer to the following for more information on containers:
+ * https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction
  */
 public final class ContainerURL extends StorageURL {
 

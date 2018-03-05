@@ -16,6 +16,13 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.UUID;
 
+/**
+ * This class contains a collection of methods (and structures associated with those methods) which perform higher-level
+ * operations. Whereas operations on the URL types guarantee a single REST request and make no assumptions on desired
+ * behavior, these methods will often compose several requests to provide a convenient way of performing more complex
+ * operations. Further, we will make our own assumptions and optimizations for common cases that may not be ideal for
+ * rarer cases.
+ */
 public class Highlevel {
 
     public static class UploadToBlockBlobOptions {

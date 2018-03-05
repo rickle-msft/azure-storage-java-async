@@ -15,7 +15,7 @@
 package com.microsoft.azure.storage.blob;
 
 /**
- * Defines options available when calling ListBlobs.
+ * Defines options available to configure the behavior of a call to listBlobs on a {@link ContainerURL} object.
  */
 public final class ListBlobsOptions {
 

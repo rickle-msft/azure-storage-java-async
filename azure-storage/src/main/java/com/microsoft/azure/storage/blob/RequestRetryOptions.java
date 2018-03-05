@@ -17,7 +17,7 @@ package com.microsoft.azure.storage.blob;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Options for retrying requests
+ * Options for configuring the {@link RequestRetryFactory}. Please refer to the Factory for more information.
  */
 public final class RequestRetryOptions {
 

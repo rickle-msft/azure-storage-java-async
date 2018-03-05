@@ -15,7 +15,7 @@
 package com.microsoft.azure.storage.blob;
 
 /**
- * Defines options available when calling listContainers.
+ * Defines options available to configure the behavior of a call to listContainers on a {@link ServiceURL} object.
  */
 public final class ListContainersOptions {
 

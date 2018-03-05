@@ -17,7 +17,9 @@ package com.microsoft.azure.storage.blob;
 import java.util.Locale;
 
 /**
- * A representation of a range of bytes to retrieve from a blob.
+ * This is a representation of a range of bytes on a blob, typically used during a download operation. This type is
+ * immutable to ensure thread-safety of requests, so changing the values for a different operation requires construction
+ * of a new object.
  */
 public final class BlobRange {
 

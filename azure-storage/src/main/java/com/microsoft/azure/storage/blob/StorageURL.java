@@ -31,7 +31,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Represents a URL to a Azure storage object.
+ * Represents a URL to a Azure storage object. Typically this class is only needed to generate a new pipeline. In most
+ * cases, one of the other URL types will be more useful.
  */
 public abstract class StorageURL {
 
@@ -45,7 +46,8 @@ public abstract class StorageURL {
             throw new IllegalArgumentException("pipeline cannot be null.");
         }
 
-        this.storageClient = new StorageClientImpl(pipeline).withVersion("2016-05-31");
+        this.storageClient = new StorageClientImpl(pipeline)
+                .withVersion(Constants.HeaderConstants.TARGET_STORAGE_VERSION);
         this.storageClient.withUrl(url.toString());
     }
 
