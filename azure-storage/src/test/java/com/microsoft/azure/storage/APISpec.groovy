@@ -42,46 +42,48 @@ class APISpec extends Specification {
     ByteBuffer defaultData = ByteBuffer.wrap(defaultText.bytes)
 
     // If debugging is enabled, recordings cannot run as there can only be one proxy at a time.
-    public static final boolean enableDebugging = true
+    static final boolean enableDebugging = false
 
-    public static final boolean enableRecordings = true
+    static final boolean enableRecordings = true
 
-    public static final String containerPrefix = "javatestcontainer"
+    static final String containerPrefix = "javatestcontainer"
 
-    public static final String blobPrefix = "javablob"
+    static final String blobPrefix = "javablob"
 
-    public static final SceneMode sceneMode = SceneMode.RECORD
+    static final SceneMode sceneMode = SceneMode.RECORD
 
-    public static final String sceneDir =
+    static final String sceneDir =
             "C:\\Users\\frley\\Documents\\azure-storage-java-async\\azure-storage\\src\\test\\resources\\recordings\\"
 
-    private static FlashbackRunner flashbackRunner = null
+    @Shared
+    FlashbackRunner flashbackRunner = null
 
-    private static CompositeMatchRule matchRule = getMatchRule()
+    @Shared
+    CompositeMatchRule matchRule = constructMatchRule()
 
     /*
     The values below are used to create data-driven tests for access conditions.
      */
     // TODO: Change from joda time
-    public static final Date oldDate = new DateTime().minusDays(1).toDate()
+    static final Date oldDate = new DateTime().minusDays(1).toDate()
 
-    public static final Date newDate = new DateTime().plusDays(1).toDate()
-
-    /*
-    Note that this value is only used to check if we are depending on the received etag. This value will not actually
-    be used.
-     */
-    public static final ETag receivedEtag = new ETag("received")
-
-    public static final ETag garbageEtag = new ETag("garbage")
+    static final Date newDate = new DateTime().plusDays(1).toDate()
 
     /*
     Note that this value is only used to check if we are depending on the received etag. This value will not actually
     be used.
      */
-    public static final String receivedLeaseID = "received"
+    static final ETag receivedEtag = new ETag("received")
 
-    public static final String garbageLeaseID = UUID.randomUUID().toString()
+    static final ETag garbageEtag = new ETag("garbage")
+
+    /*
+    Note that this value is only used to check if we are depending on the received etag. This value will not actually
+    be used.
+     */
+    static final String receivedLeaseID = "received"
+
+    static final String garbageLeaseID = UUID.randomUUID().toString()
 
     static SharedKeyCredentials primaryCreds = getGenericCreds("")
 
@@ -91,8 +93,8 @@ class APISpec extends Specification {
 
     static ServiceURL alternateServiceURL = getGenericServiceURL(alternateCreds)
 
-    static CompositeMatchRule getMatchRule() {
-        matchRule = new CompositeMatchRule()
+    static CompositeMatchRule constructMatchRule() {
+        CompositeMatchRule matchRule = new CompositeMatchRule()
         matchRule.addRule(new MatchBody())
         matchRule.addRule(new MatchMethod())
 
@@ -264,7 +266,7 @@ class APISpec extends Specification {
                         new SceneConfiguration(sceneDir, sceneMode, "dummyscene.txt")
                 FlashbackRunner runner = new FlashbackRunner.Builder().host("localhost").port(1234)
                         .mode(sceneMode)
-                        .sceneAccessLayer(new SceneAccessLayer(SceneFactory.create(sceneConfig), getMatchRule()))
+                        .sceneAccessLayer(new SceneAccessLayer(SceneFactory.create(sceneConfig), constructMatchRule()))
                         .build()
                 runner.start()
                 flashbackRunner = runner
