@@ -67,7 +67,7 @@ public class BlobStorageAPITests {
 
         // Currently only the default PipelineOptions are supported.
         PipelineOptions po = new PipelineOptions();
-        HttpClient.Configuration configuration = new HttpClient.Configuration(
+        HttpClientConfiguration configuration = new HttpClientConfiguration(
                 new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)));
         po.client = HttpClient.createDefault();//configuration);
         HttpPipeline pipeline = StorageURL.createPipeline(creds, po);
@@ -426,7 +426,7 @@ public class BlobStorageAPITests {
 
         // Currently only the default PipelineOptions are supported.
         PipelineOptions po = new PipelineOptions();
-        HttpClient.Configuration configuration = new HttpClient.Configuration(
+        HttpClientConfiguration configuration = new HttpClientConfiguration(
                 new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)));
         po.client = HttpClient.createDefault(configuration);
         HttpPipeline pipeline = StorageURL.createPipeline(creds, po);
@@ -505,7 +505,7 @@ public class BlobStorageAPITests {
 
         // Currently only the default PipelineOptions are supported.
         PipelineOptions po = new PipelineOptions();
-        HttpClient.Configuration configuration = new HttpClient.Configuration(
+        HttpClientConfiguration configuration = new HttpClientConfiguration(
                 new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)));
         po.client = HttpClient.createDefault(configuration);
         HttpPipeline pipeline = StorageURL.createPipeline(creds, po);
@@ -555,7 +555,7 @@ public class BlobStorageAPITests {
 
 
             PipelineOptions po = new PipelineOptions();
-            HttpClient.Configuration configuration = new HttpClient.Configuration(
+            HttpClientConfiguration configuration = new HttpClientConfiguration(
                     new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 1234)));
             po.client = HttpClient.createDefault(configuration);
             HttpPipeline pipeline = StorageURL.createPipeline(creds, po);

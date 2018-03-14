@@ -19,6 +19,7 @@ import com.microsoft.azure.storage.blob.StorageURL
 import com.microsoft.azure.storage.models.Container
 import com.microsoft.azure.storage.models.LeaseStateType
 import com.microsoft.rest.v2.http.HttpClient
+import com.microsoft.rest.v2.http.HttpClientConfiguration
 import com.microsoft.rest.v2.http.HttpPipeline
 import org.joda.time.DateTime
 import org.spockframework.lang.ISpecificationContext
@@ -205,11 +206,11 @@ class APISpec extends Specification {
 
         PipelineOptions po = new PipelineOptions()
         if (enableDebugging) {
-            HttpClient.Configuration configuration = new HttpClient.Configuration(
+            HttpClientConfiguration configuration = new HttpClientConfiguration(
                     new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)))
             po.client = HttpClient.createDefault(configuration)
         } else if (enableRecordings) {
-            HttpClient.Configuration configuration = new HttpClient.Configuration(
+            HttpClientConfiguration configuration = new HttpClientConfiguration(
                     new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 1234)))
             po.client = HttpClient.createDefault(configuration)
         }
