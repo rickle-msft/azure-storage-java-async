@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -137,6 +138,9 @@ public final class StorageServiceProperties {
      * @return the cors value.
      */
     public List<CorsRule> cors() {
+        if (this.cors == null) {
+            this.cors = new CorsWrapper(new ArrayList<CorsRule>());
+        }
         return this.cors.items;
     }
 

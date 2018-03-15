@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Defines headers for AppendBlock operation.
@@ -106,7 +106,7 @@ public final class AppendBlobAppendBlockHeaders {
      *
      * @return the lastModified value.
      */
-    public DateTime lastModified() {
+    public OffsetDateTime lastModified() {
         if (this.lastModified == null) {
             return null;
         }
@@ -119,7 +119,7 @@ public final class AppendBlobAppendBlockHeaders {
      * @param lastModified the lastModified value to set.
      * @return the AppendBlobAppendBlockHeaders object itself.
      */
-    public AppendBlobAppendBlockHeaders withLastModified(DateTime lastModified) {
+    public AppendBlobAppendBlockHeaders withLastModified(OffsetDateTime lastModified) {
         if (lastModified == null) {
             this.lastModified = null;
         } else {
@@ -193,7 +193,7 @@ public final class AppendBlobAppendBlockHeaders {
      *
      * @return the dateProperty value.
      */
-    public DateTime dateProperty() {
+    public OffsetDateTime dateProperty() {
         if (this.dateProperty == null) {
             return null;
         }
@@ -206,7 +206,7 @@ public final class AppendBlobAppendBlockHeaders {
      * @param dateProperty the dateProperty value to set.
      * @return the AppendBlobAppendBlockHeaders object itself.
      */
-    public AppendBlobAppendBlockHeaders withDateProperty(DateTime dateProperty) {
+    public AppendBlobAppendBlockHeaders withDateProperty(OffsetDateTime dateProperty) {
         if (dateProperty == null) {
             this.dateProperty = null;
         } else {

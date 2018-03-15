@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Defines headers for SetProperties operation.
@@ -91,7 +91,7 @@ public final class BlobSetPropertiesHeaders {
      *
      * @return the lastModified value.
      */
-    public DateTime lastModified() {
+    public OffsetDateTime lastModified() {
         if (this.lastModified == null) {
             return null;
         }
@@ -104,7 +104,7 @@ public final class BlobSetPropertiesHeaders {
      * @param lastModified the lastModified value to set.
      * @return the BlobSetPropertiesHeaders object itself.
      */
-    public BlobSetPropertiesHeaders withLastModified(DateTime lastModified) {
+    public BlobSetPropertiesHeaders withLastModified(OffsetDateTime lastModified) {
         if (lastModified == null) {
             this.lastModified = null;
         } else {
@@ -178,7 +178,7 @@ public final class BlobSetPropertiesHeaders {
      *
      * @return the dateProperty value.
      */
-    public DateTime dateProperty() {
+    public OffsetDateTime dateProperty() {
         if (this.dateProperty == null) {
             return null;
         }
@@ -191,7 +191,7 @@ public final class BlobSetPropertiesHeaders {
      * @param dateProperty the dateProperty value to set.
      * @return the BlobSetPropertiesHeaders object itself.
      */
-    public BlobSetPropertiesHeaders withDateProperty(DateTime dateProperty) {
+    public BlobSetPropertiesHeaders withDateProperty(OffsetDateTime dateProperty) {
         if (dateProperty == null) {
             this.dateProperty = null;
         } else {

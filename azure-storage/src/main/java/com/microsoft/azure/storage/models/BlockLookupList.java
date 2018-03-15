@@ -10,10 +10,10 @@
 
 package com.microsoft.azure.storage.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,19 +25,19 @@ public final class BlockLookupList {
      * The committed property.
      */
     @JsonProperty("Committed")
-    private List<String> committed;
+    private List<String> committed = new ArrayList<>();
 
     /**
      * The uncommitted property.
      */
     @JsonProperty("Uncommitted")
-    private List<String> uncommitted;
+    private List<String> uncommitted = new ArrayList<>();
 
     /**
      * The latest property.
      */
     @JsonProperty("Latest")
-    private List<String> latest;
+    private List<String> latest = new ArrayList<>();
 
     /**
      * Get the committed value.

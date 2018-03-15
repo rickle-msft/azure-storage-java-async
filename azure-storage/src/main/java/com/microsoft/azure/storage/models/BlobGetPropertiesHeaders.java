@@ -15,8 +15,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
 import com.microsoft.rest.v2.annotations.HeaderCollection;
+import java.time.OffsetDateTime;
 import java.util.Map;
-import org.joda.time.DateTime;
 
 /**
  * Defines headers for GetProperties operation.
@@ -283,7 +283,7 @@ public final class BlobGetPropertiesHeaders {
      *
      * @return the lastModified value.
      */
-    public DateTime lastModified() {
+    public OffsetDateTime lastModified() {
         if (this.lastModified == null) {
             return null;
         }
@@ -296,7 +296,7 @@ public final class BlobGetPropertiesHeaders {
      * @param lastModified the lastModified value to set.
      * @return the BlobGetPropertiesHeaders object itself.
      */
-    public BlobGetPropertiesHeaders withLastModified(DateTime lastModified) {
+    public BlobGetPropertiesHeaders withLastModified(OffsetDateTime lastModified) {
         if (lastModified == null) {
             this.lastModified = null;
         } else {
@@ -350,7 +350,7 @@ public final class BlobGetPropertiesHeaders {
      *
      * @return the copyCompletionTime value.
      */
-    public DateTime copyCompletionTime() {
+    public OffsetDateTime copyCompletionTime() {
         if (this.copyCompletionTime == null) {
             return null;
         }
@@ -363,7 +363,7 @@ public final class BlobGetPropertiesHeaders {
      * @param copyCompletionTime the copyCompletionTime value to set.
      * @return the BlobGetPropertiesHeaders object itself.
      */
-    public BlobGetPropertiesHeaders withCopyCompletionTime(DateTime copyCompletionTime) {
+    public BlobGetPropertiesHeaders withCopyCompletionTime(OffsetDateTime copyCompletionTime) {
         if (copyCompletionTime == null) {
             this.copyCompletionTime = null;
         } else {
@@ -797,7 +797,7 @@ public final class BlobGetPropertiesHeaders {
      *
      * @return the dateProperty value.
      */
-    public DateTime dateProperty() {
+    public OffsetDateTime dateProperty() {
         if (this.dateProperty == null) {
             return null;
         }
@@ -810,7 +810,7 @@ public final class BlobGetPropertiesHeaders {
      * @param dateProperty the dateProperty value to set.
      * @return the BlobGetPropertiesHeaders object itself.
      */
-    public BlobGetPropertiesHeaders withDateProperty(DateTime dateProperty) {
+    public BlobGetPropertiesHeaders withDateProperty(OffsetDateTime dateProperty) {
         if (dateProperty == null) {
             this.dateProperty = null;
         } else {

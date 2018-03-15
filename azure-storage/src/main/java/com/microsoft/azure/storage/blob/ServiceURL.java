@@ -73,7 +73,7 @@ public final class ServiceURL extends StorageURL {
      *      The {@link Single} which emits a {@link RestResponse} containing the {@link ServiceListContainersHeaders} and a
      *      {@link ListContainersResponse} body  if successful.
      */
-    public Single<RestResponse<ServiceListContainersHeaders, ListContainersResponse>> listContainers(
+    public Single<ServiceListContainersResponse> listContainers(
             String marker, ListContainersOptions options) {
         options = options == null ? ListContainersOptions.DEFAULT : options;
         return this.storageClient.services().listContainersWithRestResponseAsync(options.getPrefix(), marker,
@@ -88,7 +88,7 @@ public final class ServiceURL extends StorageURL {
      *      The {@link Single} which emits a {@link RestResponse} containing the {@link ServiceGetPropertiesHeaders} and a
      *      {@link StorageServiceProperties} body if successful.
      */
-    public Single<RestResponse<ServiceGetPropertiesHeaders, StorageServiceProperties>> getProperties() {
+    public Single<ServiceGetPropertiesResponse> getProperties() {
         return this.storageClient.services().getPropertiesWithRestResponseAsync(null, null);
     }
 
@@ -102,7 +102,7 @@ public final class ServiceURL extends StorageURL {
      *      A {@link Single} which emits a {@link RestResponse} containing the {@link ServiceSetPropertiesHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<RestResponse<ServiceSetPropertiesHeaders, Void>> setProperties(
+    public Single<ServiceSetPropertiesResponse> setProperties(
             StorageServiceProperties properties) {
         return this.storageClient.services().setPropertiesWithRestResponseAsync(properties, null,
                 null);
@@ -117,7 +117,7 @@ public final class ServiceURL extends StorageURL {
      *      A {@link Single} which emits a {@link RestResponse} containing the {@link ServiceGetStatsHeaders} and a
      *      {@link StorageServiceStats} body if xssuccessful.
      */
-    public Single<RestResponse<ServiceGetStatsHeaders, StorageServiceStats>> getStats() {
+    public Single<ServiceGetStatsResponse> getStats() {
         return this.storageClient.services().getStatsWithRestResponseAsync(null, null);
     }
 }

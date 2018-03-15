@@ -13,7 +13,7 @@ package com.microsoft.azure.storage.models;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * An Access policy.
@@ -24,13 +24,13 @@ public final class AccessPolicy {
      * the date-time the policy is active.
      */
     @JsonProperty(value = "Start", required = true)
-    private DateTime start;
+    private OffsetDateTime start;
 
     /**
      * the date-time the policy expires.
      */
     @JsonProperty(value = "Expiry", required = true)
-    private DateTime expiry;
+    private OffsetDateTime expiry;
 
     /**
      * the permissions for the acl policy.
@@ -43,7 +43,7 @@ public final class AccessPolicy {
      *
      * @return the start value.
      */
-    public DateTime start() {
+    public OffsetDateTime start() {
         return this.start;
     }
 
@@ -53,7 +53,7 @@ public final class AccessPolicy {
      * @param start the start value to set.
      * @return the AccessPolicy object itself.
      */
-    public AccessPolicy withStart(DateTime start) {
+    public AccessPolicy withStart(OffsetDateTime start) {
         this.start = start;
         return this;
     }
@@ -63,7 +63,7 @@ public final class AccessPolicy {
      *
      * @return the expiry value.
      */
-    public DateTime expiry() {
+    public OffsetDateTime expiry() {
         return this.expiry;
     }
 
@@ -73,7 +73,7 @@ public final class AccessPolicy {
      * @param expiry the expiry value to set.
      * @return the AccessPolicy object itself.
      */
-    public AccessPolicy withExpiry(DateTime expiry) {
+    public AccessPolicy withExpiry(OffsetDateTime expiry) {
         this.expiry = expiry;
         return this;
     }

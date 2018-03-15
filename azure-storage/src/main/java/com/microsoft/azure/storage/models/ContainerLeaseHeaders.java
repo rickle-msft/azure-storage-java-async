@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Defines headers for Lease operation.
@@ -96,7 +96,7 @@ public final class ContainerLeaseHeaders {
      *
      * @return the lastModified value.
      */
-    public DateTime lastModified() {
+    public OffsetDateTime lastModified() {
         if (this.lastModified == null) {
             return null;
         }
@@ -109,7 +109,7 @@ public final class ContainerLeaseHeaders {
      * @param lastModified the lastModified value to set.
      * @return the ContainerLeaseHeaders object itself.
      */
-    public ContainerLeaseHeaders withLastModified(DateTime lastModified) {
+    public ContainerLeaseHeaders withLastModified(OffsetDateTime lastModified) {
         if (lastModified == null) {
             this.lastModified = null;
         } else {
@@ -203,7 +203,7 @@ public final class ContainerLeaseHeaders {
      *
      * @return the dateProperty value.
      */
-    public DateTime dateProperty() {
+    public OffsetDateTime dateProperty() {
         if (this.dateProperty == null) {
             return null;
         }
@@ -216,7 +216,7 @@ public final class ContainerLeaseHeaders {
      * @param dateProperty the dateProperty value to set.
      * @return the ContainerLeaseHeaders object itself.
      */
-    public ContainerLeaseHeaders withDateProperty(DateTime dateProperty) {
+    public ContainerLeaseHeaders withDateProperty(OffsetDateTime dateProperty) {
         if (dateProperty == null) {
             this.dateProperty = null;
         } else {

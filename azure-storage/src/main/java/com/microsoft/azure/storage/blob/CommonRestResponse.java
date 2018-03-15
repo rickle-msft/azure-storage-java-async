@@ -1,10 +1,12 @@
 package com.microsoft.azure.storage.blob;
 
 import com.microsoft.azure.storage.models.BlobPutHeaders;
+import com.microsoft.azure.storage.models.BlobPutResponse;
 import com.microsoft.azure.storage.models.BlockBlobPutBlockListHeaders;
+import com.microsoft.azure.storage.models.BlockBlobPutBlockListResponse;
 import com.microsoft.rest.v2.RestResponse;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * A generic wrapper for any type of blob REST API response. Used and returned by methods in the {@link Highlevel}
@@ -16,14 +18,13 @@ public final class CommonRestResponse {
 
     private RestResponse<BlockBlobPutBlockListHeaders, Void> putBlockListResponse;
 
-    static CommonRestResponse createFromPutBlobResponse(RestResponse<BlobPutHeaders, Void> response) {
+    static CommonRestResponse createFromPutBlobResponse(BlobPutResponse response) {
         CommonRestResponse commonRestResponse = new CommonRestResponse();
         commonRestResponse.putBlobResponse = response;
         return commonRestResponse;
     }
 
-    static CommonRestResponse createFromPutBlockListResponse(
-            RestResponse<BlockBlobPutBlockListHeaders, Void> response) {
+    static CommonRestResponse createFromPutBlockListResponse(BlockBlobPutBlockListResponse response) {
         CommonRestResponse commonRestResponse = new CommonRestResponse();
         commonRestResponse.putBlockListResponse = response;
         return commonRestResponse;
@@ -41,11 +42,11 @@ public final class CommonRestResponse {
         return putBlockListResponse.headers().eTag();
     }
 
-    public Date lastModifiedTime() {
+    public OffsetDateTime lastModifiedTime() {
         if (putBlobResponse != null) {
-            return putBlobResponse.headers().lastModified().toDate(); // TODO: remove toDate
+            return putBlobResponse.headers().lastModified();
         }
-        return putBlockListResponse.headers().lastModified().toDate();
+        return putBlockListResponse.headers().lastModified();
     }
 
     public String requestId() {
@@ -55,11 +56,11 @@ public final class CommonRestResponse {
         return putBlockListResponse.headers().requestId();
     }
 
-    public Date date() {
+    public OffsetDateTime date() {
         if (putBlobResponse != null) {
-            return putBlobResponse.headers().dateProperty().toDate(); // TODO: remove toDate
+            return putBlobResponse.headers().dateProperty();
         }
-        return putBlockListResponse.headers().dateProperty().toDate();
+        return putBlockListResponse.headers().dateProperty();
     }
 
     public String version() {

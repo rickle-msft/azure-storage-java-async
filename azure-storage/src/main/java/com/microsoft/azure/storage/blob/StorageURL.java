@@ -27,8 +27,8 @@ import io.reactivex.Single;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Represents a URL to a Azure storage object.
@@ -144,7 +144,8 @@ public abstract class StorageURL {
 
             @Override
             public Single<HttpResponse> sendAsync(HttpRequest request) {
-                request.headers().set(Constants.HeaderConstants.DATE, Utility.RFC1123GMTDateFormat.format(new Date()));
+                request.headers().set(Constants.HeaderConstants.DATE,
+                        Utility.RFC1123GMTDateFormatter.format(OffsetDateTime.now()));
                 return this.next.sendAsync(request);
             }
         }

@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Properties of a container.
@@ -63,7 +63,7 @@ public final class ContainerProperties {
      *
      * @return the lastModified value.
      */
-    public DateTime lastModified() {
+    public OffsetDateTime lastModified() {
         if (this.lastModified == null) {
             return null;
         }
@@ -76,7 +76,7 @@ public final class ContainerProperties {
      * @param lastModified the lastModified value to set.
      * @return the ContainerProperties object itself.
      */
-    public ContainerProperties withLastModified(DateTime lastModified) {
+    public ContainerProperties withLastModified(OffsetDateTime lastModified) {
         if (lastModified == null) {
             this.lastModified = null;
         } else {

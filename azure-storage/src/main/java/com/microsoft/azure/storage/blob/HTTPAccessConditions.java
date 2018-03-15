@@ -14,9 +14,7 @@
  */
 package com.microsoft.azure.storage.blob;
 
-import org.joda.time.DateTime;
-
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * HTTP Access Conditions.
@@ -29,9 +27,9 @@ public final class HTTPAccessConditions {
     public static final HTTPAccessConditions NONE = new HTTPAccessConditions(null, null,
             null, null);
 
-    private final Date ifModifiedSince;
+    private final OffsetDateTime ifModifiedSince;
 
-    private final Date ifUnmodifiedSince;
+    private final OffsetDateTime ifUnmodifiedSince;
 
     private final ETag ifMatch;
 
@@ -41,38 +39,37 @@ public final class HTTPAccessConditions {
      * Creates a {@link HTTPAccessConditions} object.
      *
      * @param ifModifiedSince
-     *      A {@code java.util.Date} if modified since condition.
+     *      The HTTP If-Modified-Since access condition.
      * @param ifUnmodifiedSince
-     *      A {@code java.util.Date} if unmodified since condition.
+     *      The HTTP If-Unmodified-Since access condition.
      * @param ifMatch
-     *      An {@link ETag} if match condition.
+     *      An ETag for the HTTP If-Match access condition.
      * @param ifNoneMatch
-     *      An {@link ETag} if none match condition.
+     *      An ETag for the HTTP If-None-Match access condition.
      */
-    public HTTPAccessConditions(Date ifModifiedSince, Date ifUnmodifiedSince, ETag ifMatch, ETag ifNoneMatch) {
-        this.ifModifiedSince = ifModifiedSince == null ? null : new Date(ifModifiedSince.getTime());
-        this.ifUnmodifiedSince = ifUnmodifiedSince == null ? null : new Date(ifUnmodifiedSince.getTime());
+    public HTTPAccessConditions(OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, ETag ifMatch,
+                                ETag ifNoneMatch) {
+        this.ifModifiedSince = ifModifiedSince;
+        this.ifUnmodifiedSince = ifUnmodifiedSince;
 
         this.ifMatch = ifMatch == null ? ETag.NONE : ifMatch;
         this.ifNoneMatch = ifNoneMatch == null ? ETag.NONE : ifNoneMatch;
     }
 
-    // TODO: Change to java.util.Date and remove null check
-
     /**
      * @return
      *      If not null, operations will only succeed if the object has been modified since this time.
      */
-    public DateTime getIfModifiedSince() {
-        return ifModifiedSince == null ? null : new DateTime(ifModifiedSince);
+    public OffsetDateTime getIfModifiedSince() {
+        return ifModifiedSince;
     }
 
     /**
      * @return
      *      If not null, operations will only succeed if the object has been unmodified since this time.
      */
-    public DateTime getIfUnmodifiedSince() {
-        return ifUnmodifiedSince == null ? null : new DateTime(ifUnmodifiedSince);
+    public OffsetDateTime getIfUnmodifiedSince() {
+        return ifUnmodifiedSince;
     }
 
     /**

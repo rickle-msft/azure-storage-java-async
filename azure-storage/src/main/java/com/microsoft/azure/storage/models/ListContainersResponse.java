@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -153,6 +154,9 @@ public final class ListContainersResponse {
      * @return the containers value.
      */
     public List<Container> containers() {
+        if (this.containers == null) {
+            this.containers = new ContainersWrapper(new ArrayList<Container>());
+        }
         return this.containers.items;
     }
 

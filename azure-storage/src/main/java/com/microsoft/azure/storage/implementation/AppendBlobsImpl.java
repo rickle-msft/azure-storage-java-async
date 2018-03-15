@@ -11,10 +11,9 @@
 package com.microsoft.azure.storage.implementation;
 
 import com.microsoft.azure.storage.AppendBlobs;
-import com.microsoft.azure.storage.models.AppendBlobAppendBlockHeaders;
+import com.microsoft.azure.storage.models.AppendBlobAppendBlockResponse;
 import com.microsoft.rest.v2.DateTimeRfc1123;
 import com.microsoft.rest.v2.RestProxy;
-import com.microsoft.rest.v2.RestResponse;
 import com.microsoft.rest.v2.ServiceCallback;
 import com.microsoft.rest.v2.ServiceFuture;
 import com.microsoft.rest.v2.annotations.BodyParam;
@@ -29,7 +28,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import java.nio.ByteBuffer;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * An instance of this class provides access to all the operations defined in
@@ -64,7 +63,7 @@ public final class AppendBlobsImpl implements AppendBlobs {
     private interface AppendBlobsService {
         @PUT("{containerName}/{blob}")
         @ExpectedResponses({201})
-        Single<RestResponse<AppendBlobAppendBlockHeaders, Void>> appendBlock(@HostParam("url") String url, @BodyParam("application/xml; charset=utf-8") Flowable<ByteBuffer> body, @QueryParam("timeout") Integer timeout, @HeaderParam("Content-Length") long contentLength, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-blob-condition-maxsize") Integer maxSize, @HeaderParam("x-ms-blob-condition-appendpos") Integer appendPosition, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+        Single<AppendBlobAppendBlockResponse> appendBlock(@HostParam("url") String url, @BodyParam("application/xml; charset=utf-8") Flowable<ByteBuffer> body, @QueryParam("timeout") Integer timeout, @HeaderParam("Content-Length") long contentLength, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-blob-condition-maxsize") Integer maxSize, @HeaderParam("x-ms-blob-condition-appendpos") Integer appendPosition, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
     }
 
     /**
@@ -86,9 +85,9 @@ public final class AppendBlobsImpl implements AppendBlobs {
      * @param contentLength The length of the request.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> appendBlockAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, @NonNull ServiceCallback<Void> serviceCallback) {
+    public ServiceFuture<Void> appendBlockAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, ServiceCallback<Void> serviceCallback) {
         return ServiceFuture.fromBody(appendBlockAsync(body, contentLength), serviceCallback);
     }
 
@@ -98,9 +97,9 @@ public final class AppendBlobsImpl implements AppendBlobs {
      * @param body Initial data.
      * @param contentLength The length of the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;AppendBlobAppendBlockHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    public Single<RestResponse<AppendBlobAppendBlockHeaders, Void>> appendBlockWithRestResponseAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength) {
+    public Single<AppendBlobAppendBlockResponse> appendBlockWithRestResponseAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -115,8 +114,8 @@ public final class AppendBlobsImpl implements AppendBlobs {
         final String leaseId = null;
         final Integer maxSize = null;
         final Integer appendPosition = null;
-        final DateTime ifModifiedSince = null;
-        final DateTime ifUnmodifiedSince = null;
+        final OffsetDateTime ifModifiedSince = null;
+        final OffsetDateTime ifUnmodifiedSince = null;
         final String ifMatches = null;
         final String ifNoneMatch = null;
         final String requestId = null;
@@ -137,7 +136,7 @@ public final class AppendBlobsImpl implements AppendBlobs {
      * @param body Initial data.
      * @param contentLength The length of the request.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     public Completable appendBlockAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength) {
         return appendBlockWithRestResponseAsync(body, contentLength)
@@ -161,7 +160,7 @@ public final class AppendBlobsImpl implements AppendBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void appendBlock(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String leaseId, Integer maxSize, Integer appendPosition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public void appendBlock(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String leaseId, Integer maxSize, Integer appendPosition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         appendBlockAsync(body, contentLength, timeout, leaseId, maxSize, appendPosition, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
     }
 
@@ -181,9 +180,9 @@ public final class AppendBlobsImpl implements AppendBlobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> appendBlockAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String leaseId, Integer maxSize, Integer appendPosition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, @NonNull ServiceCallback<Void> serviceCallback) {
+    public ServiceFuture<Void> appendBlockAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String leaseId, Integer maxSize, Integer appendPosition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
         return ServiceFuture.fromBody(appendBlockAsync(body, contentLength, timeout, leaseId, maxSize, appendPosition, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
     }
 
@@ -202,9 +201,9 @@ public final class AppendBlobsImpl implements AppendBlobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;AppendBlobAppendBlockHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    public Single<RestResponse<AppendBlobAppendBlockHeaders, Void>> appendBlockWithRestResponseAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String leaseId, Integer maxSize, Integer appendPosition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public Single<AppendBlobAppendBlockResponse> appendBlockWithRestResponseAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String leaseId, Integer maxSize, Integer appendPosition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -241,9 +240,9 @@ public final class AppendBlobsImpl implements AppendBlobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    public Completable appendBlockAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String leaseId, Integer maxSize, Integer appendPosition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public Completable appendBlockAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String leaseId, Integer maxSize, Integer appendPosition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         return appendBlockWithRestResponseAsync(body, contentLength, timeout, leaseId, maxSize, appendPosition, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
             .toCompletable();
     }

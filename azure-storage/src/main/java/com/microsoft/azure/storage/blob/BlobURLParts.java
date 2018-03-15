@@ -51,7 +51,7 @@ public final class BlobURLParts {
     public String blobName;
 
     /**
-     * A {@code java.util.Date} representing the snapshot time or {@code null}.
+     * A {@code java.util.OffsetDateTime} representing the snapshot time or {@code null}.
      */
     public String snapshot;
 
@@ -61,7 +61,7 @@ public final class BlobURLParts {
     public SASQueryParameters sasQueryParameters;
 
     /**
-     * A {@code Map&lt;String, String[]&gt;} representing query parameter vey value pairs aside from SAS parameters
+     * A {@code Map<String, String[]>} representing query parameter vey value pairs aside from SAS parameters
      * and snapshot time or {@code null}.
      */
     public Map<String, String[]> unparsedParameters;

@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.Inet4Address;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.util.Date;
+import java.time.OffsetDateTime;
 import java.util.Map;
 
 /**
@@ -35,9 +35,9 @@ public final class SASQueryParameters {
 
     private final SASProtocol protocol;
 
-    private final Date startTime;
+    private final OffsetDateTime startTime;
 
-    private final Date expiryTime;
+    private final OffsetDateTime expiryTime;
 
     private final IPRange ipRange;
 
@@ -83,14 +83,14 @@ public final class SASQueryParameters {
     /**
      * A {@code java.util.Date} representing the start time for this SAS token or {@code null}.
      */
-    public Date getStartTime() {
+    public OffsetDateTime getStartTime() {
         return startTime;
     }
 
     /**
      * A {@code java.util.Date} representing the expiry time for this SAS token.
      */
-    public Date getExpiryTime() {
+    public OffsetDateTime getExpiryTime() {
         return expiryTime;
     }
 
@@ -292,8 +292,8 @@ public final class SASQueryParameters {
      *      A {@code String} representing the signature for the SAS token.
      */
      SASQueryParameters(String version, String services, String resourceTypes, SASProtocol protocol,
-                              Date startTime, Date expiryTime, IPRange ipRange, String identifier,
-                              String resource, String permissions, String signature) {
+                        OffsetDateTime startTime, OffsetDateTime expiryTime, IPRange ipRange, String identifier,
+                        String resource, String permissions, String signature) {
 
         this.version = version;
         this.services = services;
@@ -353,11 +353,11 @@ public final class SASQueryParameters {
                     break;
                 case "st":
                     tryAppendQueryParameter(sb, param,
-                            this.startTime == null ? null : Utility.ISO8601UTCDateFormat.format(this.startTime));
+                            this.startTime == null ? null : Utility.ISO8601UTCDateFormatter.format(this.startTime));
                     break;
                 case "se":
                     tryAppendQueryParameter(sb, param,
-                            this.expiryTime == null ? null : Utility.ISO8601UTCDateFormat.format(this.expiryTime));
+                            this.expiryTime == null ? null : Utility.ISO8601UTCDateFormatter.format(this.expiryTime));
                     break;
                 case "sip":
                     tryAppendQueryParameter(sb, param, this.ipRange);
