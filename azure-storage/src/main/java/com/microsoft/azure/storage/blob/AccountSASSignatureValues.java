@@ -86,9 +86,9 @@ public final class AccountSASSignatureValues {
      * REST request.
      *
      * @param sharedKeyCredentials
-     *      A {@link SharedKeyCredentials} object for the storage account and corresponding primary or secondary key.
+     *      Credentials for the storage account and corresponding primary or secondary key.
      * @return
-     *      A {@link SASQueryParameters} object which contains all SAS query parameters.
+     *      A {@code SASQueryParameters} object which contains all SAS query parameters.
      */
     public SASQueryParameters generateSASQueryParameters(SharedKeyCredentials sharedKeyCredentials) {
         Utility.assertNotNull("SharedKeyCredentials", sharedKeyCredentials);

@@ -54,8 +54,7 @@ public final class AppendBlobAccessConditions {
 
     /**
      * @return
-     *      An {@code Integer} for ensuring that the AppendBlock operation succeeds only if the append position
-     *      is equal to a value.
+     *      Ensures that the AppendBlock operation succeeds only if the append position is equal to the value.
      */
     public Integer getIfAppendPositionEquals() {
         return ifAppendPositionEquals;
@@ -63,8 +62,8 @@ public final class AppendBlobAccessConditions {
 
     /**
      * @return
-     *      An {@code Integer} for ensuring that the AppendBlock operation succeeds only if the append blob's size
-     *      is less than or equal to a value.
+     *      Ensures that the AppendBlock operation succeeds only if the append blob's size is less than or equal to the
+     *      value.
      */
     public Integer getIfMaxSizeLessThanOrEqual() {
         return ifMaxSizeLessThanOrEqual;

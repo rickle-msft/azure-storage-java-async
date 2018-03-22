@@ -48,12 +48,13 @@ public final class AppendBlobURL extends BlobURL {
     public static final int MAX_BLOCKS = 50000;
 
     /**
-     * Creates a new {@link AppendBlobURL} object.
+     * Creates a new {@code AppendBlobURL} object with its own pipeline.
      *
      * @param url
-     *      A {@link URL} to a page blob.
+     *      A {@code URL} to an append blob.
      * @param pipeline
-     *      An {@link HttpPipeline} for sending requests.
+     *      An {@code HttpPipeline} for sending requests. Please refer to {@link StorageURL} for how to generate a
+     *      default pipeline. Pipelines may also be created with custom policies if desired.
      */
     public AppendBlobURL(URL url, HttpPipeline pipeline) {
         super(url, pipeline);
@@ -63,9 +64,9 @@ public final class AppendBlobURL extends BlobURL {
      * Creates a new {@link AppendBlobURL} with the given pipeline.
      *
      * @param pipeline
-     *      An {@link HttpPipeline} object to set.
+     *      An {@code HttpPipeline} object to process HTTP transactions.
      * @return
-     *      An {@link AppendBlobURL} object with the given pipeline.
+     *      An {@code AppendBlobURL} object with the given pipeline.
      */
     public AppendBlobURL withPipeline(HttpPipeline pipeline) {
         try {
@@ -78,7 +79,7 @@ public final class AppendBlobURL extends BlobURL {
     }
 
     /**
-     * Creates a new {@link AppendBlobURL} with the given snapshot.
+     * Creates a new {@code AppendBlobURL} with the given snapshot.
      *
      * @param snapshot
      *      A {@code String} of the snapshot identifier.

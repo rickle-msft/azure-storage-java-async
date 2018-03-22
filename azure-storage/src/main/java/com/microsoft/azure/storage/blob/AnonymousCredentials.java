@@ -38,11 +38,11 @@ public final class AnonymousCredentials implements ICredentials {
      * Creates a new {@code AnonymousCredentialsPolicy}.
      *
      * @param nextRequestPolicy
-     *      The next {@link RequestPolicy} in the pipeline which will be called after this policy completes.
+     *      The next {@code RequestPolicy} in the pipeline which will be called after this policy completes.
      * @param options
      *      Unused.
      * @return
-     *      A {@link RequestPolicy} object to be inserted into the {@link HttpPipeline}.
+     *      A {@code RequestPolicy} object to be inserted into the {@link HttpPipeline}.
      */
     @Override
     public RequestPolicy create(RequestPolicy nextRequestPolicy, RequestPolicyOptions options) {

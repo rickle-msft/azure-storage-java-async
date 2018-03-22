@@ -122,7 +122,7 @@ public final class AccountSASPermission {
      * @param permString
      *      A {@code String} which represents the {@code SharedAccessAccountPermissions}.
      * @return
-     *      A {@code AccountSASPermission} generated from the given {@code String}.
+     *      An {@code AccountSASPermission} object generated from the given {@code String}.
      */
     public static AccountSASPermission parse(String permString) {
         AccountSASPermission permissions = new AccountSASPermission();
