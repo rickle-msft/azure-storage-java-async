@@ -45,7 +45,7 @@ public abstract class StorageURL {
             throw new IllegalArgumentException("pipeline cannot be null.");
         }
 
-        this.storageClient = new StorageClientImpl(pipeline).withVersion("2016-05-31");
+        this.storageClient = new StorageClientImpl(pipeline).withVersion("2017-07-29");
         this.storageClient.withUrl(url.toString());
     }
 

@@ -20,6 +20,7 @@ import com.microsoft.azure.storage.models.ContainerLeaseResponse;
 import com.microsoft.azure.storage.models.ContainerListBlobsResponse;
 import com.microsoft.azure.storage.models.ContainerSetAclResponse;
 import com.microsoft.azure.storage.models.ContainerSetMetadataResponse;
+import com.microsoft.azure.storage.models.ErrorException;
 import com.microsoft.azure.storage.models.LeaseActionType;
 import com.microsoft.azure.storage.models.ListBlobsIncludeItem;
 import com.microsoft.azure.storage.models.ListBlobsResponse;
@@ -40,6 +41,7 @@ import com.microsoft.rest.v2.annotations.Host;
 import com.microsoft.rest.v2.annotations.HostParam;
 import com.microsoft.rest.v2.annotations.PUT;
 import com.microsoft.rest.v2.annotations.QueryParam;
+import com.microsoft.rest.v2.annotations.UnexpectedResponseExceptionType;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
@@ -83,6 +85,7 @@ public final class ContainersImpl implements Containers {
     private interface ContainersService {
         @PUT("{containerName}")
         @ExpectedResponses({201})
+        @UnexpectedResponseExceptionType(ErrorException.class)
         Single<ContainerCreateResponse> create(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-meta-") Map<String, String> metadata, @HeaderParam("x-ms-blob-public-access") PublicAccessType access, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype);
 
         @GET("{containerName}")
@@ -121,6 +124,7 @@ public final class ContainersImpl implements Containers {
     /**
      * creates a new container under the specified account. If the container with the same name already exists, the operation fails.
      *
+     * @throws ErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
     public void create() {
@@ -176,6 +180,7 @@ public final class ContainersImpl implements Containers {
      * @param access Specifies whether data in the container may be accessed publicly and the level of access. Possible values include: 'container', 'blob'.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
     public void create(Integer timeout, Map<String, String> metadata, PublicAccessType access, String requestId) {
@@ -724,6 +729,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the List&lt;SignedIdentifier&gt; object if successful.
      */
@@ -732,6 +739,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
@@ -741,6 +750,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
     public Single<ContainerGetAclResponse> getAclWithRestResponseAsync() {
@@ -759,6 +770,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
     public Maybe<List<SignedIdentifier>> getAclAsync() {
@@ -767,6 +780,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -779,6 +794,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -791,6 +808,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -810,6 +829,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -822,6 +843,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
     public void setAcl() {
@@ -829,6 +852,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
@@ -838,6 +863,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
     public Single<ContainerSetAclResponse> setAclWithRestResponseAsync() {
@@ -868,6 +895,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
     public Completable setAclAsync() {
@@ -876,6 +905,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -891,6 +922,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -907,6 +940,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -939,6 +974,8 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.

@@ -19,6 +19,7 @@ import com.microsoft.azure.storage.models.ContainerLeaseResponse;
 import com.microsoft.azure.storage.models.ContainerListBlobsResponse;
 import com.microsoft.azure.storage.models.ContainerSetAclResponse;
 import com.microsoft.azure.storage.models.ContainerSetMetadataResponse;
+import com.microsoft.azure.storage.models.ErrorException;
 import com.microsoft.azure.storage.models.LeaseActionType;
 import com.microsoft.azure.storage.models.ListBlobsIncludeItem;
 import com.microsoft.azure.storage.models.ListBlobsResponse;
@@ -42,6 +43,7 @@ public interface Containers {
     /**
      * creates a new container under the specified account. If the container with the same name already exists, the operation fails.
      *
+     * @throws ErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
     void create();
@@ -77,6 +79,7 @@ public interface Containers {
      * @param access Specifies whether data in the container may be accessed publicly and the level of access. Possible values include: 'container', 'blob'.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws ErrorException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
     void create(Integer timeout, Map<String, String> metadata, PublicAccessType access, String requestId);
@@ -435,12 +438,16 @@ public interface Containers {
     Completable setMetadataAsync(Integer timeout, String leaseId, Map<String, String> metadata, OffsetDateTime ifModifiedSince, String requestId);
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the List&lt;SignedIdentifier&gt; object if successful.
      */
     List<SignedIdentifier> getAcl();
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
@@ -448,16 +455,22 @@ public interface Containers {
     ServiceFuture<List<SignedIdentifier>> getAclAsync(ServiceCallback<List<SignedIdentifier>> serviceCallback);
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
     Single<ContainerGetAclResponse> getAclWithRestResponseAsync();
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
     Maybe<List<SignedIdentifier>> getAclAsync();
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -468,6 +481,8 @@ public interface Containers {
     List<SignedIdentifier> getAcl(Integer timeout, String leaseId, String requestId);
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -478,6 +493,8 @@ public interface Containers {
     ServiceFuture<List<SignedIdentifier>> getAclAsync(Integer timeout, String leaseId, String requestId, ServiceCallback<List<SignedIdentifier>> serviceCallback);
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -487,6 +504,8 @@ public interface Containers {
     Single<ContainerGetAclResponse> getAclWithRestResponseAsync(Integer timeout, String leaseId, String requestId);
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -496,11 +515,15 @@ public interface Containers {
     Maybe<List<SignedIdentifier>> getAclAsync(Integer timeout, String leaseId, String requestId);
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
     void setAcl();
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
@@ -508,16 +531,22 @@ public interface Containers {
     ServiceFuture<Void> setAclAsync(ServiceCallback<Void> serviceCallback);
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
     Single<ContainerSetAclResponse> setAclWithRestResponseAsync();
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
     Completable setAclAsync();
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -531,6 +560,8 @@ public interface Containers {
     void setAcl(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -545,6 +576,8 @@ public interface Containers {
     ServiceFuture<Void> setAclAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -558,6 +591,8 @@ public interface Containers {
     Single<ContainerSetAclResponse> setAclWithRestResponseAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
