@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Defines headers for AbortCopy operation.
@@ -88,7 +88,7 @@ public final class BlobAbortCopyHeaders {
      *
      * @return the dateProperty value.
      */
-    public DateTime dateProperty() {
+    public OffsetDateTime dateProperty() {
         if (this.dateProperty == null) {
             return null;
         }
@@ -101,7 +101,7 @@ public final class BlobAbortCopyHeaders {
      * @param dateProperty the dateProperty value to set.
      * @return the BlobAbortCopyHeaders object itself.
      */
-    public BlobAbortCopyHeaders withDateProperty(DateTime dateProperty) {
+    public BlobAbortCopyHeaders withDateProperty(OffsetDateTime dateProperty) {
         if (dateProperty == null) {
             this.dateProperty = null;
         } else {

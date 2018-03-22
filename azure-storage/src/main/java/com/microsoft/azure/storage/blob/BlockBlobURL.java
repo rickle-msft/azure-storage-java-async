@@ -115,7 +115,7 @@ public final class BlockBlobURL extends BlobURL {
      *      The {@link Single} which emits a {@link RestResponse} containing the {@link BlobPutHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<RestResponse<BlobPutHeaders, Void>> putBlob(
+    public Single<BlobPutResponse> putBlob(
             Flowable<ByteBuffer> data, long length, BlobHTTPHeaders headers, Metadata metadata,
             BlobAccessConditions accessConditions) {
         headers = headers == null ? BlobHTTPHeaders.NONE : headers;
@@ -150,7 +150,7 @@ public final class BlockBlobURL extends BlobURL {
      *      The {@link Single} which emits a {@link RestResponse} containing the {@link BlockBlobPutBlockHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<RestResponse<BlockBlobPutBlockHeaders, Void>> putBlock(
+    public Single<BlockBlobPutBlockResponse> putBlock(
             String base64BlockID, Flowable<ByteBuffer> data, long length,
             LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
@@ -170,7 +170,7 @@ public final class BlockBlobURL extends BlobURL {
      *      The {@link Single} which emits a {@link RestResponse} containing the {@link BlockBlobGetBlockListHeaders}
      *      and a {@link BlockList} body if successful.
      */
-    public Single<RestResponse<BlockBlobGetBlockListHeaders, BlockList>> getBlockList(
+    public Single<BlockBlobGetBlockListResponse> getBlockList(
             BlockListType listType, LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
         return this.storageClient.blockBlobs().getBlockListWithRestResponseAsync(listType,
@@ -199,7 +199,7 @@ public final class BlockBlobURL extends BlobURL {
      *      and a {@code Void} body if successful.
      */
     // TODO: Add Content-Length to swagger once the modeler knows to hide (or whatever solution).
-    public Single<RestResponse<BlockBlobPutBlockListHeaders, Void>> putBlockList(
+    public Single<BlockBlobPutBlockListResponse> putBlockList(
             List<String> base64BlockIDs, BlobHTTPHeaders headers, Metadata metadata,
             BlobAccessConditions accessConditions) {
         headers = headers == null ? BlobHTTPHeaders.NONE : headers;

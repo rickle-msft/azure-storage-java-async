@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Defines headers for SetMetadata operation.
@@ -84,7 +84,7 @@ public final class ContainerSetMetadataHeaders {
      *
      * @return the lastModified value.
      */
-    public DateTime lastModified() {
+    public OffsetDateTime lastModified() {
         if (this.lastModified == null) {
             return null;
         }
@@ -97,7 +97,7 @@ public final class ContainerSetMetadataHeaders {
      * @param lastModified the lastModified value to set.
      * @return the ContainerSetMetadataHeaders object itself.
      */
-    public ContainerSetMetadataHeaders withLastModified(DateTime lastModified) {
+    public ContainerSetMetadataHeaders withLastModified(OffsetDateTime lastModified) {
         if (lastModified == null) {
             this.lastModified = null;
         } else {
@@ -151,7 +151,7 @@ public final class ContainerSetMetadataHeaders {
      *
      * @return the dateProperty value.
      */
-    public DateTime dateProperty() {
+    public OffsetDateTime dateProperty() {
         if (this.dateProperty == null) {
             return null;
         }
@@ -164,7 +164,7 @@ public final class ContainerSetMetadataHeaders {
      * @param dateProperty the dateProperty value to set.
      * @return the ContainerSetMetadataHeaders object itself.
      */
-    public ContainerSetMetadataHeaders withDateProperty(DateTime dateProperty) {
+    public ContainerSetMetadataHeaders withDateProperty(OffsetDateTime dateProperty) {
         if (dateProperty == null) {
             this.dateProperty = null;
         } else {

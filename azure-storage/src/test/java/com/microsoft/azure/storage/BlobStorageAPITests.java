@@ -15,11 +15,9 @@ import com.microsoft.rest.v2.http.*;
 import com.microsoft.rest.v2.util.FlowableUtil;
 import io.reactivex.Flowable;
 import io.reactivex.functions.BiConsumer;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.InetSocketAddress;
@@ -27,6 +25,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -162,7 +161,7 @@ public class BlobStorageAPITests {
             // Create a reference to a new blob within the same container to upload blocks. Upload a single block.
             BlockBlobURL bu3 = cu.createBlockBlobURL("javablob3");
             ArrayList<String> blockIDs = new ArrayList<>();
-            blockIDs.add(DatatypeConverter.printBase64Binary(new byte[]{0}));
+            blockIDs.add(Base64.getEncoder().encodeToString(new byte[]{0}));
             bu3.putBlock(blockIDs.get(0), Flowable.just(ByteBuffer.wrap(new byte[]{0,0,0})), 3,
                     null).blockingGet();
 
@@ -202,7 +201,7 @@ public class BlobStorageAPITests {
             sas.version = "2016-05-31";
             sas.protocol = SASProtocol.HTTPS_HTTP;
             sas.startTime  = null;
-            sas.expiryTime= DateTime.now().plusDays(1).toDate();
+            sas.expiryTime= OffsetDateTime.now().plusDays(1);
             sas.permissions = perms.toString();
             sas.ipRange = null;
             sas.services = service.toString();
@@ -316,7 +315,11 @@ public class BlobStorageAPITests {
                 System.getenv().get("ACCOUNT_KEY"));
 
         // Currently only the default PipelineOptions are supported.
-        HttpPipeline pipeline = StorageURL.createPipeline(creds, new PipelineOptions());
+        PipelineOptions po = new PipelineOptions();
+        HttpClientConfiguration configuration = new HttpClientConfiguration(
+                new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8888)));
+        po.client = HttpClient.createDefault(configuration);
+        HttpPipeline pipeline = StorageURL.createPipeline(creds, po);
 
         // Create a reference to the service.
         ServiceURL su = new ServiceURL(
@@ -348,7 +351,7 @@ public class BlobStorageAPITests {
 
             // Single shot.
             ByteBuffer data = ByteBuffer.wrap(os.toByteArray());
-            List<ByteBuffer> buffers = Arrays.asList(new ByteBuffer[]{data});
+            List<ByteBuffer> buffers = Arrays.asList(data);
             Highlevel.UploadToBlockBlobOptions options = Highlevel.UploadToBlockBlobOptions.DEFAULT;
             int status = Highlevel.uploadByteBuffersToBlockBlob(buffers, bu, options).blockingGet().response().statusCode();
             assertEquals(201, status);

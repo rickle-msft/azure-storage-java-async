@@ -11,15 +11,14 @@
 package com.microsoft.azure.storage.implementation;
 
 import com.microsoft.azure.storage.BlockBlobs;
-import com.microsoft.azure.storage.models.BlockBlobGetBlockListHeaders;
-import com.microsoft.azure.storage.models.BlockBlobPutBlockHeaders;
-import com.microsoft.azure.storage.models.BlockBlobPutBlockListHeaders;
+import com.microsoft.azure.storage.models.BlockBlobGetBlockListResponse;
+import com.microsoft.azure.storage.models.BlockBlobPutBlockListResponse;
+import com.microsoft.azure.storage.models.BlockBlobPutBlockResponse;
 import com.microsoft.azure.storage.models.BlockList;
 import com.microsoft.azure.storage.models.BlockListType;
 import com.microsoft.azure.storage.models.BlockLookupList;
 import com.microsoft.rest.v2.DateTimeRfc1123;
 import com.microsoft.rest.v2.RestProxy;
-import com.microsoft.rest.v2.RestResponse;
 import com.microsoft.rest.v2.ServiceCallback;
 import com.microsoft.rest.v2.ServiceFuture;
 import com.microsoft.rest.v2.Validator;
@@ -36,11 +35,10 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Function;
 import java.nio.ByteBuffer;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import org.joda.time.DateTime;
 
 /**
  * An instance of this class provides access to all the operations defined in
@@ -75,15 +73,15 @@ public final class BlockBlobsImpl implements BlockBlobs {
     private interface BlockBlobsService {
         @PUT("{containerName}/{blob}")
         @ExpectedResponses({201})
-        Single<RestResponse<BlockBlobPutBlockHeaders, Void>> putBlock(@HostParam("url") String url, @QueryParam("blockid") String blockId, @HeaderParam("Content-Length") long contentLength, @BodyParam("application/octet-stream") Flowable<ByteBuffer> body, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+        Single<BlockBlobPutBlockResponse> putBlock(@HostParam("url") String url, @QueryParam("blockid") String blockId, @HeaderParam("Content-Length") long contentLength, @BodyParam("application/octet-stream") Flowable<ByteBuffer> body, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
 
         @PUT("{containerName}/{blob}")
         @ExpectedResponses({201})
-        Single<RestResponse<BlockBlobPutBlockListHeaders, Void>> putBlockList(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-blob-cache-control") String blobCacheControl, @HeaderParam("x-ms-blob-content-type") String blobContentType, @HeaderParam("x-ms-blob-content-encoding") String blobContentEncoding, @HeaderParam("x-ms-blob-content-language") String blobContentLanguage, @HeaderParam("x-ms-blob-content-md5") String blobContentMD5, @HeaderParam("x-ms-meta-") Map<String, String> metadata, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-blob-content-disposition") String blobContentDisposition, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @BodyParam("application/xml; charset=utf-8") BlockLookupList blocks, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+        Single<BlockBlobPutBlockListResponse> putBlockList(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-blob-cache-control") String blobCacheControl, @HeaderParam("x-ms-blob-content-type") String blobContentType, @HeaderParam("x-ms-blob-content-encoding") String blobContentEncoding, @HeaderParam("x-ms-blob-content-language") String blobContentLanguage, @HeaderParam("x-ms-blob-content-md5") String blobContentMD5, @HeaderParam("x-ms-meta-") Map<String, String> metadata, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-blob-content-disposition") String blobContentDisposition, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @BodyParam("application/xml; charset=utf-8") BlockLookupList blocks, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
 
         @GET("{containerName}/{blob}")
         @ExpectedResponses({200})
-        Single<RestResponse<BlockBlobGetBlockListHeaders, BlockList>> getBlockList(@HostParam("url") String url, @QueryParam("snapshot") String snapshot, @QueryParam("blocklisttype") BlockListType listType, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+        Single<BlockBlobGetBlockListResponse> getBlockList(@HostParam("url") String url, @QueryParam("snapshot") String snapshot, @QueryParam("blocklisttype") BlockListType listType, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
     }
 
     /**
@@ -107,9 +105,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param body Initial data.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, @NonNull ServiceCallback<Void> serviceCallback) {
+    public ServiceFuture<Void> putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, ServiceCallback<Void> serviceCallback) {
         return ServiceFuture.fromBody(putBlockAsync(blockId, contentLength, body), serviceCallback);
     }
 
@@ -120,9 +118,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param contentLength The length of the request.
      * @param body Initial data.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobPutBlockHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    public Single<RestResponse<BlockBlobPutBlockHeaders, Void>> putBlockWithRestResponseAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body) {
+    public Single<BlockBlobPutBlockResponse> putBlockWithRestResponseAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -149,7 +147,7 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param contentLength The length of the request.
      * @param body Initial data.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     public Completable putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body) {
         return putBlockWithRestResponseAsync(blockId, contentLength, body)
@@ -183,9 +181,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, Integer timeout, String leaseId, String requestId, @NonNull ServiceCallback<Void> serviceCallback) {
+    public ServiceFuture<Void> putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, Integer timeout, String leaseId, String requestId, ServiceCallback<Void> serviceCallback) {
         return ServiceFuture.fromBody(putBlockAsync(blockId, contentLength, body, timeout, leaseId, requestId), serviceCallback);
     }
 
@@ -199,9 +197,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobPutBlockHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    public Single<RestResponse<BlockBlobPutBlockHeaders, Void>> putBlockWithRestResponseAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, Integer timeout, String leaseId, String requestId) {
+    public Single<BlockBlobPutBlockResponse> putBlockWithRestResponseAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, Integer timeout, String leaseId, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -228,7 +226,7 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     public Completable putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, Integer timeout, String leaseId, String requestId) {
         return putBlockWithRestResponseAsync(blockId, contentLength, body, timeout, leaseId, requestId)
@@ -252,9 +250,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param blocks the BlockLookupList value.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> putBlockListAsync(@NonNull BlockLookupList blocks, @NonNull ServiceCallback<Void> serviceCallback) {
+    public ServiceFuture<Void> putBlockListAsync(@NonNull BlockLookupList blocks, ServiceCallback<Void> serviceCallback) {
         return ServiceFuture.fromBody(putBlockListAsync(blocks), serviceCallback);
     }
 
@@ -263,9 +261,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      *
      * @param blocks the BlockLookupList value.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobPutBlockListHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    public Single<RestResponse<BlockBlobPutBlockListHeaders, Void>> putBlockListWithRestResponseAsync(@NonNull BlockLookupList blocks) {
+    public Single<BlockBlobPutBlockListResponse> putBlockListWithRestResponseAsync(@NonNull BlockLookupList blocks) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -286,8 +284,8 @@ public final class BlockBlobsImpl implements BlockBlobs {
         final Map<String, String> metadata = null;
         final String leaseId = null;
         final String blobContentDisposition = null;
-        final DateTime ifModifiedSince = null;
-        final DateTime ifUnmodifiedSince = null;
+        final OffsetDateTime ifModifiedSince = null;
+        final OffsetDateTime ifUnmodifiedSince = null;
         final String ifMatches = null;
         final String ifNoneMatch = null;
         final String requestId = null;
@@ -307,7 +305,7 @@ public final class BlockBlobsImpl implements BlockBlobs {
      *
      * @param blocks the BlockLookupList value.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     public Completable putBlockListAsync(@NonNull BlockLookupList blocks) {
         return putBlockListWithRestResponseAsync(blocks)
@@ -335,7 +333,7 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void putBlockList(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public void putBlockList(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         putBlockListAsync(blocks, timeout, blobCacheControl, blobContentType, blobContentEncoding, blobContentLanguage, blobContentMD5, metadata, leaseId, blobContentDisposition, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
     }
 
@@ -359,9 +357,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> putBlockListAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, @NonNull ServiceCallback<Void> serviceCallback) {
+    public ServiceFuture<Void> putBlockListAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
         return ServiceFuture.fromBody(putBlockListAsync(blocks, timeout, blobCacheControl, blobContentType, blobContentEncoding, blobContentLanguage, blobContentMD5, metadata, leaseId, blobContentDisposition, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
     }
 
@@ -384,9 +382,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobPutBlockListHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    public Single<RestResponse<BlockBlobPutBlockListHeaders, Void>> putBlockListWithRestResponseAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public Single<BlockBlobPutBlockListResponse> putBlockListWithRestResponseAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -429,9 +427,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    public Completable putBlockListAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public Completable putBlockListAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         return putBlockListWithRestResponseAsync(blocks, timeout, blobCacheControl, blobContentType, blobContentEncoding, blobContentLanguage, blobContentMD5, metadata, leaseId, blobContentDisposition, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
             .toCompletable();
     }
@@ -454,9 +452,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param listType Specifies whether to return the list of committed blocks, the list of uncommitted blocks, or both lists together. Possible values include: 'committed', 'uncommitted', 'all'.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;BlockList&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<BlockList> getBlockListAsync(@NonNull BlockListType listType, @NonNull ServiceCallback<BlockList> serviceCallback) {
+    public ServiceFuture<BlockList> getBlockListAsync(@NonNull BlockListType listType, ServiceCallback<BlockList> serviceCallback) {
         return ServiceFuture.fromBody(getBlockListAsync(listType), serviceCallback);
     }
 
@@ -465,9 +463,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      *
      * @param listType Specifies whether to return the list of committed blocks, the list of uncommitted blocks, or both lists together. Possible values include: 'committed', 'uncommitted', 'all'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobGetBlockListHeaders, BlockList&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    public Single<RestResponse<BlockBlobGetBlockListHeaders, BlockList>> getBlockListWithRestResponseAsync(@NonNull BlockListType listType) {
+    public Single<BlockBlobGetBlockListResponse> getBlockListWithRestResponseAsync(@NonNull BlockListType listType) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -490,19 +488,11 @@ public final class BlockBlobsImpl implements BlockBlobs {
      *
      * @param listType Specifies whether to return the list of committed blocks, the list of uncommitted blocks, or both lists together. Possible values include: 'committed', 'uncommitted', 'all'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Maybe&lt;BlockList&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     public Maybe<BlockList> getBlockListAsync(@NonNull BlockListType listType) {
         return getBlockListWithRestResponseAsync(listType)
-            .flatMapMaybe(new Function<RestResponse<BlockBlobGetBlockListHeaders, BlockList>, Maybe<BlockList>>() {
-                public Maybe<BlockList> apply(RestResponse<BlockBlobGetBlockListHeaders, BlockList> restResponse) {
-                    if (restResponse.body() == null) {
-                        return Maybe.empty();
-                    } else {
-                        return Maybe.just(restResponse.body());
-                    }
-                }
-            });
+            .flatMapMaybe((BlockBlobGetBlockListResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 
     /**
@@ -531,9 +521,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;BlockList&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<BlockList> getBlockListAsync(@NonNull BlockListType listType, String snapshot, Integer timeout, String leaseId, String requestId, @NonNull ServiceCallback<BlockList> serviceCallback) {
+    public ServiceFuture<BlockList> getBlockListAsync(@NonNull BlockListType listType, String snapshot, Integer timeout, String leaseId, String requestId, ServiceCallback<BlockList> serviceCallback) {
         return ServiceFuture.fromBody(getBlockListAsync(listType, snapshot, timeout, leaseId, requestId), serviceCallback);
     }
 
@@ -546,9 +536,9 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobGetBlockListHeaders, BlockList&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    public Single<RestResponse<BlockBlobGetBlockListHeaders, BlockList>> getBlockListWithRestResponseAsync(@NonNull BlockListType listType, String snapshot, Integer timeout, String leaseId, String requestId) {
+    public Single<BlockBlobGetBlockListResponse> getBlockListWithRestResponseAsync(@NonNull BlockListType listType, String snapshot, Integer timeout, String leaseId, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -571,18 +561,10 @@ public final class BlockBlobsImpl implements BlockBlobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Maybe&lt;BlockList&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     public Maybe<BlockList> getBlockListAsync(@NonNull BlockListType listType, String snapshot, Integer timeout, String leaseId, String requestId) {
         return getBlockListWithRestResponseAsync(listType, snapshot, timeout, leaseId, requestId)
-            .flatMapMaybe(new Function<RestResponse<BlockBlobGetBlockListHeaders, BlockList>, Maybe<BlockList>>() {
-                public Maybe<BlockList> apply(RestResponse<BlockBlobGetBlockListHeaders, BlockList> restResponse) {
-                    if (restResponse.body() == null) {
-                        return Maybe.empty();
-                    } else {
-                        return Maybe.just(restResponse.body());
-                    }
-                }
-            });
+            .flatMapMaybe((BlockBlobGetBlockListResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 }

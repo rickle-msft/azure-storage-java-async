@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Defines headers for IncrementalCopy operation.
@@ -99,7 +99,7 @@ public final class PageBlobIncrementalCopyHeaders {
      *
      * @return the lastModified value.
      */
-    public DateTime lastModified() {
+    public OffsetDateTime lastModified() {
         if (this.lastModified == null) {
             return null;
         }
@@ -112,7 +112,7 @@ public final class PageBlobIncrementalCopyHeaders {
      * @param lastModified the lastModified value to set.
      * @return the PageBlobIncrementalCopyHeaders object itself.
      */
-    public PageBlobIncrementalCopyHeaders withLastModified(DateTime lastModified) {
+    public PageBlobIncrementalCopyHeaders withLastModified(OffsetDateTime lastModified) {
         if (lastModified == null) {
             this.lastModified = null;
         } else {
@@ -166,7 +166,7 @@ public final class PageBlobIncrementalCopyHeaders {
      *
      * @return the dateProperty value.
      */
-    public DateTime dateProperty() {
+    public OffsetDateTime dateProperty() {
         if (this.dateProperty == null) {
             return null;
         }
@@ -179,7 +179,7 @@ public final class PageBlobIncrementalCopyHeaders {
      * @param dateProperty the dateProperty value to set.
      * @return the PageBlobIncrementalCopyHeaders object itself.
      */
-    public PageBlobIncrementalCopyHeaders withDateProperty(DateTime dateProperty) {
+    public PageBlobIncrementalCopyHeaders withDateProperty(OffsetDateTime dateProperty) {
         if (dateProperty == null) {
             this.dateProperty = null;
         } else {

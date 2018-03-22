@@ -10,10 +10,10 @@
 
 package com.microsoft.azure.storage.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,13 +25,13 @@ public final class Blobs {
      * The blobPrefix property.
      */
     @JsonProperty("BlobPrefix")
-    private List<BlobPrefix> blobPrefix;
+    private List<BlobPrefix> blobPrefix = new ArrayList<>();
 
     /**
      * The blob property.
      */
     @JsonProperty("Blob")
-    private List<Blob> blob;
+    private List<Blob> blob = new ArrayList<>();
 
     /**
      * Get the blobPrefix value.

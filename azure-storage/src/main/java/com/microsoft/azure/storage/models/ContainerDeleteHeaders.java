@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Defines headers for Delete operation.
@@ -88,7 +88,7 @@ public final class ContainerDeleteHeaders {
      *
      * @return the dateProperty value.
      */
-    public DateTime dateProperty() {
+    public OffsetDateTime dateProperty() {
         if (this.dateProperty == null) {
             return null;
         }
@@ -101,7 +101,7 @@ public final class ContainerDeleteHeaders {
      * @param dateProperty the dateProperty value to set.
      * @return the ContainerDeleteHeaders object itself.
      */
-    public ContainerDeleteHeaders withDateProperty(DateTime dateProperty) {
+    public ContainerDeleteHeaders withDateProperty(OffsetDateTime dateProperty) {
         if (dateProperty == null) {
             this.dateProperty = null;
         } else {

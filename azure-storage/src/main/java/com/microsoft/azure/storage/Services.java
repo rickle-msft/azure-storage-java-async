@@ -12,13 +12,12 @@ package com.microsoft.azure.storage;
 
 import com.microsoft.azure.storage.models.ListContainersIncludeType;
 import com.microsoft.azure.storage.models.ListContainersResponse;
-import com.microsoft.azure.storage.models.ServiceGetPropertiesHeaders;
-import com.microsoft.azure.storage.models.ServiceGetStatsHeaders;
-import com.microsoft.azure.storage.models.ServiceListContainersHeaders;
-import com.microsoft.azure.storage.models.ServiceSetPropertiesHeaders;
+import com.microsoft.azure.storage.models.ServiceGetPropertiesResponse;
+import com.microsoft.azure.storage.models.ServiceGetStatsResponse;
+import com.microsoft.azure.storage.models.ServiceListContainersResponse;
+import com.microsoft.azure.storage.models.ServiceSetPropertiesResponse;
 import com.microsoft.azure.storage.models.StorageServiceProperties;
 import com.microsoft.azure.storage.models.StorageServiceStats;
-import com.microsoft.rest.v2.RestResponse;
 import com.microsoft.rest.v2.ServiceCallback;
 import com.microsoft.rest.v2.ServiceFuture;
 import io.reactivex.Completable;
@@ -46,25 +45,25 @@ public interface Services {
      * @param storageServiceProperties The StorageService properties.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setPropertiesAsync(@NonNull StorageServiceProperties storageServiceProperties, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setPropertiesAsync(@NonNull StorageServiceProperties storageServiceProperties, ServiceCallback<Void> serviceCallback);
 
     /**
      * Sets properties for a storage account's Blob service endpoint, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.
      *
      * @param storageServiceProperties The StorageService properties.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ServiceSetPropertiesHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ServiceSetPropertiesHeaders, Void>> setPropertiesWithRestResponseAsync(@NonNull StorageServiceProperties storageServiceProperties);
+    Single<ServiceSetPropertiesResponse> setPropertiesWithRestResponseAsync(@NonNull StorageServiceProperties storageServiceProperties);
 
     /**
      * Sets properties for a storage account's Blob service endpoint, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.
      *
      * @param storageServiceProperties The StorageService properties.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable setPropertiesAsync(@NonNull StorageServiceProperties storageServiceProperties);
 
@@ -87,9 +86,9 @@ public interface Services {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setPropertiesAsync(@NonNull StorageServiceProperties storageServiceProperties, Integer timeout, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setPropertiesAsync(@NonNull StorageServiceProperties storageServiceProperties, Integer timeout, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * Sets properties for a storage account's Blob service endpoint, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.
@@ -98,9 +97,9 @@ public interface Services {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ServiceSetPropertiesHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ServiceSetPropertiesHeaders, Void>> setPropertiesWithRestResponseAsync(@NonNull StorageServiceProperties storageServiceProperties, Integer timeout, String requestId);
+    Single<ServiceSetPropertiesResponse> setPropertiesWithRestResponseAsync(@NonNull StorageServiceProperties storageServiceProperties, Integer timeout, String requestId);
 
     /**
      * Sets properties for a storage account's Blob service endpoint, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.
@@ -109,7 +108,7 @@ public interface Services {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable setPropertiesAsync(@NonNull StorageServiceProperties storageServiceProperties, Integer timeout, String requestId);
 
@@ -126,21 +125,21 @@ public interface Services {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;StorageServiceProperties&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<StorageServiceProperties> getPropertiesAsync(@NonNull ServiceCallback<StorageServiceProperties> serviceCallback);
+    ServiceFuture<StorageServiceProperties> getPropertiesAsync(ServiceCallback<StorageServiceProperties> serviceCallback);
 
     /**
      * gets the properties of a storage account's Blob service, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.
      *
-     * @return the {@link Single&lt;RestResponse&lt;ServiceGetPropertiesHeaders, StorageServiceProperties&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ServiceGetPropertiesHeaders, StorageServiceProperties>> getPropertiesWithRestResponseAsync();
+    Single<ServiceGetPropertiesResponse> getPropertiesWithRestResponseAsync();
 
     /**
      * gets the properties of a storage account's Blob service, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.
      *
-     * @return the {@link Maybe&lt;StorageServiceProperties&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<StorageServiceProperties> getPropertiesAsync();
 
@@ -162,9 +161,9 @@ public interface Services {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;StorageServiceProperties&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<StorageServiceProperties> getPropertiesAsync(Integer timeout, String requestId, @NonNull ServiceCallback<StorageServiceProperties> serviceCallback);
+    ServiceFuture<StorageServiceProperties> getPropertiesAsync(Integer timeout, String requestId, ServiceCallback<StorageServiceProperties> serviceCallback);
 
     /**
      * gets the properties of a storage account's Blob service, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.
@@ -172,9 +171,9 @@ public interface Services {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ServiceGetPropertiesHeaders, StorageServiceProperties&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ServiceGetPropertiesHeaders, StorageServiceProperties>> getPropertiesWithRestResponseAsync(Integer timeout, String requestId);
+    Single<ServiceGetPropertiesResponse> getPropertiesWithRestResponseAsync(Integer timeout, String requestId);
 
     /**
      * gets the properties of a storage account's Blob service, including properties for Storage Analytics and CORS (Cross-Origin Resource Sharing) rules.
@@ -182,7 +181,7 @@ public interface Services {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Maybe&lt;StorageServiceProperties&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<StorageServiceProperties> getPropertiesAsync(Integer timeout, String requestId);
 
@@ -199,21 +198,21 @@ public interface Services {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;StorageServiceStats&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<StorageServiceStats> getStatsAsync(@NonNull ServiceCallback<StorageServiceStats> serviceCallback);
+    ServiceFuture<StorageServiceStats> getStatsAsync(ServiceCallback<StorageServiceStats> serviceCallback);
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
      *
-     * @return the {@link Single&lt;RestResponse&lt;ServiceGetStatsHeaders, StorageServiceStats&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ServiceGetStatsHeaders, StorageServiceStats>> getStatsWithRestResponseAsync();
+    Single<ServiceGetStatsResponse> getStatsWithRestResponseAsync();
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
      *
-     * @return the {@link Maybe&lt;StorageServiceStats&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<StorageServiceStats> getStatsAsync();
 
@@ -235,9 +234,9 @@ public interface Services {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;StorageServiceStats&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<StorageServiceStats> getStatsAsync(Integer timeout, String requestId, @NonNull ServiceCallback<StorageServiceStats> serviceCallback);
+    ServiceFuture<StorageServiceStats> getStatsAsync(Integer timeout, String requestId, ServiceCallback<StorageServiceStats> serviceCallback);
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
@@ -245,9 +244,9 @@ public interface Services {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ServiceGetStatsHeaders, StorageServiceStats&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ServiceGetStatsHeaders, StorageServiceStats>> getStatsWithRestResponseAsync(Integer timeout, String requestId);
+    Single<ServiceGetStatsResponse> getStatsWithRestResponseAsync(Integer timeout, String requestId);
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
@@ -255,7 +254,7 @@ public interface Services {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Maybe&lt;StorageServiceStats&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<StorageServiceStats> getStatsAsync(Integer timeout, String requestId);
 
@@ -272,21 +271,21 @@ public interface Services {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;ListContainersResponse&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<ListContainersResponse> listContainersAsync(@NonNull ServiceCallback<ListContainersResponse> serviceCallback);
+    ServiceFuture<ListContainersResponse> listContainersAsync(ServiceCallback<ListContainersResponse> serviceCallback);
 
     /**
      * The List Containers operation returns a list of the containers under the specified account.
      *
-     * @return the {@link Single&lt;RestResponse&lt;ServiceListContainersHeaders, ListContainersResponse&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ServiceListContainersHeaders, ListContainersResponse>> listContainersWithRestResponseAsync();
+    Single<ServiceListContainersResponse> listContainersWithRestResponseAsync();
 
     /**
      * The List Containers operation returns a list of the containers under the specified account.
      *
-     * @return the {@link Maybe&lt;ListContainersResponse&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<ListContainersResponse> listContainersAsync();
 
@@ -316,9 +315,9 @@ public interface Services {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;ListContainersResponse&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<ListContainersResponse> listContainersAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId, @NonNull ServiceCallback<ListContainersResponse> serviceCallback);
+    ServiceFuture<ListContainersResponse> listContainersAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId, ServiceCallback<ListContainersResponse> serviceCallback);
 
     /**
      * The List Containers operation returns a list of the containers under the specified account.
@@ -330,9 +329,9 @@ public interface Services {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ServiceListContainersHeaders, ListContainersResponse&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ServiceListContainersHeaders, ListContainersResponse>> listContainersWithRestResponseAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId);
+    Single<ServiceListContainersResponse> listContainersWithRestResponseAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId);
 
     /**
      * The List Containers operation returns a list of the containers under the specified account.
@@ -344,7 +343,7 @@ public interface Services {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Maybe&lt;ListContainersResponse&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<ListContainersResponse> listContainersAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId);
 }

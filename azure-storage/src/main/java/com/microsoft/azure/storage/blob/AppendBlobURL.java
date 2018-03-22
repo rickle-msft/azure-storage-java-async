@@ -14,9 +14,7 @@
  */
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.AppendBlobAppendBlockHeaders;
-import com.microsoft.azure.storage.models.BlobType;
-import com.microsoft.azure.storage.models.BlobPutHeaders;
+import com.microsoft.azure.storage.models.*;
 import com.microsoft.rest.v2.RestResponse;
 import com.microsoft.rest.v2.http.HttpPipeline;
 import io.reactivex.Flowable;
@@ -107,7 +105,7 @@ public final class AppendBlobURL extends BlobURL {
      *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobPutHeaders} and {@code Void}
      *      body if successful.
      */
-    public Single<RestResponse<BlobPutHeaders, Void>> create(
+    public Single<BlobPutResponse> create(
             BlobHTTPHeaders headers, Metadata metadata, BlobAccessConditions accessConditions) {
         headers = headers == null ? BlobHTTPHeaders.NONE : headers;
         metadata = metadata == null ? Metadata.NONE : metadata;
@@ -140,7 +138,7 @@ public final class AppendBlobURL extends BlobURL {
      *      The {@link Single} which emits the {@link RestResponse} object containing the {@link AppendBlobAppendBlockHeaders}
      *      and {@code Void} body if successful.
      */
-    public Single<RestResponse<AppendBlobAppendBlockHeaders, Void>> appendBlock(
+    public Single<AppendBlobAppendBlockResponse> appendBlock(
             Flowable<ByteBuffer> data, long length, BlobAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
 

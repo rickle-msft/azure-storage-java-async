@@ -109,7 +109,7 @@ public final class PageBlobURL extends BlobURL {
      *       The {@link Single} which emits a {@link RestResponse} containing the {@link BlobPutHeaders} and a {@code Void}
      *       body if successful.
      */
-    public Single<RestResponse<BlobPutHeaders, Void>> create(
+    public Single<BlobPutResponse> create(
             long size, Long sequenceNumber, BlobHTTPHeaders headers, Metadata metadata,
             BlobAccessConditions accessConditions) {
         if (size%PageBlobURL.PAGE_BYTES != 0) {
@@ -154,7 +154,7 @@ public final class PageBlobURL extends BlobURL {
      *      A {@link Single} which emits a {@link RestResponse} containing the {@link PageBlobPutPageHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<RestResponse<PageBlobPutPageHeaders, Void>> putPages(
+    public Single<PageBlobPutPageResponse> putPages(
             PageRange pageRange, Flowable<ByteBuffer> body, BlobAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
         if (pageRange == null) {
@@ -189,7 +189,7 @@ public final class PageBlobURL extends BlobURL {
      *      A {@link Single} which emits a {@link RestResponse} containing the {@link PageBlobPutPageHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<RestResponse<PageBlobPutPageHeaders, Void>> clearPages(
+    public Single<PageBlobPutPageResponse> clearPages(
             PageRange pageRange, BlobAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
         if (pageRange == null) {
@@ -224,7 +224,7 @@ public final class PageBlobURL extends BlobURL {
      *      A {@link Single} which emits a {@link RestResponse} containing the {@link PageBlobGetPageRangesHeaders} and
      *      a {@link PageList} body if successful.
      */
-    public Single<RestResponse<PageBlobGetPageRangesHeaders, PageList>> getPageRanges(
+    public Single<PageBlobGetPageRangesResponse> getPageRanges(
             BlobRange blobRange, BlobAccessConditions accessConditions) {
         blobRange = blobRange == null ? BlobRange.DEFAULT : blobRange;
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
@@ -255,7 +255,7 @@ public final class PageBlobURL extends BlobURL {
      *      The {@link Single} which emits a {@link RestResponse} containing the {@link PageBlobGetPageRangesHeaders} and a
      *      {@link PageList} body if successful.
      */
-    public Single<RestResponse<PageBlobGetPageRangesHeaders, PageList>> getPageRangesDiff(
+    public Single<PageBlobGetPageRangesResponse> getPageRangesDiff(
             BlobRange blobRange, String prevSnapshot, BlobAccessConditions accessConditions) {
         blobRange = blobRange == null ? BlobRange.DEFAULT : blobRange;
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
@@ -283,7 +283,7 @@ public final class PageBlobURL extends BlobURL {
      *      The {@link Single} which emits a {@link RestResponse} containing the {@link BlobSetPropertiesHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<RestResponse<BlobSetPropertiesHeaders, Void>> resize(
+    public Single<BlobSetPropertiesResponse> resize(
             long size, BlobAccessConditions accessConditions) {
         if (size%PageBlobURL.PAGE_BYTES != 0) {
             // Throwing is preferred to Single.error because this will error out immediately instead of waiting until
@@ -319,7 +319,7 @@ public final class PageBlobURL extends BlobURL {
      *      The {@link Single} which emits a {@link RestResponse} containing the {@link BlobSetPropertiesHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<RestResponse<BlobSetPropertiesHeaders, Void>> setSequenceNumber(
+    public Single<BlobSetPropertiesResponse> setSequenceNumber(
             SequenceNumberActionType action, Long sequenceNumber, BlobHTTPHeaders headers,
             BlobAccessConditions accessConditions) {
         if (sequenceNumber != null && sequenceNumber < 0) {
@@ -364,7 +364,7 @@ public final class PageBlobURL extends BlobURL {
      *      A {@link Single} which emits a {@link RestResponse} containing the {@link PageBlobIncrementalCopyHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<RestResponse<PageBlobIncrementalCopyHeaders, Void>> startIncrementalCopy(
+    public Single<PageBlobIncrementalCopyResponse> startIncrementalCopy(
             URL source, String snapshot, BlobAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
 

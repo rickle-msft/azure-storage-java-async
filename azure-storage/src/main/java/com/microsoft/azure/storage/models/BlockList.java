@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,6 +60,9 @@ public final class BlockList {
      * @return the committedBlocks value.
      */
     public List<Block> committedBlocks() {
+        if (this.committedBlocks == null) {
+            this.committedBlocks = new CommittedBlocksWrapper(new ArrayList<Block>());
+        }
         return this.committedBlocks.items;
     }
 
@@ -79,6 +83,9 @@ public final class BlockList {
      * @return the uncommittedBlocks value.
      */
     public List<Block> uncommittedBlocks() {
+        if (this.uncommittedBlocks == null) {
+            this.uncommittedBlocks = new UncommittedBlocksWrapper(new ArrayList<Block>());
+        }
         return this.uncommittedBlocks.items;
     }
 

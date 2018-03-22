@@ -11,24 +11,23 @@
 package com.microsoft.azure.storage;
 
 import com.microsoft.azure.storage.models.AccessTier;
-import com.microsoft.azure.storage.models.BlobAbortCopyHeaders;
-import com.microsoft.azure.storage.models.BlobCopyHeaders;
-import com.microsoft.azure.storage.models.BlobDeleteHeaders;
-import com.microsoft.azure.storage.models.BlobGetHeaders;
-import com.microsoft.azure.storage.models.BlobGetMetadataHeaders;
-import com.microsoft.azure.storage.models.BlobGetPropertiesHeaders;
-import com.microsoft.azure.storage.models.BlobLeaseHeaders;
-import com.microsoft.azure.storage.models.BlobPutHeaders;
-import com.microsoft.azure.storage.models.BlobSetBlobTierHeaders;
-import com.microsoft.azure.storage.models.BlobSetMetadataHeaders;
-import com.microsoft.azure.storage.models.BlobSetPropertiesHeaders;
-import com.microsoft.azure.storage.models.BlobTakeSnapshotHeaders;
+import com.microsoft.azure.storage.models.BlobAbortCopyResponse;
+import com.microsoft.azure.storage.models.BlobCopyResponse;
+import com.microsoft.azure.storage.models.BlobDeleteResponse;
+import com.microsoft.azure.storage.models.BlobGetMetadataResponse;
+import com.microsoft.azure.storage.models.BlobGetPropertiesResponse;
+import com.microsoft.azure.storage.models.BlobGetResponse;
+import com.microsoft.azure.storage.models.BlobLeaseResponse;
+import com.microsoft.azure.storage.models.BlobPutResponse;
+import com.microsoft.azure.storage.models.BlobSetBlobTierResponse;
+import com.microsoft.azure.storage.models.BlobSetMetadataResponse;
+import com.microsoft.azure.storage.models.BlobSetPropertiesResponse;
+import com.microsoft.azure.storage.models.BlobTakeSnapshotResponse;
 import com.microsoft.azure.storage.models.BlobType;
-import com.microsoft.azure.storage.models.BlobUndeleteHeaders;
+import com.microsoft.azure.storage.models.BlobUndeleteResponse;
 import com.microsoft.azure.storage.models.DeleteSnapshotsOptionType;
 import com.microsoft.azure.storage.models.LeaseActionType;
 import com.microsoft.azure.storage.models.SequenceNumberActionType;
-import com.microsoft.rest.v2.RestResponse;
 import com.microsoft.rest.v2.ServiceCallback;
 import com.microsoft.rest.v2.ServiceFuture;
 import io.reactivex.Completable;
@@ -38,8 +37,8 @@ import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.time.OffsetDateTime;
 import java.util.Map;
-import org.joda.time.DateTime;
 
 /**
  * An instance of this class provides access to all the operations defined in
@@ -59,21 +58,21 @@ public interface Blobs {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Flowable&lt;ByteBuffer&gt;&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Flowable<ByteBuffer>> getAsync(@NonNull ServiceCallback<Flowable<ByteBuffer>> serviceCallback);
+    ServiceFuture<Flowable<ByteBuffer>> getAsync(ServiceCallback<Flowable<ByteBuffer>> serviceCallback);
 
     /**
      * The Get Blob operation reads or downloads a blob from the system, including its metadata and properties. You can also call Get Blob to read a snapshot.
      *
-     * @return the {@link Single&lt;RestResponse&lt;BlobGetHeaders, Flowable&lt;ByteBuffer&gt;&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobGetHeaders, Flowable<ByteBuffer>>> getWithRestResponseAsync();
+    Single<BlobGetResponse> getWithRestResponseAsync();
 
     /**
      * The Get Blob operation reads or downloads a blob from the system, including its metadata and properties. You can also call Get Blob to read a snapshot.
      *
-     * @return the {@link Maybe&lt;Flowable&lt;ByteBuffer&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<Flowable<ByteBuffer>> getAsync();
 
@@ -94,7 +93,7 @@ public interface Blobs {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the Flowable&lt;ByteBuffer&gt; object if successful.
      */
-    Flowable<ByteBuffer> get(String snapshot, Integer timeout, String range, String leaseId, Boolean rangeGetContentMD5, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Flowable<ByteBuffer> get(String snapshot, Integer timeout, String range, String leaseId, Boolean rangeGetContentMD5, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Get Blob operation reads or downloads a blob from the system, including its metadata and properties. You can also call Get Blob to read a snapshot.
@@ -111,9 +110,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Flowable&lt;ByteBuffer&gt;&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Flowable<ByteBuffer>> getAsync(String snapshot, Integer timeout, String range, String leaseId, Boolean rangeGetContentMD5, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, @NonNull ServiceCallback<Flowable<ByteBuffer>> serviceCallback);
+    ServiceFuture<Flowable<ByteBuffer>> getAsync(String snapshot, Integer timeout, String range, String leaseId, Boolean rangeGetContentMD5, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Flowable<ByteBuffer>> serviceCallback);
 
     /**
      * The Get Blob operation reads or downloads a blob from the system, including its metadata and properties. You can also call Get Blob to read a snapshot.
@@ -129,9 +128,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobGetHeaders, Flowable&lt;ByteBuffer&gt;&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobGetHeaders, Flowable<ByteBuffer>>> getWithRestResponseAsync(String snapshot, Integer timeout, String range, String leaseId, Boolean rangeGetContentMD5, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Single<BlobGetResponse> getWithRestResponseAsync(String snapshot, Integer timeout, String range, String leaseId, Boolean rangeGetContentMD5, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Get Blob operation reads or downloads a blob from the system, including its metadata and properties. You can also call Get Blob to read a snapshot.
@@ -147,9 +146,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Maybe&lt;Flowable&lt;ByteBuffer&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Maybe<Flowable<ByteBuffer>> getAsync(String snapshot, Integer timeout, String range, String leaseId, Boolean rangeGetContentMD5, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Maybe<Flowable<ByteBuffer>> getAsync(String snapshot, Integer timeout, String range, String leaseId, Boolean rangeGetContentMD5, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Get Blob Properties operation returns all user-defined metadata, standard HTTP properties, and system properties for the blob. It does not return the content of the blob.
@@ -163,21 +162,21 @@ public interface Blobs {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> getPropertiesAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> getPropertiesAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * The Get Blob Properties operation returns all user-defined metadata, standard HTTP properties, and system properties for the blob. It does not return the content of the blob.
      *
-     * @return the {@link Single&lt;RestResponse&lt;BlobGetPropertiesHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobGetPropertiesHeaders, Void>> getPropertiesWithRestResponseAsync();
+    Single<BlobGetPropertiesResponse> getPropertiesWithRestResponseAsync();
 
     /**
      * The Get Blob Properties operation returns all user-defined metadata, standard HTTP properties, and system properties for the blob. It does not return the content of the blob.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable getPropertiesAsync();
 
@@ -195,7 +194,7 @@ public interface Blobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void getProperties(String snapshot, Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    void getProperties(String snapshot, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Get Blob Properties operation returns all user-defined metadata, standard HTTP properties, and system properties for the blob. It does not return the content of the blob.
@@ -210,9 +209,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> getPropertiesAsync(String snapshot, Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> getPropertiesAsync(String snapshot, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Get Blob Properties operation returns all user-defined metadata, standard HTTP properties, and system properties for the blob. It does not return the content of the blob.
@@ -226,9 +225,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobGetPropertiesHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobGetPropertiesHeaders, Void>> getPropertiesWithRestResponseAsync(String snapshot, Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Single<BlobGetPropertiesResponse> getPropertiesWithRestResponseAsync(String snapshot, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Get Blob Properties operation returns all user-defined metadata, standard HTTP properties, and system properties for the blob. It does not return the content of the blob.
@@ -242,9 +241,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable getPropertiesAsync(String snapshot, Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Completable getPropertiesAsync(String snapshot, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * If the storage account's soft delete feature is disabled then, when a blob is deleted, it is permanently removed from the storage account. If the storage account's soft delete feature is enabled, then, when a blob is deleted, it is marked for deletion and becomes inaccessible immediately. However, the blob service retains the blob or snapshot for the number of days specified by the DeleteRetentionPolicy section of [Storage service properties] (Set-Blob-Service-Properties.md). After the specified number of days has passed, the blob's data is permanently removed from the storage account. Note that you continue to be charged for the soft-deleted blob's storage until it is permanently removed. Use the List Blobs API and specify the "include=deleted" query parameter to discover which blobs and snapshots have been soft deleted. You can then use the Undelete Blob API to restore a soft-deleted blob. All other operations on a soft-deleted blob or snapshot causes the service to return an HTTP status code of 404 (ResourceNotFound).
@@ -258,21 +257,21 @@ public interface Blobs {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> deleteAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> deleteAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * If the storage account's soft delete feature is disabled then, when a blob is deleted, it is permanently removed from the storage account. If the storage account's soft delete feature is enabled, then, when a blob is deleted, it is marked for deletion and becomes inaccessible immediately. However, the blob service retains the blob or snapshot for the number of days specified by the DeleteRetentionPolicy section of [Storage service properties] (Set-Blob-Service-Properties.md). After the specified number of days has passed, the blob's data is permanently removed from the storage account. Note that you continue to be charged for the soft-deleted blob's storage until it is permanently removed. Use the List Blobs API and specify the "include=deleted" query parameter to discover which blobs and snapshots have been soft deleted. You can then use the Undelete Blob API to restore a soft-deleted blob. All other operations on a soft-deleted blob or snapshot causes the service to return an HTTP status code of 404 (ResourceNotFound).
      *
-     * @return the {@link Single&lt;RestResponse&lt;BlobDeleteHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobDeleteHeaders, Void>> deleteWithRestResponseAsync();
+    Single<BlobDeleteResponse> deleteWithRestResponseAsync();
 
     /**
      * If the storage account's soft delete feature is disabled then, when a blob is deleted, it is permanently removed from the storage account. If the storage account's soft delete feature is enabled, then, when a blob is deleted, it is marked for deletion and becomes inaccessible immediately. However, the blob service retains the blob or snapshot for the number of days specified by the DeleteRetentionPolicy section of [Storage service properties] (Set-Blob-Service-Properties.md). After the specified number of days has passed, the blob's data is permanently removed from the storage account. Note that you continue to be charged for the soft-deleted blob's storage until it is permanently removed. Use the List Blobs API and specify the "include=deleted" query parameter to discover which blobs and snapshots have been soft deleted. You can then use the Undelete Blob API to restore a soft-deleted blob. All other operations on a soft-deleted blob or snapshot causes the service to return an HTTP status code of 404 (ResourceNotFound).
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable deleteAsync();
 
@@ -291,7 +290,7 @@ public interface Blobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void delete(String snapshot, Integer timeout, String leaseId, DeleteSnapshotsOptionType deleteSnapshots, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    void delete(String snapshot, Integer timeout, String leaseId, DeleteSnapshotsOptionType deleteSnapshots, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * If the storage account's soft delete feature is disabled then, when a blob is deleted, it is permanently removed from the storage account. If the storage account's soft delete feature is enabled, then, when a blob is deleted, it is marked for deletion and becomes inaccessible immediately. However, the blob service retains the blob or snapshot for the number of days specified by the DeleteRetentionPolicy section of [Storage service properties] (Set-Blob-Service-Properties.md). After the specified number of days has passed, the blob's data is permanently removed from the storage account. Note that you continue to be charged for the soft-deleted blob's storage until it is permanently removed. Use the List Blobs API and specify the "include=deleted" query parameter to discover which blobs and snapshots have been soft deleted. You can then use the Undelete Blob API to restore a soft-deleted blob. All other operations on a soft-deleted blob or snapshot causes the service to return an HTTP status code of 404 (ResourceNotFound).
@@ -307,9 +306,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> deleteAsync(String snapshot, Integer timeout, String leaseId, DeleteSnapshotsOptionType deleteSnapshots, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> deleteAsync(String snapshot, Integer timeout, String leaseId, DeleteSnapshotsOptionType deleteSnapshots, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * If the storage account's soft delete feature is disabled then, when a blob is deleted, it is permanently removed from the storage account. If the storage account's soft delete feature is enabled, then, when a blob is deleted, it is marked for deletion and becomes inaccessible immediately. However, the blob service retains the blob or snapshot for the number of days specified by the DeleteRetentionPolicy section of [Storage service properties] (Set-Blob-Service-Properties.md). After the specified number of days has passed, the blob's data is permanently removed from the storage account. Note that you continue to be charged for the soft-deleted blob's storage until it is permanently removed. Use the List Blobs API and specify the "include=deleted" query parameter to discover which blobs and snapshots have been soft deleted. You can then use the Undelete Blob API to restore a soft-deleted blob. All other operations on a soft-deleted blob or snapshot causes the service to return an HTTP status code of 404 (ResourceNotFound).
@@ -324,9 +323,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobDeleteHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobDeleteHeaders, Void>> deleteWithRestResponseAsync(String snapshot, Integer timeout, String leaseId, DeleteSnapshotsOptionType deleteSnapshots, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Single<BlobDeleteResponse> deleteWithRestResponseAsync(String snapshot, Integer timeout, String leaseId, DeleteSnapshotsOptionType deleteSnapshots, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * If the storage account's soft delete feature is disabled then, when a blob is deleted, it is permanently removed from the storage account. If the storage account's soft delete feature is enabled, then, when a blob is deleted, it is marked for deletion and becomes inaccessible immediately. However, the blob service retains the blob or snapshot for the number of days specified by the DeleteRetentionPolicy section of [Storage service properties] (Set-Blob-Service-Properties.md). After the specified number of days has passed, the blob's data is permanently removed from the storage account. Note that you continue to be charged for the soft-deleted blob's storage until it is permanently removed. Use the List Blobs API and specify the "include=deleted" query parameter to discover which blobs and snapshots have been soft deleted. You can then use the Undelete Blob API to restore a soft-deleted blob. All other operations on a soft-deleted blob or snapshot causes the service to return an HTTP status code of 404 (ResourceNotFound).
@@ -341,9 +340,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable deleteAsync(String snapshot, Integer timeout, String leaseId, DeleteSnapshotsOptionType deleteSnapshots, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Completable deleteAsync(String snapshot, Integer timeout, String leaseId, DeleteSnapshotsOptionType deleteSnapshots, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Put Blob operation creates a new block, page, or append blob, or updates the content of an existing block blob. Updating an existing block blob overwrites any existing metadata on the blob. Partial updates are not supported with Put Blob; the content of the existing blob is overwritten with the content of the new blob. To perform a partial update of the content of a block blob, use the Put Block List operation.
@@ -362,9 +361,9 @@ public interface Blobs {
      * @param blobType Specifies the type of blob to create: block blob, page blob, or append blob. Possible values include: 'BlockBlob', 'PageBlob', 'AppendBlob'.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> putAsync(@NonNull long contentLength, @NonNull BlobType blobType, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> putAsync(@NonNull long contentLength, @NonNull BlobType blobType, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Put Blob operation creates a new block, page, or append blob, or updates the content of an existing block blob. Updating an existing block blob overwrites any existing metadata on the blob. Partial updates are not supported with Put Blob; the content of the existing blob is overwritten with the content of the new blob. To perform a partial update of the content of a block blob, use the Put Block List operation.
@@ -372,9 +371,9 @@ public interface Blobs {
      * @param contentLength The length of the request.
      * @param blobType Specifies the type of blob to create: block blob, page blob, or append blob. Possible values include: 'BlockBlob', 'PageBlob', 'AppendBlob'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobPutHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobPutHeaders, Void>> putWithRestResponseAsync(@NonNull long contentLength, @NonNull BlobType blobType);
+    Single<BlobPutResponse> putWithRestResponseAsync(@NonNull long contentLength, @NonNull BlobType blobType);
 
     /**
      * The Put Blob operation creates a new block, page, or append blob, or updates the content of an existing block blob. Updating an existing block blob overwrites any existing metadata on the blob. Partial updates are not supported with Put Blob; the content of the existing blob is overwritten with the content of the new blob. To perform a partial update of the content of a block blob, use the Put Block List operation.
@@ -382,7 +381,7 @@ public interface Blobs {
      * @param contentLength The length of the request.
      * @param blobType Specifies the type of blob to create: block blob, page blob, or append blob. Possible values include: 'BlockBlob', 'PageBlob', 'AppendBlob'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable putAsync(@NonNull long contentLength, @NonNull BlobType blobType);
 
@@ -411,7 +410,7 @@ public interface Blobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void put(@NonNull long contentLength, @NonNull BlobType blobType, Flowable<ByteBuffer> optionalbody, Integer timeout, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, String blobCacheControl, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobContentLength, Long blobSequenceNumber, String requestId);
+    void put(@NonNull long contentLength, @NonNull BlobType blobType, Flowable<ByteBuffer> optionalbody, Integer timeout, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, String blobCacheControl, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobContentLength, Long blobSequenceNumber, String requestId);
 
     /**
      * The Put Blob operation creates a new block, page, or append blob, or updates the content of an existing block blob. Updating an existing block blob overwrites any existing metadata on the blob. Partial updates are not supported with Put Blob; the content of the existing blob is overwritten with the content of the new blob. To perform a partial update of the content of a block blob, use the Put Block List operation.
@@ -437,9 +436,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> putAsync(@NonNull long contentLength, @NonNull BlobType blobType, Flowable<ByteBuffer> optionalbody, Integer timeout, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, String blobCacheControl, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobContentLength, Long blobSequenceNumber, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> putAsync(@NonNull long contentLength, @NonNull BlobType blobType, Flowable<ByteBuffer> optionalbody, Integer timeout, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, String blobCacheControl, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobContentLength, Long blobSequenceNumber, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Put Blob operation creates a new block, page, or append blob, or updates the content of an existing block blob. Updating an existing block blob overwrites any existing metadata on the blob. Partial updates are not supported with Put Blob; the content of the existing blob is overwritten with the content of the new blob. To perform a partial update of the content of a block blob, use the Put Block List operation.
@@ -464,9 +463,9 @@ public interface Blobs {
      * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobPutHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobPutHeaders, Void>> putWithRestResponseAsync(@NonNull long contentLength, @NonNull BlobType blobType, Flowable<ByteBuffer> optionalbody, Integer timeout, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, String blobCacheControl, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobContentLength, Long blobSequenceNumber, String requestId);
+    Single<BlobPutResponse> putWithRestResponseAsync(@NonNull long contentLength, @NonNull BlobType blobType, Flowable<ByteBuffer> optionalbody, Integer timeout, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, String blobCacheControl, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobContentLength, Long blobSequenceNumber, String requestId);
 
     /**
      * The Put Blob operation creates a new block, page, or append blob, or updates the content of an existing block blob. Updating an existing block blob overwrites any existing metadata on the blob. Partial updates are not supported with Put Blob; the content of the existing blob is overwritten with the content of the new blob. To perform a partial update of the content of a block blob, use the Put Block List operation.
@@ -491,9 +490,9 @@ public interface Blobs {
      * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable putAsync(@NonNull long contentLength, @NonNull BlobType blobType, Flowable<ByteBuffer> optionalbody, Integer timeout, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, String blobCacheControl, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobContentLength, Long blobSequenceNumber, String requestId);
+    Completable putAsync(@NonNull long contentLength, @NonNull BlobType blobType, Flowable<ByteBuffer> optionalbody, Integer timeout, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, String blobCacheControl, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobContentLength, Long blobSequenceNumber, String requestId);
 
     /**
      * Undelete a blob that was previously soft deleted.
@@ -507,21 +506,21 @@ public interface Blobs {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> undeleteAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> undeleteAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * Undelete a blob that was previously soft deleted.
      *
-     * @return the {@link Single&lt;RestResponse&lt;BlobUndeleteHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobUndeleteHeaders, Void>> undeleteWithRestResponseAsync();
+    Single<BlobUndeleteResponse> undeleteWithRestResponseAsync();
 
     /**
      * Undelete a blob that was previously soft deleted.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable undeleteAsync();
 
@@ -542,9 +541,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> undeleteAsync(Integer timeout, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> undeleteAsync(Integer timeout, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * Undelete a blob that was previously soft deleted.
@@ -552,9 +551,9 @@ public interface Blobs {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobUndeleteHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobUndeleteHeaders, Void>> undeleteWithRestResponseAsync(Integer timeout, String requestId);
+    Single<BlobUndeleteResponse> undeleteWithRestResponseAsync(Integer timeout, String requestId);
 
     /**
      * Undelete a blob that was previously soft deleted.
@@ -562,7 +561,7 @@ public interface Blobs {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable undeleteAsync(Integer timeout, String requestId);
 
@@ -578,21 +577,21 @@ public interface Blobs {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setPropertiesAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setPropertiesAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * The Set Blob Properties operation sets system properties on the blob.
      *
-     * @return the {@link Single&lt;RestResponse&lt;BlobSetPropertiesHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobSetPropertiesHeaders, Void>> setPropertiesWithRestResponseAsync();
+    Single<BlobSetPropertiesResponse> setPropertiesWithRestResponseAsync();
 
     /**
      * The Set Blob Properties operation sets system properties on the blob.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable setPropertiesAsync();
 
@@ -618,7 +617,7 @@ public interface Blobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void setProperties(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId);
+    void setProperties(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId);
 
     /**
      * The Set Blob Properties operation sets system properties on the blob.
@@ -641,9 +640,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setPropertiesAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setPropertiesAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Set Blob Properties operation sets system properties on the blob.
@@ -665,9 +664,9 @@ public interface Blobs {
      * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobSetPropertiesHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobSetPropertiesHeaders, Void>> setPropertiesWithRestResponseAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId);
+    Single<BlobSetPropertiesResponse> setPropertiesWithRestResponseAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId);
 
     /**
      * The Set Blob Properties operation sets system properties on the blob.
@@ -689,9 +688,9 @@ public interface Blobs {
      * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable setPropertiesAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId);
+    Completable setPropertiesAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId);
 
     /**
      * The Get Blob Metadata operation returns all user-defined metadata for the specified blob or snapshot.
@@ -705,21 +704,21 @@ public interface Blobs {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> getMetadataAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> getMetadataAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * The Get Blob Metadata operation returns all user-defined metadata for the specified blob or snapshot.
      *
-     * @return the {@link Single&lt;RestResponse&lt;BlobGetMetadataHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobGetMetadataHeaders, Void>> getMetadataWithRestResponseAsync();
+    Single<BlobGetMetadataResponse> getMetadataWithRestResponseAsync();
 
     /**
      * The Get Blob Metadata operation returns all user-defined metadata for the specified blob or snapshot.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable getMetadataAsync();
 
@@ -737,7 +736,7 @@ public interface Blobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void getMetadata(String snapshot, Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    void getMetadata(String snapshot, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Get Blob Metadata operation returns all user-defined metadata for the specified blob or snapshot.
@@ -752,9 +751,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> getMetadataAsync(String snapshot, Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> getMetadataAsync(String snapshot, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Get Blob Metadata operation returns all user-defined metadata for the specified blob or snapshot.
@@ -768,9 +767,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobGetMetadataHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobGetMetadataHeaders, Void>> getMetadataWithRestResponseAsync(String snapshot, Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Single<BlobGetMetadataResponse> getMetadataWithRestResponseAsync(String snapshot, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Get Blob Metadata operation returns all user-defined metadata for the specified blob or snapshot.
@@ -784,9 +783,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable getMetadataAsync(String snapshot, Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Completable getMetadataAsync(String snapshot, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Set Blob Metadata operation sets user-defined metadata for the specified blob as one or more name-value pairs.
@@ -800,21 +799,21 @@ public interface Blobs {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setMetadataAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setMetadataAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * The Set Blob Metadata operation sets user-defined metadata for the specified blob as one or more name-value pairs.
      *
-     * @return the {@link Single&lt;RestResponse&lt;BlobSetMetadataHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobSetMetadataHeaders, Void>> setMetadataWithRestResponseAsync();
+    Single<BlobSetMetadataResponse> setMetadataWithRestResponseAsync();
 
     /**
      * The Set Blob Metadata operation sets user-defined metadata for the specified blob as one or more name-value pairs.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable setMetadataAsync();
 
@@ -832,7 +831,7 @@ public interface Blobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void setMetadata(Integer timeout, Map<String, String> metadata, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    void setMetadata(Integer timeout, Map<String, String> metadata, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Set Blob Metadata operation sets user-defined metadata for the specified blob as one or more name-value pairs.
@@ -847,9 +846,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setMetadataAsync(Integer timeout, Map<String, String> metadata, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setMetadataAsync(Integer timeout, Map<String, String> metadata, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Set Blob Metadata operation sets user-defined metadata for the specified blob as one or more name-value pairs.
@@ -863,9 +862,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobSetMetadataHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobSetMetadataHeaders, Void>> setMetadataWithRestResponseAsync(Integer timeout, Map<String, String> metadata, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Single<BlobSetMetadataResponse> setMetadataWithRestResponseAsync(Integer timeout, Map<String, String> metadata, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Set Blob Metadata operation sets user-defined metadata for the specified blob as one or more name-value pairs.
@@ -879,9 +878,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable setMetadataAsync(Integer timeout, Map<String, String> metadata, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Completable setMetadataAsync(Integer timeout, Map<String, String> metadata, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
@@ -898,25 +897,25 @@ public interface Blobs {
      * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> leaseAsync(@NonNull LeaseActionType action, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> leaseAsync(@NonNull LeaseActionType action, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
      * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobLeaseHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobLeaseHeaders, Void>> leaseWithRestResponseAsync(@NonNull LeaseActionType action);
+    Single<BlobLeaseResponse> leaseWithRestResponseAsync(@NonNull LeaseActionType action);
 
     /**
      * The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
      * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable leaseAsync(@NonNull LeaseActionType action);
 
@@ -937,7 +936,7 @@ public interface Blobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void lease(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    void lease(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
@@ -955,9 +954,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> leaseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> leaseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
@@ -974,9 +973,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobLeaseHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobLeaseHeaders, Void>> leaseWithRestResponseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Single<BlobLeaseResponse> leaseWithRestResponseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
@@ -993,9 +992,9 @@ public interface Blobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable leaseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Completable leaseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Snapshot Blob operation creates a read-only snapshot of a blob.
@@ -1009,21 +1008,21 @@ public interface Blobs {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> takeSnapshotAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> takeSnapshotAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * The Snapshot Blob operation creates a read-only snapshot of a blob.
      *
-     * @return the {@link Single&lt;RestResponse&lt;BlobTakeSnapshotHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobTakeSnapshotHeaders, Void>> takeSnapshotWithRestResponseAsync();
+    Single<BlobTakeSnapshotResponse> takeSnapshotWithRestResponseAsync();
 
     /**
      * The Snapshot Blob operation creates a read-only snapshot of a blob.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable takeSnapshotAsync();
 
@@ -1041,7 +1040,7 @@ public interface Blobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void takeSnapshot(Integer timeout, Map<String, String> metadata, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String requestId);
+    void takeSnapshot(Integer timeout, Map<String, String> metadata, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String requestId);
 
     /**
      * The Snapshot Blob operation creates a read-only snapshot of a blob.
@@ -1056,9 +1055,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> takeSnapshotAsync(Integer timeout, Map<String, String> metadata, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> takeSnapshotAsync(Integer timeout, Map<String, String> metadata, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Snapshot Blob operation creates a read-only snapshot of a blob.
@@ -1072,9 +1071,9 @@ public interface Blobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobTakeSnapshotHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobTakeSnapshotHeaders, Void>> takeSnapshotWithRestResponseAsync(Integer timeout, Map<String, String> metadata, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String requestId);
+    Single<BlobTakeSnapshotResponse> takeSnapshotWithRestResponseAsync(Integer timeout, Map<String, String> metadata, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String requestId);
 
     /**
      * The Snapshot Blob operation creates a read-only snapshot of a blob.
@@ -1088,9 +1087,9 @@ public interface Blobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable takeSnapshotAsync(Integer timeout, Map<String, String> metadata, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String requestId);
+    Completable takeSnapshotAsync(Integer timeout, Map<String, String> metadata, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String requestId);
 
     /**
      * The Copy Blob operation copies a blob or an internet resource to a new blob.
@@ -1107,25 +1106,25 @@ public interface Blobs {
      * @param copySource Specifies the name of the source page blob snapshot. This value is a URL of up to 2 KB in length that specifies a page blob snapshot. The value should be URL-encoded as it would appear in a request URI. The source blob must either be public or must be authenticated via a shared access signature.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> copyAsync(@NonNull URL copySource, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> copyAsync(@NonNull URL copySource, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Copy Blob operation copies a blob or an internet resource to a new blob.
      *
      * @param copySource Specifies the name of the source page blob snapshot. This value is a URL of up to 2 KB in length that specifies a page blob snapshot. The value should be URL-encoded as it would appear in a request URI. The source blob must either be public or must be authenticated via a shared access signature.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobCopyHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobCopyHeaders, Void>> copyWithRestResponseAsync(@NonNull URL copySource);
+    Single<BlobCopyResponse> copyWithRestResponseAsync(@NonNull URL copySource);
 
     /**
      * The Copy Blob operation copies a blob or an internet resource to a new blob.
      *
      * @param copySource Specifies the name of the source page blob snapshot. This value is a URL of up to 2 KB in length that specifies a page blob snapshot. The value should be URL-encoded as it would appear in a request URI. The source blob must either be public or must be authenticated via a shared access signature.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable copyAsync(@NonNull URL copySource);
 
@@ -1149,7 +1148,7 @@ public interface Blobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void copy(@NonNull URL copySource, Integer timeout, Map<String, String> metadata, DateTime sourceIfModifiedSince, DateTime sourceIfUnmodifiedSince, String sourceIfMatches, String sourceIfNoneMatch, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String sourceLeaseId, String requestId);
+    void copy(@NonNull URL copySource, Integer timeout, Map<String, String> metadata, OffsetDateTime sourceIfModifiedSince, OffsetDateTime sourceIfUnmodifiedSince, String sourceIfMatches, String sourceIfNoneMatch, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String sourceLeaseId, String requestId);
 
     /**
      * The Copy Blob operation copies a blob or an internet resource to a new blob.
@@ -1170,9 +1169,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> copyAsync(@NonNull URL copySource, Integer timeout, Map<String, String> metadata, DateTime sourceIfModifiedSince, DateTime sourceIfUnmodifiedSince, String sourceIfMatches, String sourceIfNoneMatch, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String sourceLeaseId, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> copyAsync(@NonNull URL copySource, Integer timeout, Map<String, String> metadata, OffsetDateTime sourceIfModifiedSince, OffsetDateTime sourceIfUnmodifiedSince, String sourceIfMatches, String sourceIfNoneMatch, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String sourceLeaseId, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Copy Blob operation copies a blob or an internet resource to a new blob.
@@ -1192,9 +1191,9 @@ public interface Blobs {
      * @param sourceLeaseId Specify this header to perform the operation only if the lease ID given matches the active lease ID of the source blob.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobCopyHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobCopyHeaders, Void>> copyWithRestResponseAsync(@NonNull URL copySource, Integer timeout, Map<String, String> metadata, DateTime sourceIfModifiedSince, DateTime sourceIfUnmodifiedSince, String sourceIfMatches, String sourceIfNoneMatch, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String sourceLeaseId, String requestId);
+    Single<BlobCopyResponse> copyWithRestResponseAsync(@NonNull URL copySource, Integer timeout, Map<String, String> metadata, OffsetDateTime sourceIfModifiedSince, OffsetDateTime sourceIfUnmodifiedSince, String sourceIfMatches, String sourceIfNoneMatch, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String sourceLeaseId, String requestId);
 
     /**
      * The Copy Blob operation copies a blob or an internet resource to a new blob.
@@ -1214,9 +1213,9 @@ public interface Blobs {
      * @param sourceLeaseId Specify this header to perform the operation only if the lease ID given matches the active lease ID of the source blob.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable copyAsync(@NonNull URL copySource, Integer timeout, Map<String, String> metadata, DateTime sourceIfModifiedSince, DateTime sourceIfUnmodifiedSince, String sourceIfMatches, String sourceIfNoneMatch, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String sourceLeaseId, String requestId);
+    Completable copyAsync(@NonNull URL copySource, Integer timeout, Map<String, String> metadata, OffsetDateTime sourceIfModifiedSince, OffsetDateTime sourceIfUnmodifiedSince, String sourceIfMatches, String sourceIfNoneMatch, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String leaseId, String sourceLeaseId, String requestId);
 
     /**
      * The Abort Copy Blob operation aborts a pending Copy Blob operation, and leaves a destination blob with zero length and full metadata.
@@ -1233,25 +1232,25 @@ public interface Blobs {
      * @param copyId The copy identifier provided in the x-ms-copy-id header of the original Copy Blob operation.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> abortCopyAsync(@NonNull String copyId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> abortCopyAsync(@NonNull String copyId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Abort Copy Blob operation aborts a pending Copy Blob operation, and leaves a destination blob with zero length and full metadata.
      *
      * @param copyId The copy identifier provided in the x-ms-copy-id header of the original Copy Blob operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobAbortCopyHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobAbortCopyHeaders, Void>> abortCopyWithRestResponseAsync(@NonNull String copyId);
+    Single<BlobAbortCopyResponse> abortCopyWithRestResponseAsync(@NonNull String copyId);
 
     /**
      * The Abort Copy Blob operation aborts a pending Copy Blob operation, and leaves a destination blob with zero length and full metadata.
      *
      * @param copyId The copy identifier provided in the x-ms-copy-id header of the original Copy Blob operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable abortCopyAsync(@NonNull String copyId);
 
@@ -1276,9 +1275,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> abortCopyAsync(@NonNull String copyId, Integer timeout, String leaseId, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> abortCopyAsync(@NonNull String copyId, Integer timeout, String leaseId, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Abort Copy Blob operation aborts a pending Copy Blob operation, and leaves a destination blob with zero length and full metadata.
@@ -1288,9 +1287,9 @@ public interface Blobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobAbortCopyHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobAbortCopyHeaders, Void>> abortCopyWithRestResponseAsync(@NonNull String copyId, Integer timeout, String leaseId, String requestId);
+    Single<BlobAbortCopyResponse> abortCopyWithRestResponseAsync(@NonNull String copyId, Integer timeout, String leaseId, String requestId);
 
     /**
      * The Abort Copy Blob operation aborts a pending Copy Blob operation, and leaves a destination blob with zero length and full metadata.
@@ -1300,7 +1299,7 @@ public interface Blobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable abortCopyAsync(@NonNull String copyId, Integer timeout, String leaseId, String requestId);
 
@@ -1319,25 +1318,25 @@ public interface Blobs {
      * @param tier Indicates the tier to be set on the blob. Possible values include: 'P4', 'P6', 'P10', 'P20', 'P30', 'P40', 'P50', 'Hot', 'Cool', 'Archive'.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setBlobTierAsync(@NonNull AccessTier tier, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setBlobTierAsync(@NonNull AccessTier tier, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Set Blob Tier operation sets the tier on a blob. The operation is allowed on a page blob in a premium storage account and on a block blob in a blob storage account (locally redundant storage only). A premium page blob's tier determines the allowed size, IOPS, and bandwidth of the blob. A block blob's tier determines Hot/Cool/Archive storage type. This operation does not update the blob's ETag.
      *
      * @param tier Indicates the tier to be set on the blob. Possible values include: 'P4', 'P6', 'P10', 'P20', 'P30', 'P40', 'P50', 'Hot', 'Cool', 'Archive'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobSetBlobTierHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobSetBlobTierHeaders, Void>> setBlobTierWithRestResponseAsync(@NonNull AccessTier tier);
+    Single<BlobSetBlobTierResponse> setBlobTierWithRestResponseAsync(@NonNull AccessTier tier);
 
     /**
      * The Set Blob Tier operation sets the tier on a blob. The operation is allowed on a page blob in a premium storage account and on a block blob in a blob storage account (locally redundant storage only). A premium page blob's tier determines the allowed size, IOPS, and bandwidth of the blob. A block blob's tier determines Hot/Cool/Archive storage type. This operation does not update the blob's ETag.
      *
      * @param tier Indicates the tier to be set on the blob. Possible values include: 'P4', 'P6', 'P10', 'P20', 'P30', 'P40', 'P50', 'Hot', 'Cool', 'Archive'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable setBlobTierAsync(@NonNull AccessTier tier);
 
@@ -1360,9 +1359,9 @@ public interface Blobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setBlobTierAsync(@NonNull AccessTier tier, Integer timeout, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setBlobTierAsync(@NonNull AccessTier tier, Integer timeout, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Set Blob Tier operation sets the tier on a blob. The operation is allowed on a page blob in a premium storage account and on a block blob in a blob storage account (locally redundant storage only). A premium page blob's tier determines the allowed size, IOPS, and bandwidth of the blob. A block blob's tier determines Hot/Cool/Archive storage type. This operation does not update the blob's ETag.
@@ -1371,9 +1370,9 @@ public interface Blobs {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlobSetBlobTierHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlobSetBlobTierHeaders, Void>> setBlobTierWithRestResponseAsync(@NonNull AccessTier tier, Integer timeout, String requestId);
+    Single<BlobSetBlobTierResponse> setBlobTierWithRestResponseAsync(@NonNull AccessTier tier, Integer timeout, String requestId);
 
     /**
      * The Set Blob Tier operation sets the tier on a blob. The operation is allowed on a page blob in a premium storage account and on a block blob in a blob storage account (locally redundant storage only). A premium page blob's tier determines the allowed size, IOPS, and bandwidth of the blob. A block blob's tier determines Hot/Cool/Archive storage type. This operation does not update the blob's ETag.
@@ -1382,7 +1381,7 @@ public interface Blobs {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable setBlobTierAsync(@NonNull AccessTier tier, Integer timeout, String requestId);
 }

@@ -10,30 +10,29 @@
 
 package com.microsoft.azure.storage;
 
-import com.microsoft.azure.storage.models.ContainerCreateHeaders;
-import com.microsoft.azure.storage.models.ContainerDeleteHeaders;
-import com.microsoft.azure.storage.models.ContainerGetAclHeaders;
-import com.microsoft.azure.storage.models.ContainerGetMetadataHeaders;
-import com.microsoft.azure.storage.models.ContainerGetPropertiesHeaders;
-import com.microsoft.azure.storage.models.ContainerLeaseHeaders;
-import com.microsoft.azure.storage.models.ContainerListBlobsHeaders;
-import com.microsoft.azure.storage.models.ContainerSetAclHeaders;
-import com.microsoft.azure.storage.models.ContainerSetMetadataHeaders;
+import com.microsoft.azure.storage.models.ContainerCreateResponse;
+import com.microsoft.azure.storage.models.ContainerDeleteResponse;
+import com.microsoft.azure.storage.models.ContainerGetAclResponse;
+import com.microsoft.azure.storage.models.ContainerGetMetadataResponse;
+import com.microsoft.azure.storage.models.ContainerGetPropertiesResponse;
+import com.microsoft.azure.storage.models.ContainerLeaseResponse;
+import com.microsoft.azure.storage.models.ContainerListBlobsResponse;
+import com.microsoft.azure.storage.models.ContainerSetAclResponse;
+import com.microsoft.azure.storage.models.ContainerSetMetadataResponse;
 import com.microsoft.azure.storage.models.LeaseActionType;
 import com.microsoft.azure.storage.models.ListBlobsIncludeItem;
 import com.microsoft.azure.storage.models.ListBlobsResponse;
 import com.microsoft.azure.storage.models.PublicAccessType;
 import com.microsoft.azure.storage.models.SignedIdentifier;
-import com.microsoft.rest.v2.RestResponse;
 import com.microsoft.rest.v2.ServiceCallback;
 import com.microsoft.rest.v2.ServiceFuture;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
-import org.joda.time.DateTime;
 
 /**
  * An instance of this class provides access to all the operations defined in
@@ -52,21 +51,21 @@ public interface Containers {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> createAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> createAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * creates a new container under the specified account. If the container with the same name already exists, the operation fails.
      *
-     * @return the {@link Single&lt;RestResponse&lt;ContainerCreateHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerCreateHeaders, Void>> createWithRestResponseAsync();
+    Single<ContainerCreateResponse> createWithRestResponseAsync();
 
     /**
      * creates a new container under the specified account. If the container with the same name already exists, the operation fails.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable createAsync();
 
@@ -91,9 +90,9 @@ public interface Containers {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> createAsync(Integer timeout, Map<String, String> metadata, PublicAccessType access, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> createAsync(Integer timeout, Map<String, String> metadata, PublicAccessType access, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * creates a new container under the specified account. If the container with the same name already exists, the operation fails.
@@ -103,9 +102,9 @@ public interface Containers {
      * @param access Specifies whether data in the container may be accessed publicly and the level of access. Possible values include: 'container', 'blob'.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ContainerCreateHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerCreateHeaders, Void>> createWithRestResponseAsync(Integer timeout, Map<String, String> metadata, PublicAccessType access, String requestId);
+    Single<ContainerCreateResponse> createWithRestResponseAsync(Integer timeout, Map<String, String> metadata, PublicAccessType access, String requestId);
 
     /**
      * creates a new container under the specified account. If the container with the same name already exists, the operation fails.
@@ -115,7 +114,7 @@ public interface Containers {
      * @param access Specifies whether data in the container may be accessed publicly and the level of access. Possible values include: 'container', 'blob'.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable createAsync(Integer timeout, Map<String, String> metadata, PublicAccessType access, String requestId);
 
@@ -131,21 +130,21 @@ public interface Containers {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> getPropertiesAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> getPropertiesAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * returns all user-defined metadata and system properties for the specified container. The data returned does not include the container's list of blobs.
      *
-     * @return the {@link Single&lt;RestResponse&lt;ContainerGetPropertiesHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerGetPropertiesHeaders, Void>> getPropertiesWithRestResponseAsync();
+    Single<ContainerGetPropertiesResponse> getPropertiesWithRestResponseAsync();
 
     /**
      * returns all user-defined metadata and system properties for the specified container. The data returned does not include the container's list of blobs.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable getPropertiesAsync();
 
@@ -168,9 +167,9 @@ public interface Containers {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> getPropertiesAsync(Integer timeout, String leaseId, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> getPropertiesAsync(Integer timeout, String leaseId, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * returns all user-defined metadata and system properties for the specified container. The data returned does not include the container's list of blobs.
@@ -179,9 +178,9 @@ public interface Containers {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ContainerGetPropertiesHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerGetPropertiesHeaders, Void>> getPropertiesWithRestResponseAsync(Integer timeout, String leaseId, String requestId);
+    Single<ContainerGetPropertiesResponse> getPropertiesWithRestResponseAsync(Integer timeout, String leaseId, String requestId);
 
     /**
      * returns all user-defined metadata and system properties for the specified container. The data returned does not include the container's list of blobs.
@@ -190,7 +189,7 @@ public interface Containers {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable getPropertiesAsync(Integer timeout, String leaseId, String requestId);
 
@@ -206,21 +205,21 @@ public interface Containers {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> deleteAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> deleteAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * operation marks the specified container for deletion. The container and any blobs contained within it are later deleted during garbage collection.
      *
-     * @return the {@link Single&lt;RestResponse&lt;ContainerDeleteHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerDeleteHeaders, Void>> deleteWithRestResponseAsync();
+    Single<ContainerDeleteResponse> deleteWithRestResponseAsync();
 
     /**
      * operation marks the specified container for deletion. The container and any blobs contained within it are later deleted during garbage collection.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable deleteAsync();
 
@@ -235,7 +234,7 @@ public interface Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void delete(Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId);
+    void delete(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
      * operation marks the specified container for deletion. The container and any blobs contained within it are later deleted during garbage collection.
@@ -247,9 +246,9 @@ public interface Containers {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> deleteAsync(Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> deleteAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * operation marks the specified container for deletion. The container and any blobs contained within it are later deleted during garbage collection.
@@ -260,9 +259,9 @@ public interface Containers {
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ContainerDeleteHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerDeleteHeaders, Void>> deleteWithRestResponseAsync(Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId);
+    Single<ContainerDeleteResponse> deleteWithRestResponseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
      * operation marks the specified container for deletion. The container and any blobs contained within it are later deleted during garbage collection.
@@ -273,9 +272,9 @@ public interface Containers {
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable deleteAsync(Integer timeout, String leaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId);
+    Completable deleteAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
      * returns all user-defined metadata for the container.
@@ -289,21 +288,21 @@ public interface Containers {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> getMetadataAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> getMetadataAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * returns all user-defined metadata for the container.
      *
-     * @return the {@link Single&lt;RestResponse&lt;ContainerGetMetadataHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerGetMetadataHeaders, Void>> getMetadataWithRestResponseAsync();
+    Single<ContainerGetMetadataResponse> getMetadataWithRestResponseAsync();
 
     /**
      * returns all user-defined metadata for the container.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable getMetadataAsync();
 
@@ -326,9 +325,9 @@ public interface Containers {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> getMetadataAsync(Integer timeout, String leaseId, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> getMetadataAsync(Integer timeout, String leaseId, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * returns all user-defined metadata for the container.
@@ -337,9 +336,9 @@ public interface Containers {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ContainerGetMetadataHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerGetMetadataHeaders, Void>> getMetadataWithRestResponseAsync(Integer timeout, String leaseId, String requestId);
+    Single<ContainerGetMetadataResponse> getMetadataWithRestResponseAsync(Integer timeout, String leaseId, String requestId);
 
     /**
      * returns all user-defined metadata for the container.
@@ -348,7 +347,7 @@ public interface Containers {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable getMetadataAsync(Integer timeout, String leaseId, String requestId);
 
@@ -364,21 +363,21 @@ public interface Containers {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setMetadataAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setMetadataAsync(ServiceCallback<Void> serviceCallback);
 
     /**
      * operation sets one or more user-defined name-value pairs for the specified container.
      *
-     * @return the {@link Single&lt;RestResponse&lt;ContainerSetMetadataHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerSetMetadataHeaders, Void>> setMetadataWithRestResponseAsync();
+    Single<ContainerSetMetadataResponse> setMetadataWithRestResponseAsync();
 
     /**
      * operation sets one or more user-defined name-value pairs for the specified container.
      *
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable setMetadataAsync();
 
@@ -393,7 +392,7 @@ public interface Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void setMetadata(Integer timeout, String leaseId, Map<String, String> metadata, DateTime ifModifiedSince, String requestId);
+    void setMetadata(Integer timeout, String leaseId, Map<String, String> metadata, OffsetDateTime ifModifiedSince, String requestId);
 
     /**
      * operation sets one or more user-defined name-value pairs for the specified container.
@@ -405,9 +404,9 @@ public interface Containers {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setMetadataAsync(Integer timeout, String leaseId, Map<String, String> metadata, DateTime ifModifiedSince, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setMetadataAsync(Integer timeout, String leaseId, Map<String, String> metadata, OffsetDateTime ifModifiedSince, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * operation sets one or more user-defined name-value pairs for the specified container.
@@ -418,9 +417,9 @@ public interface Containers {
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ContainerSetMetadataHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerSetMetadataHeaders, Void>> setMetadataWithRestResponseAsync(Integer timeout, String leaseId, Map<String, String> metadata, DateTime ifModifiedSince, String requestId);
+    Single<ContainerSetMetadataResponse> setMetadataWithRestResponseAsync(Integer timeout, String leaseId, Map<String, String> metadata, OffsetDateTime ifModifiedSince, String requestId);
 
     /**
      * operation sets one or more user-defined name-value pairs for the specified container.
@@ -431,9 +430,9 @@ public interface Containers {
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable setMetadataAsync(Integer timeout, String leaseId, Map<String, String> metadata, DateTime ifModifiedSince, String requestId);
+    Completable setMetadataAsync(Integer timeout, String leaseId, Map<String, String> metadata, OffsetDateTime ifModifiedSince, String requestId);
 
     /**
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -444,17 +443,17 @@ public interface Containers {
     /**
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;List&lt;SignedIdentifier&gt;&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<List<SignedIdentifier>> getAclAsync(@NonNull ServiceCallback<List<SignedIdentifier>> serviceCallback);
+    ServiceFuture<List<SignedIdentifier>> getAclAsync(ServiceCallback<List<SignedIdentifier>> serviceCallback);
 
     /**
-     * @return the {@link Single&lt;RestResponse&lt;ContainerGetAclHeaders, List&lt;SignedIdentifier&gt;&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerGetAclHeaders, List<SignedIdentifier>>> getAclWithRestResponseAsync();
+    Single<ContainerGetAclResponse> getAclWithRestResponseAsync();
 
     /**
-     * @return the {@link Maybe&lt;List&lt;SignedIdentifier&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<List<SignedIdentifier>> getAclAsync();
 
@@ -474,25 +473,25 @@ public interface Containers {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;List&lt;SignedIdentifier&gt;&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<List<SignedIdentifier>> getAclAsync(Integer timeout, String leaseId, String requestId, @NonNull ServiceCallback<List<SignedIdentifier>> serviceCallback);
+    ServiceFuture<List<SignedIdentifier>> getAclAsync(Integer timeout, String leaseId, String requestId, ServiceCallback<List<SignedIdentifier>> serviceCallback);
 
     /**
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ContainerGetAclHeaders, List&lt;SignedIdentifier&gt;&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerGetAclHeaders, List<SignedIdentifier>>> getAclWithRestResponseAsync(Integer timeout, String leaseId, String requestId);
+    Single<ContainerGetAclResponse> getAclWithRestResponseAsync(Integer timeout, String leaseId, String requestId);
 
     /**
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Maybe&lt;List&lt;SignedIdentifier&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<List<SignedIdentifier>> getAclAsync(Integer timeout, String leaseId, String requestId);
 
@@ -504,17 +503,17 @@ public interface Containers {
     /**
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setAclAsync(@NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setAclAsync(ServiceCallback<Void> serviceCallback);
 
     /**
-     * @return the {@link Single&lt;RestResponse&lt;ContainerSetAclHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerSetAclHeaders, Void>> setAclWithRestResponseAsync();
+    Single<ContainerSetAclResponse> setAclWithRestResponseAsync();
 
     /**
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable setAclAsync();
 
@@ -529,7 +528,7 @@ public interface Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void setAcl(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId);
+    void setAcl(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
      * @param containerAcl the acls for the container.
@@ -541,9 +540,9 @@ public interface Containers {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> setAclAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> setAclAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * @param containerAcl the acls for the container.
@@ -554,9 +553,9 @@ public interface Containers {
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ContainerSetAclHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerSetAclHeaders, Void>> setAclWithRestResponseAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId);
+    Single<ContainerSetAclResponse> setAclWithRestResponseAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
      * @param containerAcl the acls for the container.
@@ -567,9 +566,9 @@ public interface Containers {
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable setAclAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId);
+    Completable setAclAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
      * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
@@ -586,25 +585,25 @@ public interface Containers {
      * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> leaseAsync(@NonNull LeaseActionType action, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> leaseAsync(@NonNull LeaseActionType action, ServiceCallback<Void> serviceCallback);
 
     /**
      * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
      * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ContainerLeaseHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerLeaseHeaders, Void>> leaseWithRestResponseAsync(@NonNull LeaseActionType action);
+    Single<ContainerLeaseResponse> leaseWithRestResponseAsync(@NonNull LeaseActionType action);
 
     /**
      * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
      * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable leaseAsync(@NonNull LeaseActionType action);
 
@@ -623,7 +622,7 @@ public interface Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void lease(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId);
+    void lease(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
      * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
@@ -639,9 +638,9 @@ public interface Containers {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> leaseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> leaseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
@@ -656,9 +655,9 @@ public interface Containers {
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ContainerLeaseHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerLeaseHeaders, Void>> leaseWithRestResponseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId);
+    Single<ContainerLeaseResponse> leaseWithRestResponseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
      * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
@@ -673,9 +672,9 @@ public interface Containers {
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable leaseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String requestId);
+    Completable leaseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId);
 
     /**
      * The List Blobs operation returns a list of the blobs under the specified container.
@@ -690,21 +689,21 @@ public interface Containers {
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;ListBlobsResponse&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<ListBlobsResponse> listBlobsAsync(@NonNull ServiceCallback<ListBlobsResponse> serviceCallback);
+    ServiceFuture<ListBlobsResponse> listBlobsAsync(ServiceCallback<ListBlobsResponse> serviceCallback);
 
     /**
      * The List Blobs operation returns a list of the blobs under the specified container.
      *
-     * @return the {@link Single&lt;RestResponse&lt;ContainerListBlobsHeaders, ListBlobsResponse&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerListBlobsHeaders, ListBlobsResponse>> listBlobsWithRestResponseAsync();
+    Single<ContainerListBlobsResponse> listBlobsWithRestResponseAsync();
 
     /**
      * The List Blobs operation returns a list of the blobs under the specified container.
      *
-     * @return the {@link Maybe&lt;ListBlobsResponse&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<ListBlobsResponse> listBlobsAsync();
 
@@ -736,9 +735,9 @@ public interface Containers {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;ListBlobsResponse&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<ListBlobsResponse> listBlobsAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId, @NonNull ServiceCallback<ListBlobsResponse> serviceCallback);
+    ServiceFuture<ListBlobsResponse> listBlobsAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId, ServiceCallback<ListBlobsResponse> serviceCallback);
 
     /**
      * The List Blobs operation returns a list of the blobs under the specified container.
@@ -751,9 +750,9 @@ public interface Containers {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;ContainerListBlobsHeaders, ListBlobsResponse&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<ContainerListBlobsHeaders, ListBlobsResponse>> listBlobsWithRestResponseAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId);
+    Single<ContainerListBlobsResponse> listBlobsWithRestResponseAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId);
 
     /**
      * The List Blobs operation returns a list of the blobs under the specified container.
@@ -766,7 +765,7 @@ public interface Containers {
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Maybe&lt;ListBlobsResponse&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<ListBlobsResponse> listBlobsAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId);
 }

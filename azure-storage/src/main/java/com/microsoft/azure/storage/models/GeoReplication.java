@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * The GeoReplication model.
@@ -62,7 +62,7 @@ public final class GeoReplication {
      *
      * @return the lastSyncTime value.
      */
-    public DateTime lastSyncTime() {
+    public OffsetDateTime lastSyncTime() {
         if (this.lastSyncTime == null) {
             return null;
         }
@@ -75,7 +75,7 @@ public final class GeoReplication {
      * @param lastSyncTime the lastSyncTime value to set.
      * @return the GeoReplication object itself.
      */
-    public GeoReplication withLastSyncTime(DateTime lastSyncTime) {
+    public GeoReplication withLastSyncTime(OffsetDateTime lastSyncTime) {
         if (lastSyncTime == null) {
             this.lastSyncTime = null;
         } else {

@@ -10,13 +10,12 @@
 
 package com.microsoft.azure.storage;
 
-import com.microsoft.azure.storage.models.BlockBlobGetBlockListHeaders;
-import com.microsoft.azure.storage.models.BlockBlobPutBlockHeaders;
-import com.microsoft.azure.storage.models.BlockBlobPutBlockListHeaders;
+import com.microsoft.azure.storage.models.BlockBlobGetBlockListResponse;
+import com.microsoft.azure.storage.models.BlockBlobPutBlockListResponse;
+import com.microsoft.azure.storage.models.BlockBlobPutBlockResponse;
 import com.microsoft.azure.storage.models.BlockList;
 import com.microsoft.azure.storage.models.BlockListType;
 import com.microsoft.azure.storage.models.BlockLookupList;
-import com.microsoft.rest.v2.RestResponse;
 import com.microsoft.rest.v2.ServiceCallback;
 import com.microsoft.rest.v2.ServiceFuture;
 import io.reactivex.Completable;
@@ -25,8 +24,8 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.annotations.NonNull;
 import java.nio.ByteBuffer;
+import java.time.OffsetDateTime;
 import java.util.Map;
-import org.joda.time.DateTime;
 
 /**
  * An instance of this class provides access to all the operations defined in
@@ -52,9 +51,9 @@ public interface BlockBlobs {
      * @param body Initial data.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Put Block operation creates a new block to be committed as part of a blob.
@@ -63,9 +62,9 @@ public interface BlockBlobs {
      * @param contentLength The length of the request.
      * @param body Initial data.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobPutBlockHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlockBlobPutBlockHeaders, Void>> putBlockWithRestResponseAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body);
+    Single<BlockBlobPutBlockResponse> putBlockWithRestResponseAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body);
 
     /**
      * The Put Block operation creates a new block to be committed as part of a blob.
@@ -74,7 +73,7 @@ public interface BlockBlobs {
      * @param contentLength The length of the request.
      * @param body Initial data.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body);
 
@@ -103,9 +102,9 @@ public interface BlockBlobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, Integer timeout, String leaseId, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, Integer timeout, String leaseId, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Put Block operation creates a new block to be committed as part of a blob.
@@ -117,9 +116,9 @@ public interface BlockBlobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobPutBlockHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlockBlobPutBlockHeaders, Void>> putBlockWithRestResponseAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, Integer timeout, String leaseId, String requestId);
+    Single<BlockBlobPutBlockResponse> putBlockWithRestResponseAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, Integer timeout, String leaseId, String requestId);
 
     /**
      * The Put Block operation creates a new block to be committed as part of a blob.
@@ -131,7 +130,7 @@ public interface BlockBlobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable putBlockAsync(@NonNull String blockId, @NonNull long contentLength, @NonNull Flowable<ByteBuffer> body, Integer timeout, String leaseId, String requestId);
 
@@ -150,25 +149,25 @@ public interface BlockBlobs {
      * @param blocks the BlockLookupList value.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> putBlockListAsync(@NonNull BlockLookupList blocks, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> putBlockListAsync(@NonNull BlockLookupList blocks, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Put Block List operation writes a blob by specifying the list of block IDs that make up the blob. In order to be written as part of a blob, a block must have been successfully written to the server in a prior Put Block operation. You can call Put Block List to update a blob by uploading only those blocks that have changed, then committing the new and existing blocks together. You can do this by specifying whether to commit a block from the committed block list or from the uncommitted block list, or to commit the most recently uploaded version of the block, whichever list it may belong to.
      *
      * @param blocks the BlockLookupList value.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobPutBlockListHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlockBlobPutBlockListHeaders, Void>> putBlockListWithRestResponseAsync(@NonNull BlockLookupList blocks);
+    Single<BlockBlobPutBlockListResponse> putBlockListWithRestResponseAsync(@NonNull BlockLookupList blocks);
 
     /**
      * The Put Block List operation writes a blob by specifying the list of block IDs that make up the blob. In order to be written as part of a blob, a block must have been successfully written to the server in a prior Put Block operation. You can call Put Block List to update a blob by uploading only those blocks that have changed, then committing the new and existing blocks together. You can do this by specifying whether to commit a block from the committed block list or from the uncommitted block list, or to commit the most recently uploaded version of the block, whichever list it may belong to.
      *
      * @param blocks the BlockLookupList value.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Completable putBlockListAsync(@NonNull BlockLookupList blocks);
 
@@ -193,7 +192,7 @@ public interface BlockBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    void putBlockList(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    void putBlockList(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Put Block List operation writes a blob by specifying the list of block IDs that make up the blob. In order to be written as part of a blob, a block must have been successfully written to the server in a prior Put Block operation. You can call Put Block List to update a blob by uploading only those blocks that have changed, then committing the new and existing blocks together. You can do this by specifying whether to commit a block from the committed block list or from the uncommitted block list, or to commit the most recently uploaded version of the block, whichever list it may belong to.
@@ -215,9 +214,9 @@ public interface BlockBlobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;Void&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<Void> putBlockListAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, @NonNull ServiceCallback<Void> serviceCallback);
+    ServiceFuture<Void> putBlockListAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback);
 
     /**
      * The Put Block List operation writes a blob by specifying the list of block IDs that make up the blob. In order to be written as part of a blob, a block must have been successfully written to the server in a prior Put Block operation. You can call Put Block List to update a blob by uploading only those blocks that have changed, then committing the new and existing blocks together. You can do this by specifying whether to commit a block from the committed block list or from the uncommitted block list, or to commit the most recently uploaded version of the block, whichever list it may belong to.
@@ -238,9 +237,9 @@ public interface BlockBlobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobPutBlockListHeaders, Void&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlockBlobPutBlockListHeaders, Void>> putBlockListWithRestResponseAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Single<BlockBlobPutBlockListResponse> putBlockListWithRestResponseAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Put Block List operation writes a blob by specifying the list of block IDs that make up the blob. In order to be written as part of a blob, a block must have been successfully written to the server in a prior Put Block operation. You can call Put Block List to update a blob by uploading only those blocks that have changed, then committing the new and existing blocks together. You can do this by specifying whether to commit a block from the committed block list or from the uncommitted block list, or to commit the most recently uploaded version of the block, whichever list it may belong to.
@@ -261,9 +260,9 @@ public interface BlockBlobs {
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Completable} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Completable putBlockListAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, DateTime ifModifiedSince, DateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
+    Completable putBlockListAsync(@NonNull BlockLookupList blocks, Integer timeout, String blobCacheControl, String blobContentType, String blobContentEncoding, String blobContentLanguage, String blobContentMD5, Map<String, String> metadata, String leaseId, String blobContentDisposition, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId);
 
     /**
      * The Get Block List operation retrieves the list of blocks that have been uploaded as part of a block blob.
@@ -281,25 +280,25 @@ public interface BlockBlobs {
      * @param listType Specifies whether to return the list of committed blocks, the list of uncommitted blocks, or both lists together. Possible values include: 'committed', 'uncommitted', 'all'.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;BlockList&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<BlockList> getBlockListAsync(@NonNull BlockListType listType, @NonNull ServiceCallback<BlockList> serviceCallback);
+    ServiceFuture<BlockList> getBlockListAsync(@NonNull BlockListType listType, ServiceCallback<BlockList> serviceCallback);
 
     /**
      * The Get Block List operation retrieves the list of blocks that have been uploaded as part of a block blob.
      *
      * @param listType Specifies whether to return the list of committed blocks, the list of uncommitted blocks, or both lists together. Possible values include: 'committed', 'uncommitted', 'all'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobGetBlockListHeaders, BlockList&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlockBlobGetBlockListHeaders, BlockList>> getBlockListWithRestResponseAsync(@NonNull BlockListType listType);
+    Single<BlockBlobGetBlockListResponse> getBlockListWithRestResponseAsync(@NonNull BlockListType listType);
 
     /**
      * The Get Block List operation retrieves the list of blocks that have been uploaded as part of a block blob.
      *
      * @param listType Specifies whether to return the list of committed blocks, the list of uncommitted blocks, or both lists together. Possible values include: 'committed', 'uncommitted', 'all'.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Maybe&lt;BlockList&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<BlockList> getBlockListAsync(@NonNull BlockListType listType);
 
@@ -327,9 +326,9 @@ public interface BlockBlobs {
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link ServiceFuture&lt;BlockList&gt;} object.
+     * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<BlockList> getBlockListAsync(@NonNull BlockListType listType, String snapshot, Integer timeout, String leaseId, String requestId, @NonNull ServiceCallback<BlockList> serviceCallback);
+    ServiceFuture<BlockList> getBlockListAsync(@NonNull BlockListType listType, String snapshot, Integer timeout, String leaseId, String requestId, ServiceCallback<BlockList> serviceCallback);
 
     /**
      * The Get Block List operation retrieves the list of blocks that have been uploaded as part of a block blob.
@@ -340,9 +339,9 @@ public interface BlockBlobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Single&lt;RestResponse&lt;BlockBlobGetBlockListHeaders, BlockList&gt;&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
-    Single<RestResponse<BlockBlobGetBlockListHeaders, BlockList>> getBlockListWithRestResponseAsync(@NonNull BlockListType listType, String snapshot, Integer timeout, String leaseId, String requestId);
+    Single<BlockBlobGetBlockListResponse> getBlockListWithRestResponseAsync(@NonNull BlockListType listType, String snapshot, Integer timeout, String leaseId, String requestId);
 
     /**
      * The Get Block List operation retrieves the list of blocks that have been uploaded as part of a block blob.
@@ -353,7 +352,7 @@ public interface BlockBlobs {
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return the {@link Maybe&lt;BlockList&gt;} object if successful.
+     * @return a Single which performs the network request upon subscription.
      */
     Maybe<BlockList> getBlockListAsync(@NonNull BlockListType listType, String snapshot, Integer timeout, String leaseId, String requestId);
 }

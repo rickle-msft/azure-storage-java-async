@@ -15,7 +15,7 @@
 package com.microsoft.azure.storage.blob;
 
 import java.security.InvalidKeyException;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * ServiceSASSignatureValues is used to generate a Shared Access Signature (SAS) for an Azure Storage service. Once
@@ -44,12 +44,12 @@ public final class ServiceSASSignatureValues {
     /**
      * A {@code java.util.Date} specifying when the SAS will take effect.
      */
-    public Date startTime;
+    public OffsetDateTime startTime;
 
     /**
      * A {@code java.util.Date} specifying a time after which the SAS will no longer work.
      */
-    public Date expiryTime;
+    public OffsetDateTime expiryTime;
 
     /**
      * A {@code String} specifying which operations the SAS user may perform. Please refer to either
@@ -137,8 +137,8 @@ public final class ServiceSASSignatureValues {
         // Signature is generated on the un-url-encoded values.
          String stringToSign = Utility.join(new String[]{
                  verifiedPermissions,
-                 this.startTime == null ? "" : Utility.ISO8601UTCDateFormat.format(this.startTime),
-                 this.expiryTime == null ? "" : Utility.ISO8601UTCDateFormat.format(this.expiryTime),
+                 this.startTime == null ? "" : Utility.ISO8601UTCDateFormatter.format(this.startTime),
+                 this.expiryTime == null ? "" : Utility.ISO8601UTCDateFormatter.format(this.expiryTime),
                  getCanonicalName(sharedKeyCredentials.getAccountName()),
                  this.identifier,
                  this.ipRange.toString(),

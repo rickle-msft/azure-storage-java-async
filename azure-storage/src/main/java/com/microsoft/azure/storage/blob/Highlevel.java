@@ -1,19 +1,16 @@
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.BlobPutHeaders;
-import com.microsoft.azure.storage.models.BlockBlobPutBlockHeaders;
-import com.microsoft.azure.storage.models.BlockBlobPutBlockListHeaders;
-import com.microsoft.rest.v2.RestResponse;
+import com.microsoft.azure.storage.models.*;
+import com.microsoft.rest.v2.util.FlowableUtil;
 import io.reactivex.*;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Function;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -105,39 +102,28 @@ public class Highlevel {
         try {
             // If the size of the file can fit in a single putBlob, do it this way.
             if (file.size() < BlockBlobURL.MAX_PUT_BLOB_BYTES) {
-                return doSingleShotUpload(file.map(FileChannel.MapMode.READ_ONLY, 0, file.size()), blockBlobURL,
-                        options);
+                return doSingleShotUpload(
+                        Flowable.just(file.map(FileChannel.MapMode.READ_ONLY, 0, file.size())), file.size(),
+                        blockBlobURL, options);
             }
             // Can successfully cast to an int because MaxBlockSize is an int, which this expression must be less than.
             int numBlocks = (int)(file.size()/blockLength);
             return Observable.range(0, numBlocks)
-                    .map(new Function<Integer, ByteBuffer>() {
-                        @Override
-                        public ByteBuffer apply(Integer i) throws Exception {
-                            /*
-                            The docs say that the result of mapping a region which is not entirely contained by the file
-                            is undefined, so we must be precise with the last block size.
-                             */
-                            int count = Math.min(blockLength, (int)(file.size()-i*blockLength));
-                            // Memory map the file to get a ByteBuffer to an in memory portion of the file.
-                            return file.map(FileChannel.MapMode.READ_ONLY, i*blockLength, count);
-                        }
+                    .map((Function<Integer, ByteBuffer>) i -> {
+                        /*
+                        The docs say that the result of mapping a region which is not entirely contained by the file
+                        is undefined, so we must be precise with the last block size.
+                         */
+                        int count = Math.min(blockLength, (int)(file.size()-i*blockLength));
+                        // Memory map the file to get a ByteBuffer to an in memory portion of the file.
+                        return file.map(FileChannel.MapMode.READ_ONLY, i*blockLength, count);
                     })
                     // Gather all of the buffers, in order, into this list, which will become the block list.
-                    .collectInto(new ArrayList<ByteBuffer>(numBlocks),
-                            new BiConsumer<ArrayList<ByteBuffer>, ByteBuffer>() {
-                        @Override
-                        public void accept(ArrayList<ByteBuffer> blocks, ByteBuffer block) throws Exception {
-                            blocks.add(block);
-                        }
-                    })
+                    .collectInto(new ArrayList<>(numBlocks),
+                            (BiConsumer<ArrayList<ByteBuffer>, ByteBuffer>) ArrayList::add)
                     // Turn the list into a call to uploadByteBuffersToBlockBlob and return that result.
-                    .flatMap(new Function<ArrayList<ByteBuffer>, SingleSource<CommonRestResponse>>() {
-                        @Override
-                        public SingleSource<CommonRestResponse> apply(ArrayList<ByteBuffer> blocks) throws Exception {
-                            return uploadByteBuffersToBlockBlob(blocks, blockBlobURL, options);
-                        }
-                    });
+                    .flatMap((Function<ArrayList<ByteBuffer>, SingleSource<CommonRestResponse>>) blocks ->
+                            uploadByteBuffersToBlockBlob(blocks, blockBlobURL, options));
         }
         catch (IOException e) {
             throw new Error(e);
@@ -170,39 +156,28 @@ public class Highlevel {
 
         // If the size of the buffer can fit in a single putBlob, do it this way.
         if (data.remaining() < BlockBlobURL.MAX_PUT_BLOB_BYTES) {
-            //return doSingleShotUpload(data, blockBlobURL, options);
+            return doSingleShotUpload(Flowable.just(data), data.remaining(), blockBlobURL, options);
         }
 
         int numBlocks = data.remaining()/blockLength;
         return Observable.range(0, numBlocks)
-                .map(new Function<Integer, ByteBuffer>() {
-                    @Override
-                    public ByteBuffer apply(Integer i) throws Exception {
-                        int count = Math.min(blockLength, data.remaining()-i*blockLength);
-                        ByteBuffer block = data.duplicate();
-                        block.position(i*blockLength);
-                        block.limit(i*blockLength+count);
-                        return block;
-                    }
+                .map(i -> {
+                    int count = Math.min(blockLength, data.remaining()-i*blockLength);
+                    ByteBuffer block = data.duplicate();
+                    block.position(i*blockLength);
+                    block.limit(i*blockLength+count);
+                    return block;
                 })
-                .collectInto(new ArrayList<ByteBuffer>(numBlocks),
-                        new BiConsumer<ArrayList<ByteBuffer>, ByteBuffer>() {
-                            @Override
-                            public void accept(ArrayList<ByteBuffer> blocks, ByteBuffer block)
-                                    throws Exception {
-                                blocks.add(block);
-                            }
-                        })
-                .flatMap(new Function<ArrayList<ByteBuffer>, SingleSource<? extends CommonRestResponse>>() {
-                    @Override
-                    public SingleSource<CommonRestResponse> apply(ArrayList<ByteBuffer> blocks) throws Exception {
-                        return uploadByteBuffersToBlockBlob(blocks, blockBlobURL, options);
-                    }
-                });
+                .collectInto(new ArrayList<>(numBlocks),
+                        (BiConsumer<ArrayList<ByteBuffer>, ByteBuffer>) ArrayList::add)
+                .flatMap(blocks -> uploadByteBuffersToBlockBlob(blocks, blockBlobURL, options));
     }
 
     /**
-     * Uploads an iterable of ByteBuffers to a block blob.
+     * Uploads an iterable of {@code ByteBuffers} to a block blob. The data will first data will first be examined to
+     * check the size and validate the number of blocks. If the total amount of data in all the buffers is small enough,
+     * this method will perform a single putBlob operation. Otherwise, each {@code ByteBuffer} in the iterable is
+     * assumed to be its own discreet block of data for the block blob and will be uploaded as such.
      *
      * @param data
      *      A {@code Iterable} of {@link ByteBuffer} that contains the data to upload.
@@ -229,8 +204,8 @@ public class Highlevel {
         }
 
         // If the size can fit in 1 putBlob call, do it this way.
-        if (numBlocks == 1 && size <= BlockBlobURL.MAX_PUT_BLOB_BYTES) {
-            return doSingleShotUpload(data.iterator().next(), blockBlobURL, options);
+        if (size <= BlockBlobURL.MAX_PUT_BLOB_BYTES) {
+            return doSingleShotUpload(Flowable.fromIterable(data), size, blockBlobURL, options);
         }
 
         if (numBlocks > BlockBlobURL.MAX_BLOCKS) {
@@ -239,43 +214,37 @@ public class Highlevel {
 
         // TODO: context with cancel?
 
-        // Generate a flowable that emits items which are the ByteBuffers in the provided Iterable.
+        // Generate an observable that emits items which are the ByteBuffers in the provided Iterable.
         return Observable.fromIterable(data)
                 /*
                  For each ByteBuffer, make a call to putBlock as follows. concatMap ensures that the items
                  emitted by this Observable are in the same sequence as they are begun, which will be important for
                  composing the list of Ids later.
                  */
-                .concatMapEager(new Function<ByteBuffer, ObservableSource<String>>() {
-                    @Override
-                    public ObservableSource<String> apply(final ByteBuffer blockData) throws Exception {
-                        if (blockData.remaining() > Constants.MAX_BLOCK_SIZE) {
-                            throw new IllegalArgumentException(SR.INVALID_BLOCK_SIZE);
-                        }
+                .concatMapEager(blockData -> {
+                    if (blockData.remaining() > Constants.MAX_BLOCK_SIZE) {
+                        throw new IllegalArgumentException(SR.INVALID_BLOCK_SIZE);
+                    }
 
-                        // TODO: progress
+                    // TODO: progress
 
-                        final String blockId = DatatypeConverter.printBase64Binary(
-                                UUID.randomUUID().toString().getBytes());
+                    final String blockId = Base64.getEncoder().encodeToString(
+                            UUID.randomUUID().toString().getBytes());
 
-                        // TODO: What happens if one of the calls fails? It seems like this single/observable
-                        // will emit an error, which will halt the collecting into a list. Will the list still
-                        // be emitted or will it emit an error? In the latter, it'll just propogate. In the former,
-                        // we should check the size of the blockList equals numBlocks before sending it up.
 
-                        /*
-                         Make a call to putBlock. Instead of emitting the RestResponse, which we don't care about,
-                         emit the blockId for this request. These will be collected below. Turn that into an Observable
-                         which emits one item to comply with the signature of concatMapEager.
-                         */
-                        return blockBlobURL.putBlock(blockId, Flowable.just(blockData), blockData.remaining(),
-                                options.accessConditions.getLeaseAccessConditions())
-                                .map(new Function<RestResponse<BlockBlobPutBlockHeaders,Void>, String>() {
-                                    @Override
-                                    public String apply(RestResponse<BlockBlobPutBlockHeaders, Void> x) throws Exception {
-                                        return blockId;
-                                    }
-                                }).toObservable();
+                    // TODO: What happens if one of the calls fails? It seems like this single/observable
+                    // will emit an error, which will halt the collecting into a list. Will the list still
+                    // be emitted or will it emit an error? In the latter, it'll just propagate. In the former,
+                    // we should check the size of the blockList equals numBlocks before sending it up.
+
+                    /*
+                     Make a call to putBlock. Instead of emitting the response, which we don't care about other than
+                     that it was successful, emit the blockId for this request. These will be collected below. Turn that
+                     into an Observable which emits one item to comply with the signature of concatMapEager.
+                     */
+                    return blockBlobURL.putBlock(blockId, Flowable.just(blockData), blockData.remaining(),
+                            options.accessConditions.getLeaseAccessConditions())
+                            .map(x -> blockId).toObservable();
 
                 /*
                  Specify the number of concurrent subscribers to this map. This determines how many concurrent rest
@@ -286,67 +255,36 @@ public class Highlevel {
                  here because we have converted from a Single.
                  */
 
-                    }
                 }, options.parallelism, 1)
                 /*
                 collectInto will gather each of the emitted blockIds into a list. Because we used concatMap, the Ids
                 will be emitted according to their block number, which means the list generated here will be properly
                 ordered. This also converts into a Single.
                 */
-                .collectInto(new ArrayList<String>(numBlocks), new BiConsumer<ArrayList<String>, String>() {
-                    @Override
-                    public void accept(ArrayList<String> ids, String id) throws Exception {
-                        ids.add(id);
-                    }
-                })
+                .collectInto(new ArrayList<>(numBlocks), (BiConsumer<ArrayList<String>, String>) ArrayList::add)
                 /*
                 collectInto will not emit the list until its source calls onComplete. This means that by the time we
                 call putBlock list, all of the putBlock calls will have finished. By flatMapping the list, we can
                 "map" it into a call to putBlockList.
                  */
-                .flatMap(new Function<ArrayList<String>, SingleSource<RestResponse<BlockBlobPutBlockListHeaders, Void>>>() {
-                    public SingleSource<RestResponse<BlockBlobPutBlockListHeaders, Void>> apply(ArrayList<String> ids) throws Exception {
-                        return blockBlobURL.putBlockList(ids, options.httpHeaders, options.metadata,
-                                options.accessConditions);
-                    }
-                })
+                .flatMap( ids ->
+                        blockBlobURL.putBlockList(ids, options.httpHeaders, options.metadata, options.accessConditions))
                 /*
                 Finally, we must turn the specific response type into a CommonRestResponse by mapping.
                  */
-                .map(new Function<RestResponse<BlockBlobPutBlockListHeaders, Void>, CommonRestResponse>() {
-                    @Override
-                    public CommonRestResponse apply(RestResponse<BlockBlobPutBlockListHeaders, Void> response) throws Exception {
-                        return CommonRestResponse.createFromPutBlockListResponse(response);
-                    }
-                });
+                .map(CommonRestResponse::createFromPutBlockListResponse);
 
-
-        /*
-         * Should take in a ByteBuffer.
-         * Get FileChannel from FileInputStream and call map to get MappedByteBuffer.
-         * Duplicate/slice the buffer for each network call (backed by the same data)
-         * Set the position and limit on the new buffer (independent per buffer object).
-         * Can convert to flowable by get()-ing some relative section of the array or the whole thing. This will read
-         * those bytes into memory. Create using Flowable.just(byte[]).
-         *
-         */
     }
 
     private static Single<CommonRestResponse> doSingleShotUpload(
-            ByteBuffer data, BlockBlobURL blockBlobURL, UploadToBlockBlobOptions options) {
+            Flowable<ByteBuffer> data, long size, BlockBlobURL blockBlobURL, UploadToBlockBlobOptions options) {
         if (options.progressReceiver != null) {
             // TODO: Wrap in a progress stream once progress is written.
         }
 
-        return blockBlobURL.putBlob(Flowable.just(data), data.remaining(), options.httpHeaders,
+        // Transform the specific RestResponse into a CommonRestResponse.
+        return blockBlobURL.putBlob(data, size, options.httpHeaders,
                 options.metadata, options.accessConditions)
-                .map(new Function<RestResponse<BlobPutHeaders, Void>, CommonRestResponse>() {
-                    // Transform the specific RestResponse into a CommonRestResponse.
-                    @Override
-                    public CommonRestResponse apply(
-                            RestResponse<BlobPutHeaders, Void> response) throws Exception {
-                        return CommonRestResponse.createFromPutBlobResponse(response);
-                    }
-                });
+                .map(CommonRestResponse::createFromPutBlobResponse);
     }
 }

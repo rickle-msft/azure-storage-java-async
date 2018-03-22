@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Defines headers for PutPage operation.
@@ -106,7 +106,7 @@ public final class PageBlobPutPageHeaders {
      *
      * @return the lastModified value.
      */
-    public DateTime lastModified() {
+    public OffsetDateTime lastModified() {
         if (this.lastModified == null) {
             return null;
         }
@@ -119,7 +119,7 @@ public final class PageBlobPutPageHeaders {
      * @param lastModified the lastModified value to set.
      * @return the PageBlobPutPageHeaders object itself.
      */
-    public PageBlobPutPageHeaders withLastModified(DateTime lastModified) {
+    public PageBlobPutPageHeaders withLastModified(OffsetDateTime lastModified) {
         if (lastModified == null) {
             this.lastModified = null;
         } else {
@@ -213,7 +213,7 @@ public final class PageBlobPutPageHeaders {
      *
      * @return the dateProperty value.
      */
-    public DateTime dateProperty() {
+    public OffsetDateTime dateProperty() {
         if (this.dateProperty == null) {
             return null;
         }
@@ -226,7 +226,7 @@ public final class PageBlobPutPageHeaders {
      * @param dateProperty the dateProperty value to set.
      * @return the PageBlobPutPageHeaders object itself.
      */
-    public PageBlobPutPageHeaders withDateProperty(DateTime dateProperty) {
+    public PageBlobPutPageHeaders withDateProperty(OffsetDateTime dateProperty) {
         if (dateProperty == null) {
             this.dateProperty = null;
         } else {

@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.microsoft.rest.v2.DateTimeRfc1123;
-import org.joda.time.DateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Properties of a blob.
@@ -197,7 +197,7 @@ public final class BlobProperties {
      *
      * @return the lastModified value.
      */
-    public DateTime lastModified() {
+    public OffsetDateTime lastModified() {
         if (this.lastModified == null) {
             return null;
         }
@@ -210,7 +210,7 @@ public final class BlobProperties {
      * @param lastModified the lastModified value to set.
      * @return the BlobProperties object itself.
      */
-    public BlobProperties withLastModified(DateTime lastModified) {
+    public BlobProperties withLastModified(OffsetDateTime lastModified) {
         if (lastModified == null) {
             this.lastModified = null;
         } else {
@@ -564,7 +564,7 @@ public final class BlobProperties {
      *
      * @return the copyCompletionTime value.
      */
-    public DateTime copyCompletionTime() {
+    public OffsetDateTime copyCompletionTime() {
         if (this.copyCompletionTime == null) {
             return null;
         }
@@ -577,7 +577,7 @@ public final class BlobProperties {
      * @param copyCompletionTime the copyCompletionTime value to set.
      * @return the BlobProperties object itself.
      */
-    public BlobProperties withCopyCompletionTime(DateTime copyCompletionTime) {
+    public BlobProperties withCopyCompletionTime(OffsetDateTime copyCompletionTime) {
         if (copyCompletionTime == null) {
             this.copyCompletionTime = null;
         } else {
@@ -671,7 +671,7 @@ public final class BlobProperties {
      *
      * @return the deletedTime value.
      */
-    public DateTime deletedTime() {
+    public OffsetDateTime deletedTime() {
         if (this.deletedTime == null) {
             return null;
         }
@@ -684,7 +684,7 @@ public final class BlobProperties {
      * @param deletedTime the deletedTime value to set.
      * @return the BlobProperties object itself.
      */
-    public BlobProperties withDeletedTime(DateTime deletedTime) {
+    public BlobProperties withDeletedTime(OffsetDateTime deletedTime) {
         if (deletedTime == null) {
             this.deletedTime = null;
         } else {
