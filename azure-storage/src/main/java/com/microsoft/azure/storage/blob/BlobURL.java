@@ -126,23 +126,22 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * Copies the data at the source URL to a blob.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/copy-blob.
+     * Copies the data at the source URL to a blob. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/copy-blob">Azure Docs</a>
+     *
      *
      * @param sourceURL
-     *      A {@code java.net.URL} representing the source URL to copy from.
-     *      URLs outside of Azure may only be copied to block blobs.
+     *      The source URL to copy from. URLs outside of Azure may only be copied to block blobs.
      * @param metadata
-     *      A {@link Metadata} object that specifies key value pairs to set on the blob.
+     *      {@link Metadata}
      * @param sourceAccessConditions
-     *      {@link BlobAccessConditions} object to check against the source
+     *      {@link BlobAccessConditions} against the source.
      * @param destAccessConditions
-     *      {@link BlobAccessConditions} object to check against the destination
+     *      {@link BlobAccessConditions} against the destination.
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobCopyHeaders} and
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
-    public Single<BlobCopyResponse> startCopy(
+    public Single<BlobCopyResponse> startCopyFromURL(
             URL sourceURL, Metadata metadata, BlobAccessConditions sourceAccessConditions,
             BlobAccessConditions destAccessConditions) {
         metadata = metadata == null ? Metadata.NONE : metadata;
@@ -164,19 +163,19 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * Stops a pending copy that was previously started and leaves a destination blob with 0 length and
-     * metadata. For more information, see https://docs.microsoft.com/rest/api/storageservices/abort-copy-blob.
+     * Stops a pending copy that was previously started and leaves a destination blob with 0 length and metadata. For
+     * more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/abort-copy-blob">Azure Docs</a>.
      *
      * @param copyId
-     *      A {@code String} representing the copy identifier provided in the x-ms-copy-id header of
-     *      the original Copy Blob operation.
+     *      The id of the copy operation to abort. Returned as the {@code copyId} field on the {@link BlobCopyHeaders}
+     *      object.
      * @param leaseAccessConditions
-     *      {@link LeaseAccessConditions} object representing lease access conditions
+     *      {@link LeaseAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobAbortCopyHeaders} and
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
-    public Single<BlobAbortCopyResponse> abortCopy(
+    public Single<BlobAbortCopyResponse> abortCopyFromURL(
             String copyId, LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
 
@@ -185,20 +184,20 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * Reads a range of bytes from a blob. The response also includes the blob's properties and metadata.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/get-blob.
+     * Reads a range of bytes from a blob. The response also includes the blob's properties and metadata. For more
+     * information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/get-blob">Azure Docs</a>.
      *
      * @param range
-     *      A {@link BlobRange} which bytes to read.
+     *      {@link BlobRange}
      * @param accessConditions
-     *      A {@link BlobAccessConditions} object that represents the access conditions for the blob.
+     *      {@link BlobAccessConditions}
      * @param rangeGetContentMD5
-     *      A {@code boolean} indicating if the contentMD5 for the specified blob range should be returned.
+     *      Whether the contentMD5 for the specified blob range should be returned.
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobGetHeaders} and a
-     *      {@link Flowable} which emits {@link ByteBuffer} as the body if successful.
+     *      Emits the successful response.
      */
-    public Single<BlobGetResponse> getBlob(
+    public Single<BlobGetResponse> download(
             BlobRange range, BlobAccessConditions accessConditions, boolean rangeGetContentMD5) {
 
         // TODO: Are there other places for this? Should this be in the swagger?
@@ -216,16 +215,18 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * Deletes the specified blob or snapshot. Note that deleting a blob also deletes all its snapshots.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/delete-blob.
+     * Deletes the specified blob or snapshot. Note that deleting a blob also deletes all its snapshots. For more
+     * information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/delete-blob">Azure Docs</a>.
      *
      * @param deleteBlobSnapshotOptions
-     *      A {@link DeleteSnapshotsOptionType} which represents delete snapshot options.
+     *      Specifies the behavior for deleting the snapshots on this blob. {@code Include} will delete the base blob
+     *      and all snapshots. {@code Only} will delete only the snapshots. If a snapshot is being deleted, you must
+     *      pass null.
      * @param accessConditions
-     *      A {@link BlobAccessConditions} object that represents the access conditions for the blob.
+     *      {@link BlobAccessConditions}
      * @return
-     *      A {@link Single} which emits a {@link RestResponse} object containing the {@link BlobDeleteHeaders} and a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<BlobDeleteResponse> delete(
             DeleteSnapshotsOptionType deleteBlobSnapshotOptions, BlobAccessConditions accessConditions) {
@@ -241,16 +242,15 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * Returns the blob's metadata and properties.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/get-blob-properties.
+     * Returns the blob's metadata and properties. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/get-blob-properties">Azure Docs</a>.
      *
      * @param accessConditions
-     *      A {@link BlobAccessConditions} object that represents the access conditions for the blob.
+     *      {@link BlobAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link BlobGetPropertiesHeaders} and a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
-    public Single<BlobGetPropertiesResponse> getPropertiesAndMetadata(
+    public Single<BlobGetPropertiesResponse> getProperties(
             BlobAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
 
@@ -263,19 +263,17 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * Changes a blob's HTTP header properties.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/set-blob-properties.
+     * Changes a blob's HTTP header properties. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/set-blob-properties">Azure Docs</a>.
      *
      * @param headers
-     *      A {@link BlobHTTPHeaders} object that specifies which properties to set on the blob.
+     *      {@link BlobHTTPHeaders}
      * @param accessConditions
-     *      A {@link BlobAccessConditions} object that specifies under which conditions the operation should
-     *      complete.
+     *      {@link BlobAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobSetPropertiesHeaders}
-     *      and a {@code Void} body if successful.
+     *      Emits the successful response.
      */
-    public Single<BlobSetPropertiesResponse> setProperties(
+    public Single<BlobSetPropertiesResponse> setHTTPHeaders(
             BlobHTTPHeaders headers, BlobAccessConditions accessConditions) {
         headers = headers == null ? BlobHTTPHeaders.NONE : headers;
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
@@ -293,17 +291,15 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * Changes a blob's metadata.
-     * https://docs.microsoft.com/rest/api/storageservices/set-blob-metadata.
+     * Changes a blob's metadata. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/set-blob-metadata">Azure Docs</a>.
      *
      * @param metadata
-     *      A {@link Metadata} object that specifies key value pairs to set on the blob.
+     *      {@link Metadata}
      * @param accessConditions
-     *      A {@link BlobAccessConditions} object that specifies under which conditions the operation should
-     *      complete.
+     *      {@link BlobAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobSetMetadataHeaders}
-     *      and a {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<BlobSetMetadataResponse> setMetadata(
             Metadata metadata, BlobAccessConditions accessConditions) {
@@ -320,16 +316,15 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * Creates a read-only snapshot of a blob.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/snapshot-blob.
+     * Creates a read-only snapshot of a blob. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/snapshot-blob">Azure Docs</a>.
      *
      * @param metadata
-     *      A {@link Metadata} object that specifies key value pairs to set on the blob.
+     *      {@link Metadata}
      * @param accessConditions
-     *      A {@link BlobAccessConditions} object that represents the access conditions for the blob.
+     *      {@link BlobAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobTakeSnapshotHeaders}
-     *      and a {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<BlobTakeSnapshotResponse> createSnapshot(
             Metadata metadata, BlobAccessConditions accessConditions) {
@@ -347,19 +342,18 @@ public class BlobURL extends StorageURL {
 
     /**
      * Acquires a lease on the blob for write and delete operations. The lease duration must be between
-     * 15 to 60 seconds, or infinite (-1).
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/lease-blob.
+     * 15 to 60 seconds, or infinite (-1). For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/lease-blob">Azure Docs</a>.
      *
      * @param proposedID
      *      A {@code String} in any valid GUID format.
      * @param duration
-     *      A {@code Integer} specifies the duration of the lease, in seconds, or negative one (-1) for a lease that
+     *      The  duration of the lease, in seconds, or negative one (-1) for a lease that
      *      never expires. A non-infinite lease can be between 15 and 60 seconds.
      * @param httpAccessConditions
-     *      A {@link HTTPAccessConditions} object that represents HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobLeaseHeaders} and a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<BlobLeaseResponse> acquireLease(
             String proposedID, int duration, HTTPAccessConditions httpAccessConditions) {
@@ -380,16 +374,15 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * Renews the blob's previously-acquired lease.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/lease-blob.
+     * Renews the blob's previously-acquired lease. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/lease-blob">Azure Docs</a>.
      *
      * @param leaseID
-     *      A {@code String} representing the lease on the blob.
+     *      The leaseId of the active lease on the blob.
      * @param httpAccessConditions
-     *      A {@link HTTPAccessConditions} object that represents HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobLeaseHeaders} and a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<BlobLeaseResponse> renewLease(
             String leaseID, HTTPAccessConditions httpAccessConditions) {
@@ -404,16 +397,15 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * Releases the blob's previously-acquired lease. For more information, see
-     * https://docs.microsoft.com/rest/api/storageservices/lease-blob.
+     * Releases the blob's previously-acquired lease. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/lease-blob">Azure Docs</a>.
      *
      * @param leaseID
-     *      A {@code String} representing the lease on the blob.
+     *      The leaseId of the active lease on the blob.
      * @param httpAccessConditions
-     *      A {@link HTTPAccessConditions} object that represents HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobLeaseHeaders} and a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<BlobLeaseResponse> releaseLease(
             String leaseID, HTTPAccessConditions httpAccessConditions) {
@@ -429,19 +421,18 @@ public class BlobURL extends StorageURL {
 
     /**
      * BreakLease breaks the blob's previously-acquired lease (if it exists). Pass the LeaseBreakDefault (-1) constant
-     * to break a fixed-duration lease when it expires or an infinite lease immediately.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/lease-blob.
+     * to break a fixed-duration lease when it expires or an infinite lease immediately. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/lease-blob">Azure Docs</a>.
      *
      * @param breakPeriodInSeconds
      *      An optional {@code Integer} representing the proposed duration of seconds that the lease should continue
      *      before it is broken, between 0 and 60 seconds. This break period is only used if it is shorter than the time
      *      remaining on the lease. If longer, the time remaining on the lease is used. A new lease will not be
-     *      available before the break period has expired, but the lease may be held for longer than the break period
+     *      available before the break period has expired, but the lease may be held for longer than the break period.
      * @param httpAccessConditions
-     *      A {@link HTTPAccessConditions} object that represents HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobLeaseHeaders} and a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<BlobLeaseResponse> breakLease(
             Integer breakPeriodInSeconds, HTTPAccessConditions httpAccessConditions) {
@@ -456,18 +447,17 @@ public class BlobURL extends StorageURL {
     }
 
     /**
-     * ChangeLease changes the blob's lease ID.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/lease-blob.
+     * ChangeLease changes the blob's lease ID. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/lease-blob">Azure Docs</a>.
      *
      * @param leaseId
-     *      A {@code String} representing the lease ID to change.
+     *      The leaseId of the active lease on the blob.
      * @param proposedID
      *      A {@code String} in any valid GUID format.
      * @param httpAccessConditions
-     *      A {@link HTTPAccessConditions} object that represents HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobLeaseHeaders} and a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<BlobLeaseResponse> changeLease(
             String leaseId, String proposedID, HTTPAccessConditions httpAccessConditions) {
@@ -480,4 +470,8 @@ public class BlobURL extends StorageURL {
                 httpAccessConditions.getIfMatch().toString(), httpAccessConditions.getIfNoneMatch().toString(),
                 null);
     }
+
+    //TODO: Set Tier
+    //TODO: Undelete
+    // TODO: Update links
 }

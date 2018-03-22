@@ -12,7 +12,6 @@ import com.microsoft.azure.storage.models.LeaseStateType
 import com.microsoft.azure.storage.models.PublicAccessType
 import com.microsoft.rest.v2.util.FlowableUtil
 import io.reactivex.Flowable
-import spock.lang.Shared
 import spock.lang.Unroll
 
 import java.nio.ByteBuffer
@@ -24,14 +23,14 @@ class BlobAPI extends APISpec{
 
     def setup() {
         bu = cu.createBlockBlobURL(generateBlobName())
-        bu.putBlob(Flowable.just(defaultData), defaultText.length(), null, null, null)
+        bu.upload(Flowable.just(defaultData), defaultText.length(), null, null, null)
                 .blockingGet()
     }
 
     def "Blob get all null"() {
         when:
         ByteBuffer body = FlowableUtil.collectBytesInBuffer(
-                bu.getBlob(null, null, false).blockingGet().body())
+                bu.download(null, null, false).blockingGet().body())
                 .blockingGet()
 
         then:
@@ -40,7 +39,7 @@ class BlobAPI extends APISpec{
 
     def "Blob get properties all null"() {
         when:
-        BlobGetPropertiesHeaders headers = bu.getPropertiesAndMetadata(null).blockingGet().headers()
+        BlobGetPropertiesHeaders headers = bu.getProperties(null).blockingGet().headers()
 
         then:
         headers.blobType() == BlobType.BLOCK_BLOB
@@ -54,9 +53,9 @@ class BlobAPI extends APISpec{
         setup:
         BlobHTTPHeaders putHeaders = new BlobHTTPHeaders(cacheControl, contentDisposition, contentEncoding,
                 contentLanguage, contentMD5, contentType)
-        bu.setProperties(putHeaders, null).blockingGet()
+        bu.setHTTPHeaders(putHeaders, null).blockingGet()
         BlobGetPropertiesHeaders receivedHeaders =
-                bu.getPropertiesAndMetadata(null).blockingGet().headers()
+                bu.getProperties(null).blockingGet().headers()
 
         expect:
         receivedHeaders.cacheControl() == cacheControl
@@ -81,7 +80,7 @@ class BlobAPI extends APISpec{
         metadata.put(key2, value2)
 
         int initialCode = bu.setMetadata(metadata, null).blockingGet().statusCode()
-        Map<String,String> receivedMetadata = bu.getPropertiesAndMetadata(null).blockingGet().headers()
+        Map<String,String> receivedMetadata = bu.getProperties(null).blockingGet().headers()
                 .metadata()
 
         expect:
@@ -99,7 +98,7 @@ class BlobAPI extends APISpec{
         bu.acquireLease(UUID.randomUUID().toString(), -1, null).blockingGet()
 
         expect:
-        bu.getPropertiesAndMetadata(null).blockingGet()
+        bu.getProperties(null).blockingGet()
                 .headers().leaseState().equals(LeaseStateType.LEASED)
     }
 
@@ -112,7 +111,7 @@ class BlobAPI extends APISpec{
         bu.renewLease(leaseID, null).blockingGet()
 
         expect:
-        bu.getPropertiesAndMetadata(null).blockingGet().headers().leaseState()
+        bu.getProperties(null).blockingGet().headers().leaseState()
                 .equals(LeaseStateType.LEASED)
     }
 
@@ -124,7 +123,7 @@ class BlobAPI extends APISpec{
         bu.releaseLease(leaseID, null).blockingGet()
 
         expect:
-        bu.getPropertiesAndMetadata(null).blockingGet().headers().leaseState()
+        bu.getProperties(null).blockingGet().headers().leaseState()
                 .equals(LeaseStateType.AVAILABLE)
     }
 
@@ -135,7 +134,7 @@ class BlobAPI extends APISpec{
         bu.breakLease(null, null).blockingGet()
 
         expect:
-        bu.getPropertiesAndMetadata(null).blockingGet().headers().leaseState()
+        bu.getProperties(null).blockingGet().headers().leaseState()
                 .equals(LeaseStateType.BROKEN)
 
     }
@@ -157,16 +156,16 @@ class BlobAPI extends APISpec{
         String snapshot = bu.createSnapshot(null, null).blockingGet().headers().snapshot()
 
         then:
-        bu.withSnapshot(snapshot).getPropertiesAndMetadata(null).blockingGet().statusCode() == 200
+        bu.withSnapshot(snapshot).getProperties(null).blockingGet().statusCode() == 200
     }
 
     def "Blob copy"() {
         setup:
         BlobURL bu2 = cu.createBlockBlobURL(generateBlobName())
-        bu2.startCopy(bu.toURL(), null, null, null).blockingGet()
+        bu2.startCopyFromURL(bu.toURL(), null, null, null).blockingGet()
 
         when:
-        CopyStatusType status = bu2.getPropertiesAndMetadata(null).blockingGet().headers().copyStatus()
+        CopyStatusType status = bu2.getProperties(null).blockingGet().headers().copyStatus()
 
         then:
         status.equals(CopyStatusType.SUCCESS) || status.equals(CopyStatusType.PENDING)
@@ -176,20 +175,20 @@ class BlobAPI extends APISpec{
     def "Blob abort copy"() {
         setup:
         ByteBuffer data = getRandomData(8*1024*1024)
-        bu.toBlockBlobURL().putBlob(Flowable.just(data), 8*1024*1024, null, null, null)
+        bu.toBlockBlobURL().upload(Flowable.just(data), 8*1024*1024, null, null, null)
         // So we don't have to create a SAS.
-        cu.setPermissions(PublicAccessType.BLOB, null, null).blockingGet()
+        cu.setAccessPolicy(PublicAccessType.BLOB, null, null).blockingGet()
 
         ContainerURL cu2 = alternateServiceURL.createContainerURL(generateBlobName())
         cu2.create(null, null).blockingGet()
         BlobURL bu2 = cu2.createBlobURL(generateBlobName())
 
         when:
-        String copyID = bu2.startCopy(bu.toURL(), null, null, null)
+        String copyID = bu2.startCopyFromURL(bu.toURL(), null, null, null)
                 .blockingGet().headers().copyId()
 
         then:
-        bu2.abortCopy(copyID, null).blockingGet().statusCode() == 204
+        bu2.abortCopyFromURL(copyID, null).blockingGet().statusCode() == 204
     }
 
     def "Blob delete"() {

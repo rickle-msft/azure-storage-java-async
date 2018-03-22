@@ -31,7 +31,7 @@ public enum SASProtocol {
 
     private final String protocols;
 
-    private SASProtocol(String p) {
+    SASProtocol(String p) {
         this.protocols = p;
     }
 

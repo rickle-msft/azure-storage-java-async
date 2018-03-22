@@ -37,14 +37,14 @@ class PageBlobAPI extends APISpec {
 
     def "Page blob put page"() {
         expect:
-        bu.putPages(new PageRange().withStart(0).withEnd(511),
+        bu.uploadPages(new PageRange().withStart(0).withEnd(511),
                 Flowable.just(getRandomData(512)), null).blockingGet()
                 .statusCode() == 201
     }
 
     def "Page blob clear page"() {
         setup:
-        bu.putPages(new PageRange().withStart(0).withEnd(511),
+        bu.uploadPages(new PageRange().withStart(0).withEnd(511),
                 Flowable.just(getRandomData(512)), null).blockingGet()
 
         when:
@@ -57,7 +57,7 @@ class PageBlobAPI extends APISpec {
 
     def "Page blob get page ranges"() {
         setup:
-        bu.putPages(new PageRange().withStart(0).withEnd(511),
+        bu.uploadPages(new PageRange().withStart(0).withEnd(511),
                 Flowable.just(getRandomData(512)),null).blockingGet()
         expect:
         bu.getPageRanges(new BlobRange(0, 512), null).blockingGet().body()
@@ -67,7 +67,7 @@ class PageBlobAPI extends APISpec {
     def "Page blob get page ranges diff"() {
         setup:
         String snapshot = bu.createSnapshot(null, null).blockingGet().headers().snapshot()
-        bu.putPages(new PageRange().withStart(0).withEnd(511),
+        bu.uploadPages(new PageRange().withStart(0).withEnd(511),
                 Flowable.just(getRandomData(512)),null).blockingGet()
 
         expect:
@@ -80,28 +80,28 @@ class PageBlobAPI extends APISpec {
         bu.resize(1024, null).blockingGet()
 
         expect:
-        bu.getPropertiesAndMetadata(null).blockingGet().headers().contentLength() == 1024
+        bu.getProperties(null).blockingGet().headers().contentLength() == 1024
 
     }
 
     def "Page blob sequence number"() {
         setup:
-        bu.setSequenceNumber(SequenceNumberActionType.UPDATE, 5, null, null)
+        bu.updateSequenceNumber(SequenceNumberActionType.UPDATE, 5, null, null)
                 .blockingGet()
 
         expect:
-        bu.getPropertiesAndMetadata(null).blockingGet().headers().blobSequenceNumber() == 5
+        bu.getProperties(null).blockingGet().headers().blobSequenceNumber() == 5
     }
 
     def "Page blob start incremental copy"() {
         setup:
-        cu.setPermissions(PublicAccessType.BLOB, null, null).blockingGet()
+        cu.setAccessPolicy(PublicAccessType.BLOB, null, null).blockingGet()
         PageBlobURL bu2 = cu.createPageBlobURL(generateBlobName())
         String snapshot = bu.createSnapshot(null, null).blockingGet().headers().snapshot()
-        bu2.startIncrementalCopy(bu.toURL(), snapshot, null).blockingGet()
+        bu2.copyIncremental(bu.toURL(), snapshot, null).blockingGet()
 
         expect:
-        bu2.getPropertiesAndMetadata(null).blockingGet().headers().isIncrementalCopy()
+        bu2.getProperties(null).blockingGet().headers().isIncrementalCopy()
 
     }
 }

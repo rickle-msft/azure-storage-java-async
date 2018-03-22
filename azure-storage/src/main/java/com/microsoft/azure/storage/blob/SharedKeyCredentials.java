@@ -53,7 +53,7 @@ public final class SharedKeyCredentials implements ICredentials {
      * @param accountName
      *      The account name associated with the request.
      * @param accountKey
-     *      A string that represent the account access accountKey.
+     *      The account access key used to authenticate the request.
      */
     public SharedKeyCredentials(String accountName, String accountKey) throws InvalidKeyException {
         this.accountName = accountName;

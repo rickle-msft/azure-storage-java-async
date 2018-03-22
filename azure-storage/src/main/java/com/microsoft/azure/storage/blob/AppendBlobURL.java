@@ -91,19 +91,17 @@ public final class AppendBlobURL extends BlobURL {
     }
 
     /**
-     * Creates a 0-length append blob. Call AppendBlock to append data to an append blob.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/put-blob.
+     * Creates a 0-length append blob. Call AppendBlock to append data to an append blob. For more information, see
+     * the <a href="https://docs.microsoft.com/rest/api/storageservices/put-blob">Azure Docs</a>.
      *
      * @param headers
-     *      A {@link BlobHTTPHeaders} object that specifies which properties to set on the blob.
+     *      {@link BlobHTTPHeaders}
      * @param metadata
-     *      A {@link Metadata} object that specifies key value pairs to set on the blob.
+     *      {@link Metadata}
      * @param accessConditions
-     *      A {@link BlobAccessConditions} object that specifies under which conditions the operation should
-     *      complete.
+     *      {@link BlobAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} object containing the {@link BlobPutHeaders} and {@code Void}
-     *      body if successful.
+     *      Emits the successful response.
      */
     public Single<BlobPutResponse> create(
             BlobHTTPHeaders headers, Metadata metadata, BlobAccessConditions accessConditions) {
@@ -124,19 +122,17 @@ public final class AppendBlobURL extends BlobURL {
     }
 
     /**
-     * Commits a new block of data to the end of the existing append blob.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/append-block.
+     * Commits a new block of data to the end of the existing append blob. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/append-block">Azure Docs</a>.
      *
      * @param data
-     *      A {@code Flowable} which emits {@code byte[]} which represents the data to write to the blob.
+     *      The data to write to the blob.
      * @param length
-     *      A {@code long} indicating how long the total data is.
+     *      The total length of the data.
      * @param accessConditions
-     *      A {@link BlobAccessConditions} object that specifies under which conditions the operation should
-     *      complete.
+     *      {@link BlobAccessConditions}
      * @return
-     *      The {@link Single} which emits the {@link RestResponse} object containing the {@link AppendBlobAppendBlockHeaders}
-     *      and {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<AppendBlobAppendBlockResponse> appendBlock(
             Flowable<ByteBuffer> data, long length, BlobAccessConditions accessConditions) {

@@ -42,17 +42,16 @@ public final class BlobAccessConditions {
     private final PageBlobAccessConditions pageBlobAccessConditions;
 
     /**
-     * Access conditions which are specific to blobs. Passing in null for one of the parameters will set it to a
-     * default value.
+     * Access conditions which are specific to blobs.
      *
      * @param httpAccessConditions
-     *      Optional standard HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @param leaseAccessConditions
-     *      Optional access conditions for a lease on a container or blob.
+     *      {@link LeaseAccessConditions}
      * @param appendBlobAccessConditions
-     *      Optional access conditions which are specific to append blobs.
+     *      {@link AppendBlobAccessConditions}
      * @param pageBlobAccessConditions
-     *      Optional access conditions which are specific to page blobs.
+     *      {@link PageBlobAccessConditions}
      */
     public BlobAccessConditions(
             HTTPAccessConditions httpAccessConditions,

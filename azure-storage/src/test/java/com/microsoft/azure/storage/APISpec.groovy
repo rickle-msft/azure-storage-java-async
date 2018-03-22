@@ -230,7 +230,7 @@ class APISpec extends Specification {
             ServiceURL serviceURL = new ServiceURL(
                     new URL("http://" + System.getenv().get("ACCOUNT_NAME") + ".blob.core.windows.net"), pipeline)
             // There should not be more than 50000 containers from these tests
-            for (Container c : serviceURL.listContainers(null,
+            for (Container c : serviceURL.listContainersSegment(null,
                     new ListContainersOptions(null, containerPrefix, null)).blockingGet()
                     .body().containers()) {
                 ContainerURL containerURL = serviceURL.createContainerURL(c.name())

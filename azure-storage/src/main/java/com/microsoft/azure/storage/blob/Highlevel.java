@@ -1,7 +1,5 @@
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.*;
-import com.microsoft.rest.v2.util.FlowableUtil;
 import io.reactivex.*;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Function;
@@ -48,11 +46,11 @@ public class Highlevel {
          *      An object that implements the {@link IProgressReceiver} interface which will be invoked periodically as
          *      bytes are sent in a PutBlock call to the BlockBlobURL.
          * @param httpHeaders
-         *      A {@link BlobHTTPHeaders} to be associated with the blob when PutBlockList is called.
+         *      {@link BlobHTTPHeaders}
          * @param metadata
-         *      A {@link Metadata} object to be associated with the blob when PutBlockList is called.
+         *      {@link Metadata}
          * @param accessConditions
-         *      A {@link BlobAccessConditions} object that indicate the access conditions for the block blob.
+         *      {@link BlobAccessConditions}
          * @param parallelism
          *      A {@code int} that indicates the maximum number of blocks to upload in parallel. Must be greater than 0.
          *      The default is 5 (null=default).
@@ -81,15 +79,15 @@ public class Highlevel {
      * @param file
      *      The file to upload.
      * @param blockBlobURL
-     *      A {@link BlockBlobURL} that points to the blob to which the data should be uploaded.
+     *      Points to the blob to which the data should be uploaded.
      * @param blockLength
      *      If the data must be broken up into blocks, this value determines what size those blocks will be. This will
      *      affect the total number of service requests made. This value will be ignored if the data can be uploaded in
      *      a single put-blob operation.
      * @param options
-     *      A {@link UploadToBlockBlobOptions} object to configure the upload behavior.
+     *      {@link UploadToBlockBlobOptions}
      * @return
-     *      A {@link Single} that will return a {@link CommonRestResponse} if successful.
+     *      Emits the successful response.
      */
     public static Single<CommonRestResponse> uploadFileToBlockBlob(
             final FileChannel file, final BlockBlobURL blockBlobURL, final int blockLength,
@@ -100,7 +98,7 @@ public class Highlevel {
         Utility.assertInBounds("blockLength", blockLength, 1, BlockBlobURL.MAX_PUT_BLOCK_BYTES);
 
         try {
-            // If the size of the file can fit in a single putBlob, do it this way.
+            // If the size of the file can fit in a single upload, do it this way.
             if (file.size() < BlockBlobURL.MAX_PUT_BLOB_BYTES) {
                 return doSingleShotUpload(
                         Flowable.just(file.map(FileChannel.MapMode.READ_ONLY, 0, file.size())), file.size(),
@@ -142,9 +140,9 @@ public class Highlevel {
      *      affect the total number of service requests made. This value will be ignored if the data can be uploaded in
      *      a single put-blob operation.
      * @param options
-     *      A {@link UploadToBlockBlobOptions} object to configure the upload behavior.
+     *      {@link UploadToBlockBlobOptions}
      * @return
-     *      A {@link Single} that will return a {@link CommonRestResponse} if successful.
+     *      Emits the successful response.
      */
     public static Single<CommonRestResponse> uploadByteBufferToBlockBlob(
             final ByteBuffer data, final BlockBlobURL blockBlobURL, final int blockLength,
@@ -154,7 +152,7 @@ public class Highlevel {
         Utility.assertNotNull("options", options);
         Utility.assertInBounds("blockLength", blockLength, 1, BlockBlobURL.MAX_PUT_BLOCK_BYTES);
 
-        // If the size of the buffer can fit in a single putBlob, do it this way.
+        // If the size of the buffer can fit in a single upload, do it this way.
         if (data.remaining() < BlockBlobURL.MAX_PUT_BLOB_BYTES) {
             return doSingleShotUpload(Flowable.just(data), data.remaining(), blockBlobURL, options);
         }
@@ -176,17 +174,17 @@ public class Highlevel {
     /**
      * Uploads an iterable of {@code ByteBuffers} to a block blob. The data will first data will first be examined to
      * check the size and validate the number of blocks. If the total amount of data in all the buffers is small enough,
-     * this method will perform a single putBlob operation. Otherwise, each {@code ByteBuffer} in the iterable is
+     * this method will perform a single upload operation. Otherwise, each {@code ByteBuffer} in the iterable is
      * assumed to be its own discreet block of data for the block blob and will be uploaded as such.
      *
      * @param data
-     *      A {@code Iterable} of {@link ByteBuffer} that contains the data to upload.
+     *      The data to upload.
      * @param blockBlobURL
      *      A {@link BlockBlobURL} that points to the blob to which the data should be uploaded.
      * @param options
-     *      A {@link UploadToBlockBlobOptions} object to configure the upload behavior.
+     *      {@link UploadToBlockBlobOptions}
      * @return
-     *      A {@link Single} that will return a {@link CommonRestResponse} if successful.
+     *      Emits the successful response.
      */
     public static Single<CommonRestResponse> uploadByteBuffersToBlockBlob(
             final Iterable<ByteBuffer> data, final BlockBlobURL blockBlobURL,
@@ -203,7 +201,7 @@ public class Highlevel {
             numBlocks++;
         }
 
-        // If the size can fit in 1 putBlob call, do it this way.
+        // If the size can fit in 1 upload call, do it this way.
         if (size <= BlockBlobURL.MAX_PUT_BLOB_BYTES) {
             return doSingleShotUpload(Flowable.fromIterable(data), size, blockBlobURL, options);
         }
@@ -217,7 +215,7 @@ public class Highlevel {
         // Generate an observable that emits items which are the ByteBuffers in the provided Iterable.
         return Observable.fromIterable(data)
                 /*
-                 For each ByteBuffer, make a call to putBlock as follows. concatMap ensures that the items
+                 For each ByteBuffer, make a call to stageBlock as follows. concatMap ensures that the items
                  emitted by this Observable are in the same sequence as they are begun, which will be important for
                  composing the list of Ids later.
                  */
@@ -238,11 +236,11 @@ public class Highlevel {
                     // we should check the size of the blockList equals numBlocks before sending it up.
 
                     /*
-                     Make a call to putBlock. Instead of emitting the response, which we don't care about other than
+                     Make a call to stageBlock. Instead of emitting the response, which we don't care about other than
                      that it was successful, emit the blockId for this request. These will be collected below. Turn that
                      into an Observable which emits one item to comply with the signature of concatMapEager.
                      */
-                    return blockBlobURL.putBlock(blockId, Flowable.just(blockData), blockData.remaining(),
+                    return blockBlobURL.stageBlock(blockId, Flowable.just(blockData), blockData.remaining(),
                             options.accessConditions.getLeaseAccessConditions())
                             .map(x -> blockId).toObservable();
 
@@ -250,7 +248,7 @@ public class Highlevel {
                  Specify the number of concurrent subscribers to this map. This determines how many concurrent rest
                  calls are made. This is so because maxConcurrency is the number of internal subscribers available to
                  subscribe to the Observables emitted by the source. A subscriber is not released for a new subscription
-                 until its Observable calls onComplete, which here means that the call to putBlock is finished. Prefetch
+                 until its Observable calls onComplete, which here means that the call to stageBlock is finished. Prefetch
                  is a hint that each of the Observables emitted by the source will emit only one value, which is true
                  here because we have converted from a Single.
                  */
@@ -264,11 +262,11 @@ public class Highlevel {
                 .collectInto(new ArrayList<>(numBlocks), (BiConsumer<ArrayList<String>, String>) ArrayList::add)
                 /*
                 collectInto will not emit the list until its source calls onComplete. This means that by the time we
-                call putBlock list, all of the putBlock calls will have finished. By flatMapping the list, we can
-                "map" it into a call to putBlockList.
+                call stageBlock list, all of the stageBlock calls will have finished. By flatMapping the list, we can
+                "map" it into a call to commitBlockList.
                  */
                 .flatMap( ids ->
-                        blockBlobURL.putBlockList(ids, options.httpHeaders, options.metadata, options.accessConditions))
+                        blockBlobURL.commitBlockList(ids, options.httpHeaders, options.metadata, options.accessConditions))
                 /*
                 Finally, we must turn the specific response type into a CommonRestResponse by mapping.
                  */
@@ -283,7 +281,7 @@ public class Highlevel {
         }
 
         // Transform the specific RestResponse into a CommonRestResponse.
-        return blockBlobURL.putBlob(data, size, options.httpHeaders,
+        return blockBlobURL.upload(data, size, options.httpHeaders,
                 options.metadata, options.accessConditions)
                 .map(CommonRestResponse::createFromPutBlobResponse);
     }

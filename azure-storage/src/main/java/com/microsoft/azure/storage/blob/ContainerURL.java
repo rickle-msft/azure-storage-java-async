@@ -138,15 +138,16 @@ public final class ContainerURL extends StorageURL {
 
     /**
      * Creates a new container within a storage account. If a container with the same name already exists, the operation
-     * fails. For more information, see https://docs.microsoft.com/rest/api/storageservices/create-container.
+     * fails. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/create-container">Azure Docs</a>.
      *
      * @param metadata
-     *      A {@link Metadata} object that specifies key value pairs to set on the blob.
+     *      {@link Metadata}
      * @param accessType
-     *      A value of the class {@link PublicAccessType}.
+     *      Specifies how the data in this container is available to the public. See the x-ms-blob-public-access header
+     *      in the Azure Docs for more information. Pass null for no public access.
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerCreateHeaders} an a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<ContainerCreateResponse> create(
             Metadata metadata, PublicAccessType accessType) {
@@ -157,15 +158,13 @@ public final class ContainerURL extends StorageURL {
 
     /**
      * Marks the specified container for deletion. The container and any blobs contained within it are later
-     * deleted during garbage collection. For more information, see
-     * https://docs.microsoft.com/rest/api/storageservices/delete-container.
+     * deleted during garbage collection. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/delete-container">Azure Docs</a>.
      *
      * @param accessConditions
-     *      A {@link ContainerAccessConditions} object that specifies under which conditions the operation should
-     *      complete.
+     *      {@link ContainerAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerDeleteHeaders} an a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<ContainerDeleteResponse> delete(
             ContainerAccessConditions accessConditions) {
@@ -186,16 +185,15 @@ public final class ContainerURL extends StorageURL {
     }
 
     /**
-     * Returns the container's metadata and system properties.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/get-container-metadata.
+     * Returns the container's metadata and system properties. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/get-container-metadata">Azure Docs</a>.
      *
      * @param leaseAccessConditions
-     *      A {@link LeaseAccessConditions} object that specifies the lease on the container if there is one.
+     *      {@link LeaseAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerGetPropertiesHeaders} an a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
-    public Single<ContainerGetPropertiesResponse> getPropertiesAndMetadata(
+    public Single<ContainerGetPropertiesResponse> getProperties(
             LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
 
@@ -204,17 +202,15 @@ public final class ContainerURL extends StorageURL {
     }
 
     /**
-     * Sets the container's metadata. For more information, see
-     * https://docs.microsoft.com/rest/api/storageservices/set-container-metadata.
+     * Sets the container's metadata. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/set-container-metadata">Azure Docs</a>.
      *
      * @param metadata
-     *      A {@link Metadata} object that specifies key value pairs to set on the blob.
+     *      {@link Metadata}
      * @param accessConditions
-     *      A {@link ContainerAccessConditions} object that specifies under which conditions the operation should
-     *      complete.
+     *      {@link ContainerAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerSetMetadataHeaders} and
-     *      a {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<ContainerSetMetadataResponse> setMetadata(
             Metadata metadata, ContainerAccessConditions accessConditions) {
@@ -236,17 +232,16 @@ public final class ContainerURL extends StorageURL {
     }
 
     /**
-     * Returns the container's permissions. The permissions indicate whether container's blobs may be
-     * accessed publicly. For more information, see
-     * https://docs.microsoft.com/rest/api/storageservices/get-container-acl.
+     * Returns the container's permissions. The permissions indicate whether container's blobs may be accessed publicly.
+     * For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/get-container-acl">Azure Docs</a>.
      *
      * @param leaseAccessConditions
-     *      A {@link LeaseAccessConditions} object that specifies the lease on the container if there is one.
+     *      {@link LeaseAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerGetAclHeaders} and a
-     *      {@link List} of {@link SignedIdentifier} as the body if successful.
+     *      Emits the successful response.
      */
-    public Single<ContainerGetAclResponse> getPermissions(
+    public Single<ContainerGetAclResponse> getAccessPolicy(
             LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
 
@@ -255,22 +250,23 @@ public final class ContainerURL extends StorageURL {
     }
 
     /**
-     * Sets the container's permissions. The permissions indicate whether blobs in a container may be
-     * accessed publicly. For more information, see
-     * https://docs.microsoft.com/rest/api/storageservices/set-container-acl.
+     * Sets the container's permissions. The permissions indicate whether blobs in a container may be accessed publicly.
+     * For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/set-container-acl">Azure Docs</a>.
      *
      * @param accessType
-     *      A value of the class {@link PublicAccessType}. Passing null turns off public access.
+     *      Specifies how the data in this container is available to the public. See the x-ms-blob-public-access header
+     *      in the Azure Docs for more information. Pass null for no public access.
      * @param identifiers
-     *      A {@code java.util.List} of {@link SignedIdentifier} objects that specify the permissions for the container.
+     *      A list of {@link SignedIdentifier} objects that specify the permissions for the container. Please see
+     *      <a href="https://docs.microsoft.com/en-us/rest/api/storageservices/establishing-a-stored-access-policy">here</a>
+     *      for more information.
      * @param accessConditions
-     *      A {@link ContainerAccessConditions} object that specifies under which conditions the operation should
-     *      complete.
+     *      {@link ContainerAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerSetAclHeaders} an a 
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
-    public Single<ContainerSetAclResponse> setPermissions(
+    public Single<ContainerSetAclResponse> setAccessPolicy(
             PublicAccessType accessType, List<SignedIdentifier> identifiers,
             ContainerAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? ContainerAccessConditions.NONE : accessConditions;
@@ -290,22 +286,21 @@ public final class ContainerURL extends StorageURL {
 
     /**
      * Acquires a lease on the container for delete operations. The lease duration must be between 15 to
-     * 60 seconds, or infinite (-1). For more information, see
-     * https://docs.microsoft.com/rest/api/storageservices/lease-container.
+     * 60 seconds, or infinite (-1). For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/lease-container">Azure Docs</a>.
      *
      * @param proposedID
      *      A {@code String} in any valid GUID format.
      * @param duration
-     *      A {@code Integer} specifies the duration of the lease, in seconds, or negative one (-1) for a lease that
-     *      never expires. A non-infinite lease can be between 15 and 60 seconds.
+     *      The duration of the lease, in seconds, or negative one (-1) for a lease that never expires.
+     *      A non-infinite lease can be between 15 and 60 seconds.
      * @param httpAccessConditions
-     *      A {@link HTTPAccessConditions} object that represents HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerLeaseHeaders} an a 
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<ContainerLeaseResponse> acquireLease(
-            String proposedID, Integer duration, HTTPAccessConditions httpAccessConditions) {
+            String proposedID, int duration, HTTPAccessConditions httpAccessConditions) {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
         if (!this.validateLeaseOperationAccessConditions(httpAccessConditions)){
             // Throwing is preferred to Single.error because this will error out immediately instead of waiting until
@@ -322,16 +317,15 @@ public final class ContainerURL extends StorageURL {
     }
 
     /**
-     * Renews the container's previously-acquired lease.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/lease-container.
+     * Renews the container's previously-acquired lease. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/lease-container">Azure Docs</a>.
      *
      * @param leaseID
-     *      A {@code String} representing the lease on the blob.
+     *      The leaseId of the active lease on the container.
      * @param httpAccessConditions
-     *      A {@link HTTPAccessConditions} object that represents HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerLeaseHeaders} an a 
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<ContainerLeaseResponse> renewLease(
             String leaseID, HTTPAccessConditions httpAccessConditions) {
@@ -351,16 +345,15 @@ public final class ContainerURL extends StorageURL {
     }
 
     /**
-     * Releases the container's previously-acquired lease.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/lease-container.
+     * Releases the container's previously-acquired lease. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/lease-container">Azure Docs</a>.
      *
      * @param leaseID
-     *      A {@code String} representing the lease on the blob.
+     *      The leaseId of the active lease on the container.
      * @param httpAccessConditions
-     *      A {@link HTTPAccessConditions} object that represents HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerLeaseHeaders} an a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<ContainerLeaseResponse> releaseLease(
             String leaseID, HTTPAccessConditions httpAccessConditions) {
@@ -380,14 +373,18 @@ public final class ContainerURL extends StorageURL {
     }
 
     /**
-     * Breaks the container's previously-acquired lease.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/lease-container.
+     * Breaks the container's previously-acquired lease. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/lease-container">Azure Docs</a>.
      *
+     * @param breakPeriodInSeconds
+     *      An optional {@code Integer} representing the proposed duration of seconds that the lease should continue
+     *      before it is broken, between 0 and 60 seconds. This break period is only used if it is shorter than the time
+     *      remaining on the lease. If longer, the time remaining on the lease is used. A new lease will not be
+     *      available before the break period has expired, but the lease may be held for longer than the break period.
      * @param httpAccessConditions
-     *      A {@link HTTPAccessConditions} object that represents HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerLeaseHeaders} an a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
     public Single<ContainerLeaseResponse> breakLease(
             Integer breakPeriodInSeconds, HTTPAccessConditions httpAccessConditions) {
@@ -407,20 +404,19 @@ public final class ContainerURL extends StorageURL {
     }
 
     /**
-     * Changes the container's leaseID.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/lease-container.
+     * Changes the container's leaseID. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/lease-container">Azure Docs</a>.
      *
      * @param leaseID
-     *      A {@code String} representing the lease on the blob.
+     *      The leaseId of the active lease on the container.
      * @param proposedID
      *      A {@code String} in any valid GUID format.
      * @param httpAccessConditions
-     *      A {@link HTTPAccessConditions} object that represents HTTP access conditions.
+     *      {@link HTTPAccessConditions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerLeaseHeaders} an a
-     *      {@code Void} body if successful.
+     *      Emits the successful response.
      */
-    public Single<ContainerLeaseResponse> releaseLease(
+    public Single<ContainerLeaseResponse> changeLease(
             String leaseID, String proposedID, HTTPAccessConditions httpAccessConditions) {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
         if (!this.validateLeaseOperationAccessConditions(httpAccessConditions)) {
@@ -441,22 +437,25 @@ public final class ContainerURL extends StorageURL {
      * Returns a single segment of blobs starting from the specified Marker. Use an empty
      * marker to start enumeration from the beginning. Blob names are returned in lexicographic order.
      * After getting a segment, process it, and then call ListBlobs again (passing the the previously-returned
-     * Marker) to get the next segment.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/list-blobs.
+     * Marker) to get the next segment. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/list-blobs">Azure Docs</a>.
      *
      * @param marker
      *      A {@code String} value that identifies the portion of the list to be returned with the next list operation.
+     *      This value is returned in the response of a previous list operation. Set to null if this is the first
+     *      segment.
      * @param options
-     *      A {@link ListBlobsOptions} object which specifies one or more datasets to include in the response.
+     *      {@link ListBlobsOptions}
      * @return
-     *      The {@link Single} which emits a {@link RestResponse} containing the {@link ContainerListBlobsHeaders} and a
-     *      {@code ListBlobsResponse} as the body if successful.
+     *      Emits the successful response.
      */
-    public Single<ContainerListBlobsResponse> listBlobs(
+    public Single<ContainerListBlobsResponse> listBlobsFlatSegment(
             String marker, ListBlobsOptions options) {
         options = options == null ? ListBlobsOptions.DEFAULT : options;
         return this.storageClient.containers().listBlobsWithRestResponseAsync(options.getPrefix(),
                 options.getDelimiter(), marker, options.getMaxResults(),
                 options.getDetails().toList(), null, null);
     }
+
+    //TODO: List Blobs Heirarchy Segment
 }

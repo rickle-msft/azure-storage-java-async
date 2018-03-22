@@ -14,7 +14,7 @@ import com.microsoft.rest.v2.RestResponse;
 import java.util.Map;
 
 /**
- * Contains all response data for the listContainers operation.
+ * Contains all response data for the listContainersSegment operation.
  */
 public final class ServiceListContainersResponse extends RestResponse<ServiceListContainersHeaders, ListContainersResponse> {
     /**

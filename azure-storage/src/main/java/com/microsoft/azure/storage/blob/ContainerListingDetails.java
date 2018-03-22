@@ -34,7 +34,7 @@ public final class ContainerListingDetails {
      * A {@link ContainerListingDetails} object.
      *
      * @param metadata
-     *      A {@code boolean} indicating if metadata should be returned.
+     *      Whether metadata should be returned.
      */
     ContainerListingDetails(boolean metadata) {
         this.metadata = metadata;
@@ -42,7 +42,7 @@ public final class ContainerListingDetails {
 
     /**
      * @return
-     *      A {@code boolean} indicating if metadata should be returned.
+     *      Whether metadata should be returned.
      */
     public boolean getMetadata() {
         return this.metadata;

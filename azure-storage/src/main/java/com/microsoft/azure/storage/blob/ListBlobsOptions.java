@@ -15,13 +15,14 @@
 package com.microsoft.azure.storage.blob;
 
 /**
- * Defines options available to configure the behavior of a call to listBlobs on a {@link ContainerURL} object.
+ * Defines options available to configure the behavior of a call to listBlobsFlatSegment on a {@link ContainerURL}
+ * object. See the constructor for details on each of the options.
  */
 public final class ListBlobsOptions {
 
     /**
      * An object representing the default options: no details, prefix, or delimiter. Uses the server default for
-     * maxResult.
+     * maxResults.
      */
     public static final ListBlobsOptions DEFAULT = new ListBlobsOptions(
             new BlobListingDetails(false, false, false, false),
@@ -36,15 +37,14 @@ public final class ListBlobsOptions {
     private final Integer maxResults;
 
     /**
-     * A {@link ListBlobsOptions} object.
+     * An object filled with the specified values.
      *
      * @param details
-     *      A {@link BlobListingDetails} object indicating what additional information the service should return with
-     *      each blob.
+     *      {@link BlobListingDetails}
      * @param prefix
-     *      A {@code String} that filters the results to return only blobs whose names begin with the specified prefix.
+     *      Filters the results to return only blobs whose names begin with the specified prefix.
      * @param delimiter
-     *      A {@code String}. When the request includes this parameter, the operation returns a BlobPrefix element in
+     *      When the request includes this parameter, the operation returns a BlobPrefix element in
      *      the response body that acts as a placeholder for all blobs whose names begin with the same substring up to
      *      the appearance of the delimiter character. The delimiter may be a single character or a string.
      * @param maxResults
@@ -63,8 +63,7 @@ public final class ListBlobsOptions {
 
     /**
      * @return
-     *      A {@link BlobListingDetails} object indicating what additional information the service should return
-     *      with each blob.
+     *      {@link BlobListingDetails}
      */
     public BlobListingDetails getDetails() {
         return this.details;
@@ -72,7 +71,7 @@ public final class ListBlobsOptions {
 
     /**
      * @return
-     *      A {@code String} that filters the results to return only blobs whose names begin with the specified
+     *      Filters the results to return only blobs whose names begin with the specified
      *      prefix.
      */
     public String getPrefix() {
@@ -81,7 +80,7 @@ public final class ListBlobsOptions {
 
     /**
      * @return
-     *      A {@code String}. When the request includes this parameter, the operation returns a BlobPrefix element
+     *      When the request includes this parameter, the operation returns a BlobPrefix element
      *      in the response body that acts as a placeholder for all blobs whose names begin with the same substring
      *      up to the appearance of the delimiter character. The delimiter may be a single character or a string.
      */

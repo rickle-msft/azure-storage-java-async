@@ -20,7 +20,7 @@ package com.microsoft.azure.storage.blob;
 public final class LoggingOptions {
 
     /**
-     * An object representing default logging options. {@code MinDurationToLogSlowRequestsInMs} is set to 3000;
+     * Default logging options. {@code MinDurationToLogSlowRequestsInMs} is set to 3000;
      */
     public static final LoggingOptions DEFAULT = new LoggingOptions(3000);
 
@@ -32,7 +32,7 @@ public final class LoggingOptions {
      * Creates a new {@link LoggingOptions} object.
      *
      * @param minDurationToLogSlowRequestsInMs
-     *      A {@code long} representing a duration after which a tried operation will be logged as a warning.
+     *      The duration after which a tried operation will be logged as a warning.
      */
     public LoggingOptions(long minDurationToLogSlowRequestsInMs) {
         this.minDurationToLogSlowRequestsInMs = minDurationToLogSlowRequestsInMs;
@@ -40,7 +40,7 @@ public final class LoggingOptions {
 
     /**
      * @return
-     *      A {@code long} representing a duration after which a tried operation will be logged as a warning.
+     *      The duration after which a tried operation will be logged as a warning.
      *
      */
     public long getMinDurationToLogSlowRequestsInMs() {

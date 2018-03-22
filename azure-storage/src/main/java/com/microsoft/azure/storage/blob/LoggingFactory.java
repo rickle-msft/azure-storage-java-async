@@ -67,11 +67,11 @@ public final class LoggingFactory implements RequestPolicyFactory {
          * {@link com.microsoft.rest.v2.http.HttpPipeline}.
          *
          * @param nextPolicy
-         *      A {@link RequestPolicy} object.
+         *      {@link RequestPolicy}
          * @param options
-         *      A {@link RequestPolicyOptions} object.
+         *      {@link RequestPolicyOptions}
          * @param factory
-         *      A {@link LoggingFactory} object.
+         *      {@link LoggingFactory}
          */
         private LoggingPolicy(LoggingFactory factory, RequestPolicy nextPolicy, RequestPolicyOptions options) {
             this.factory = factory;

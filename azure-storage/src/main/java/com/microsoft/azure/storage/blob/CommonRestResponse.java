@@ -36,6 +36,10 @@ public final class CommonRestResponse {
         putBlockListResponse = null;
     }
 
+    /**
+     * @return
+     *      An HTTP Etag for the blob at the time of the request.
+     */
     public String eTag() {
         if (putBlobResponse != null) {
             return putBlobResponse.headers().eTag();
@@ -43,6 +47,10 @@ public final class CommonRestResponse {
         return putBlockListResponse.headers().eTag();
     }
 
+    /**
+     * @return
+     *      The time when the blob was last modified.
+     */
     public OffsetDateTime lastModifiedTime() {
         if (putBlobResponse != null) {
             return putBlobResponse.headers().lastModified();
@@ -50,6 +58,10 @@ public final class CommonRestResponse {
         return putBlockListResponse.headers().lastModified();
     }
 
+    /**
+     * @return
+     *      The id of the service request for which this is the response.
+     */
     public String requestId() {
         if (putBlobResponse != null) {
             return putBlobResponse.headers().requestId();
@@ -57,6 +69,10 @@ public final class CommonRestResponse {
         return putBlockListResponse.headers().requestId();
     }
 
+    /**
+     * @return
+     *      The date of the response.
+     */
     public OffsetDateTime date() {
         if (putBlobResponse != null) {
             return putBlobResponse.headers().dateProperty();
@@ -64,6 +80,10 @@ public final class CommonRestResponse {
         return putBlockListResponse.headers().dateProperty();
     }
 
+    /**
+     * @return
+     *       The service version responding to the request.
+     */
     public String version() {
         if (putBlobResponse != null) {
             return putBlobResponse.headers().version();
@@ -71,6 +91,10 @@ public final class CommonRestResponse {
         return putBlockListResponse.headers().version();
     }
 
+    /**
+     * @return
+     *      The underlying response.
+     */
     public RestResponse response() {
         if (putBlobResponse != null) {
             return putBlobResponse;

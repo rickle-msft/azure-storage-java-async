@@ -72,11 +72,11 @@ public abstract class StorageURL {
     /**
      * Appends a string to the end of a URL's path (prefixing the string with a '/' if required).
      * @param baseURL
-     *      A {@code java.net.URL} to which the name should be appended.
+     *      The url to which the name should be appended.
      * @param name
-     *      A {@code String} with the name to be appended.
+     *      The name to be appended.
      * @return
-     *      A {@code String} with the name appended to the URL.
+     *      A url with the name appended.
      */
     protected static URL appendToURLPath(URL baseURL, String name) throws MalformedURLException {
         UrlBuilder url = UrlBuilder.parse(baseURL.toString());

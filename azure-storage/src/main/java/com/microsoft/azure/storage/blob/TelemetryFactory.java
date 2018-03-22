@@ -39,8 +39,7 @@ public final class TelemetryFactory implements RequestPolicyFactory {
      * HTTP requests.
      *
      * @param telemetryOptions
-     *      A {@link TelemetryOptions} object which configures the behavior for the telemetry policies produced by this
-     *      factory.
+     *      {@link TelemetryOptions}
      */
     public TelemetryFactory(TelemetryOptions telemetryOptions) {
         String userAgentPrefix = telemetryOptions.getUserAgentPrefix() == null ?

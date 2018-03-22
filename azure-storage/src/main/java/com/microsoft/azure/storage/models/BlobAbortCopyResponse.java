@@ -14,7 +14,7 @@ import com.microsoft.rest.v2.RestResponse;
 import java.util.Map;
 
 /**
- * Contains all response data for the abortCopy operation.
+ * Contains all response data for the abortCopyFromURL operation.
  */
 public final class BlobAbortCopyResponse extends RestResponse<BlobAbortCopyHeaders, Void> {
     /**

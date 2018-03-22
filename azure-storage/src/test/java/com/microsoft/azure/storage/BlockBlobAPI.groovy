@@ -9,31 +9,31 @@ class BlockBlobAPI extends APISpec{
 
     def setup(){
         bu = cu.createBlockBlobURL(generateBlobName())
-        bu.putBlob(Flowable.just(defaultData), defaultText.length(), null, null, null)
+        bu.upload(Flowable.just(defaultData), defaultText.length(), null, null, null)
                 .blockingGet()
     }
 
     def "Block blob put block"() {
         expect:
-        bu.putBlock(new String(Base64.encoder.encode("0000".bytes)), Flowable.just(defaultData),
+        bu.stageBlock(new String(Base64.encoder.encode("0000".bytes)), Flowable.just(defaultData),
                 defaultData.remaining(), null).blockingGet().statusCode() == 201
     }
 
     def "Block blob put block list"(){
         setup:
         String blockID = new String(Base64.encoder.encode("0000".bytes))
-        bu.putBlock(blockID, Flowable.just(defaultData), defaultData.remaining(), null).blockingGet()
+        bu.stageBlock(blockID, Flowable.just(defaultData), defaultData.remaining(), null).blockingGet()
         ArrayList<String> ids = new ArrayList<>()
         ids.add(blockID)
 
         expect:
-        bu.putBlockList(ids, null, null, null).blockingGet().statusCode() == 201
+        bu.commitBlockList(ids, null, null, null).blockingGet().statusCode() == 201
     }
 
     def "Block blob get block list"() {
         setup:
         String blockID = new String(Base64.encoder.encode("0000".bytes))
-        bu.putBlock(blockID, Flowable.just(defaultData), defaultData.remaining(), null).blockingGet()
+        bu.stageBlock(blockID, Flowable.just(defaultData), defaultData.remaining(), null).blockingGet()
         ArrayList<String> ids = new ArrayList<>()
         ids.add(blockID)
 
@@ -44,7 +44,7 @@ class BlockBlobAPI extends APISpec{
 
     def "Block blob put"() {
         expect:
-        bu.putBlob(Flowable.just(defaultData), defaultData.remaining(),
+        bu.upload(Flowable.just(defaultData), defaultData.remaining(),
                 null, null, null).blockingGet().statusCode() == 201
     }
 }

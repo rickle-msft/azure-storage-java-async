@@ -1,7 +1,6 @@
 package com.microsoft.azure.storage
 
 import com.microsoft.azure.storage.blob.ContainerAccessConditions
-import com.microsoft.azure.storage.blob.ContainerURL
 import com.microsoft.azure.storage.blob.ETag
 import com.microsoft.azure.storage.blob.HTTPAccessConditions
 import com.microsoft.azure.storage.blob.LeaseAccessConditions
@@ -46,7 +45,7 @@ class ContainerAPI extends APISpec {
         when:
         int statusCode = cu.create(metadata, null).blockingGet().statusCode()
         Map<String, String> receivedMetadata =
-                cu.getPropertiesAndMetadata(null).blockingGet().headers().metadata()
+                cu.getProperties(null).blockingGet().headers().metadata()
 
         then:
         statusCode == 201
@@ -60,7 +59,7 @@ class ContainerAPI extends APISpec {
         when:
         int statusCode = cu.create(null, PublicAccessType.BLOB).blockingGet().statusCode()
         PublicAccessType access =
-                cu.getPropertiesAndMetadata(null).blockingGet().headers().blobPublicAccess()
+                cu.getProperties(null).blockingGet().headers().blobPublicAccess()
 
         then:
         statusCode == 201
@@ -70,7 +69,7 @@ class ContainerAPI extends APISpec {
     def "Container get properties null"() {
         when:
         ContainerGetPropertiesHeaders headers =
-                cu.getPropertiesAndMetadata(null).blockingGet().headers()
+                cu.getProperties(null).blockingGet().headers()
 
         then:
         headers.blobPublicAccess() == null
@@ -92,7 +91,7 @@ class ContainerAPI extends APISpec {
         int code
 
         try {
-            code = cu.getPropertiesAndMetadata(new LeaseAccessConditions(leaseID)).blockingGet().statusCode()
+            code = cu.getProperties(new LeaseAccessConditions(leaseID)).blockingGet().statusCode()
         }
         catch (RestException e) {
             code = e.response().statusCode()
@@ -127,10 +126,10 @@ class ContainerAPI extends APISpec {
     @Unroll
     def "Container set public access"() {
         setup:
-        cu.setPermissions(access, null, null).blockingGet()
+        cu.setAccessPolicy(access, null, null).blockingGet()
 
         expect:
-        cu.getPropertiesAndMetadata(null).blockingGet()
+        cu.getProperties(null).blockingGet()
                 .headers().blobPublicAccess().toString() == accessStr
 
         where:
@@ -143,17 +142,17 @@ class ContainerAPI extends APISpec {
 
     def "Container get acl"() {
         setup:
-        cu.setPermissions(PublicAccessType.BLOB, null, null).blockingGet()
+        cu.setAccessPolicy(PublicAccessType.BLOB, null, null).blockingGet()
 
         expect:
-        cu.getPermissions(null).blockingGet().headers().blobPublicAccess().toString() == "blob"
+        cu.getAccessPolicy(null).blockingGet().headers().blobPublicAccess().toString() == "blob"
     }
 
     @Unroll
     def "Container delete AC"() {
         setup:
         ContainerGetPropertiesHeaders headers =
-                cu.getPropertiesAndMetadata(null).blockingGet().headers()
+                cu.getProperties(null).blockingGet().headers()
         if (match.equals(receivedEtag)) {
             match = new ETag(headers.eTag())
         }
@@ -205,7 +204,7 @@ class ContainerAPI extends APISpec {
         bu.create(512, null, null, null, null).blockingGet()
 
         when:
-        List<Blob> blobs = cu.listBlobs(null, null).blockingGet().body().blobs().blob()
+        List<Blob> blobs = cu.listBlobsFlatSegment(null, null).blockingGet().body().blobs().blob()
 
         then:
         blobs.size() == 1

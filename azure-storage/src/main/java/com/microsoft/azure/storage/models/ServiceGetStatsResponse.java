@@ -14,7 +14,7 @@ import com.microsoft.rest.v2.RestResponse;
 import java.util.Map;
 
 /**
- * Contains all response data for the getStats operation.
+ * Contains all response data for the getStatistics operation.
  */
 public final class ServiceGetStatsResponse extends RestResponse<ServiceGetStatsHeaders, StorageServiceStats> {
     /**

@@ -54,81 +54,82 @@ public final class SASQueryParameters {
     private final String signature;
 
     /**
-     * A {@code String} representing the storage version.
+     * The storage version
      */
     public String getVersion() {
         return version;
     }
 
     /**
-     * A {@code String} representing the storage services being accessed (only for Account SAS). Please refer to
-     * {@link AccountSASService} for more details.
+     * The storage services being accessed (only for Account SAS). Please refer to {@link AccountSASService} for
+     * more details.
      */
     public String getServices() {
         return services;
     }
 
     /**
-     * A {@code String} representing the storage resource types being accessed (only for Account SAS). Please refer to
-     * {@link AccountSASResourceType} for more details.
+     * The storage resource types being accessed (only for Account SAS). Please refer to {@link AccountSASResourceType}
+     * for more details.
      */
     public String getResourceTypes() {
         return resourceTypes;
     }
 
     /**
-     * A {@code String} representing the allowed HTTP protocol(s) or {@code null}. Please refer to {@link SASProtocol}
-     * for more details.
+     * The allowed HTTP protocol(s) or {@code null}. Please refer to {@link SASProtocol} for more details.
      */
     public SASProtocol getProtocol() {
         return protocol;
     }
 
     /**
-     * A {@code java.util.Date} representing the start time for this SAS token or {@code null}.
+     * The start time for this SAS token or {@code null}.
      */
     public OffsetDateTime getStartTime() {
         return startTime;
     }
 
     /**
-     * A {@code java.util.Date} representing the expiry time for this SAS token.
+     * The expiry time for this SAS token.
      */
     public OffsetDateTime getExpiryTime() {
         return expiryTime;
     }
 
     /**
-     * A {@link IPRange} representing the range of valid IP addresses for this SAS token or {@code null}.
+     * {@link IPRange}
      */
     public IPRange getIpRange() {
         return ipRange;
     }
 
     /**
-     * A {@code String} representing the signed identifier (only for Service SAS) or {@code null}.
+     * The signed identifier (only for {@link ServiceSASSignatureValues}) or {@code null}. Please see
+     * <a href="https://docs.microsoft.com/en-us/rest/api/storageservices/establishing-a-stored-access-policy">here</a>
+     * for more information.
      */
     public String getIdentifier() {
         return identifier;
     }
 
     /**
-     * A {@code String} representing the storage container or blob (only for Service SAS).
+     * The storage container or blob (only for {@link ServiceSASSignatureValues}).
      */
     public String getResource() {
         return resource;
     }
 
     /**
-     * A {@code String} representing the storage permissions or {@code null}. Please refer to
-     * {@link AccountSASPermission}, {@link BlobSASPermission}, or {@link ContainerSASPermission} for more details.
+     * Please refer to {@link AccountSASPermission}, {@link BlobSASPermission}, or {@link ContainerSASPermission} for
+     * more details.
      */
     public String getPermissions() {
         return permissions;
     }
 
     /**
-     * A {@code String} representing the signature for the SAS token.
+     * The signature for the SAS token.
      */
     public String getSignature() {
         return signature;
@@ -138,7 +139,7 @@ public final class SASQueryParameters {
      * Creates a new {@link SASQueryParameters} object.
      *
      * @param queryParamsMap
-     *      A {@code java.util.Map} representing all query parameters for the request as key-value pairs
+     *      All query parameters for the request as key-value pairs
      * @param removeSASParametersFromMap
      *      When {@code true}, the SAS query parameters will be removed from queryParamsMap
      */

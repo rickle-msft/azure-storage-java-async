@@ -11,7 +11,7 @@ class ServiceAPI extends APISpec {
     }
     def "Service list containers"() {
         expect:
-        primaryServiceURL.listContainers(null, new ListContainersOptions(null,
+        primaryServiceURL.listContainersSegment(null, new ListContainersOptions(null,
                 containerPrefix, null)).blockingGet().body().containers().size() == 1
     }
 

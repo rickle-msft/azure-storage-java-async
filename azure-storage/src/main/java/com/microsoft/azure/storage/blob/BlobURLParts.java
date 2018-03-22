@@ -32,38 +32,39 @@ import java.util.Map;
 public final class BlobURLParts {
 
     /**
-     * A {@code String} representing the scheme. Ex: "https://".
+     * The scheme. Ex: "https://".
      */
     public String scheme;
 
     /**
-     * A {@code String} representing the host. Ex: "account.blob.core.windows.net".
+     * The host. Ex: "account.blob.core.windows.net".
      */
     public String host;
 
     /**
-     * A {@code String} representing the container name or {@code null}.
+     * The container name or {@code null} if a {@link ServiceURL} was parsed.
      */
     public String containerName;
 
     /**
-     * A {@code String} representing the blob name or {@code null}.
+     * The blob name or {@code null} if a {@link ServiceURL} or {@link ContainerURL} was parsed.
      */
     public String blobName;
 
     /**
-     * A {@code java.util.OffsetDateTime} representing the snapshot time or {@code null}.
+     * The snapshot time or {@code null} if anything except a URL to a snapshot was parsed.
      */
     public String snapshot;
 
     /**
-     * A {@link SASQueryParameters} representing the SAS query parameters or {@code null}.
+     * A {@link SASQueryParameters} representing the SAS query parameters or {@code null} if there were no such
+     * parameters.
      */
     public SASQueryParameters sasQueryParameters;
 
     /**
-     * A {@code Map<String, String[]>} representing query parameter vey value pairs aside from SAS parameters
-     * and snapshot time or {@code null}.
+     * The query parameter key value pairs aside from SAS parameters and snapshot time or {@code null} if there were
+     * no such parameters.
      */
     public Map<String, String[]> unparsedParameters;
 

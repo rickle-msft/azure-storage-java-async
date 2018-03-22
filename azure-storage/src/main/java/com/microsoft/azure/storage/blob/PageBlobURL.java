@@ -90,7 +90,7 @@ public final class PageBlobURL extends BlobURL {
 
     /**
      * Creates a page blob of the specified length. Call PutPage to upload data data to a page blob.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/put-blob.
+     * For more information, see the <a href="https://docs.microsoft.com/rest/api/storageservices/put-blob">Azure Docs</a>.
      *
      * @param size
      *      Specifies the maximum size for the page blob, up to 8 TB. The page blob size must be aligned to a
@@ -141,7 +141,7 @@ public final class PageBlobURL extends BlobURL {
 
     /**
      * Writes 1 or more pages to the page blob. The start and end offsets must be a multiple of 512.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/put-page.
+     * For more information, see the <a href="https://docs.microsoft.com/rest/api/storageservices/put-page">Azure Docs</a>.
      *
      * @param pageRange
      *      A {@link PageRange} object. Specifies the range of bytes to be written as a page.
@@ -154,7 +154,7 @@ public final class PageBlobURL extends BlobURL {
      *      A {@link Single} which emits a {@link RestResponse} containing the {@link PageBlobPutPageHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<PageBlobPutPageResponse> putPages(
+    public Single<PageBlobPutPageResponse> uploadPages(
             PageRange pageRange, Flowable<ByteBuffer> body, BlobAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
         if (pageRange == null) {
@@ -178,7 +178,7 @@ public final class PageBlobURL extends BlobURL {
 
     /**
      * Frees the specified pages from the page blob.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/put-page.
+     * For more information, see the <a href="https://docs.microsoft.com/rest/api/storageservices/put-page">Azure Docs</a>.
      *
      * @param pageRange
      *      A {@link PageRange} object. Specifies the range of bytes to be written as a page.
@@ -212,7 +212,7 @@ public final class PageBlobURL extends BlobURL {
 
     /**
      * Returns the list of valid page ranges for a page blob or snapshot of a page blob.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/get-page-ranges.
+     * For more information, see the <a href="https://docs.microsoft.com/rest/api/storageservices/get-page-ranges">Azure Docs</a>.
      *
      * @param blobRange
      *      A {@link BlobRange} object specifies the range of bytes over which to list ranges, inclusively. If
@@ -240,7 +240,7 @@ public final class PageBlobURL extends BlobURL {
 
     /**
      * Gets the collection of page ranges that differ between a specified snapshot and this page blob.
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/get-page-ranges.
+     * For more information, see the <a href="https://docs.microsoft.com/rest/api/storageservices/get-page-ranges">Azure Docs</a>.
      *
      * @param blobRange
      *     A {@link PageRange} object. Specifies the range of bytes to be written as a page.
@@ -271,7 +271,7 @@ public final class PageBlobURL extends BlobURL {
 
     /**
      * Resizes the page blob to the specified size (which must be a multiple of 512).
-     * For more information, see https://docs.microsoft.com/rest/api/storageservices/set-blob-properties.
+     * For more information, see the <a href="https://docs.microsoft.com/rest/api/storageservices/set-blob-properties">Azure Docs</a>.
      *
      * @param size
      *      Resizes a page blob to the specified size. If the specified value is less than the current size of the
@@ -319,7 +319,7 @@ public final class PageBlobURL extends BlobURL {
      *      The {@link Single} which emits a {@link RestResponse} containing the {@link BlobSetPropertiesHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<BlobSetPropertiesResponse> setSequenceNumber(
+    public Single<BlobSetPropertiesResponse> updateSequenceNumber(
             SequenceNumberActionType action, Long sequenceNumber, BlobHTTPHeaders headers,
             BlobAccessConditions accessConditions) {
         if (sequenceNumber != null && sequenceNumber < 0) {
@@ -350,8 +350,8 @@ public final class PageBlobURL extends BlobURL {
      * blob. The snapshot is copied such that only the differential changes between the previously copied snapshot are
      * transferred to the destination. The copied snapshots are complete copies of the original snapshot and can be read
      * or copied from as usual. For more information, see
-     * https://docs.microsoft.com/rest/api/storageservices/incremental-copy-blob and
-     * https://docs.microsoft.com/en-us/azure/virtual-machines/windows/incremental-snapshots.
+     * the Azure Docs <a href="https://docs.microsoft.com/rest/api/storageservices/incremental-copy-blob">here</a> and
+     * <a href="https://docs.microsoft.com/en-us/azure/virtual-machines/windows/incremental-snapshots">here</a>.
      *
      * @param source
      *      A {@code java.net.URL} which specifies the name of the source page blob.
@@ -364,7 +364,7 @@ public final class PageBlobURL extends BlobURL {
      *      A {@link Single} which emits a {@link RestResponse} containing the {@link PageBlobIncrementalCopyHeaders} and a
      *      {@code Void} body if successful.
      */
-    public Single<PageBlobIncrementalCopyResponse> startIncrementalCopy(
+    public Single<PageBlobIncrementalCopyResponse> copyIncremental(
             URL source, String snapshot, BlobAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
 

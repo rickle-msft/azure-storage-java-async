@@ -45,7 +45,7 @@ public final class RequestRetryFactory implements RequestPolicyFactory {
      * Creates a factory capable of generating RequestRetry policies for the {@link HttpPipeline}.
      *
      * @param requestRetryOptions
-     *      A {@link RequestRetryOptions} object configuring this factory and all its resultant policies.
+     *      {@link RequestRetryOptions}
      */
     public RequestRetryFactory(RequestRetryOptions requestRetryOptions) {
         this.requestRetryOptions = requestRetryOptions == null ? RequestRetryOptions.DEFAULT : requestRetryOptions;

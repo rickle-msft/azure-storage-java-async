@@ -23,7 +23,7 @@ public final class RequestRetryOptions {
 
     /**
      * An object representing default retry values: Exponential backoff, maxTries=4, tryTimeout=30, retryDelayInMs=4,
-     * maxRetryDelayInMs=120000, secondayHost=null.
+     * maxRetryDelayInMs=120000, secondaryHost=null.
      */
     public static final RequestRetryOptions DEFAULT = new RequestRetryOptions(RetryPolicyType.EXPONENTIAL, 0,
             0,null, null, null);

@@ -16,7 +16,8 @@ package com.microsoft.azure.storage.blob;
 
 /**
  * Most often used when creating a blob or setting its properties, this class contains fields for typical HTTP
- * properties. Null may be passed to any API which takes this type to indicate that no properties should be set.
+ * properties, which, if specified, will be attached to the target blob. Null may be passed to any API which takes this
+ * type to indicate that no properties should be set.
  */
 public final class BlobHTTPHeaders {
 
@@ -42,23 +43,17 @@ public final class BlobHTTPHeaders {
      * A {@link BlobHTTPHeaders} object.
      *
      * @param cacheControl
-     *      A {@code String} representing the cache-control value stored for the blob.
-     *      If this field has not been set for the blob, this field returns {@code null}.
+     *      The cache-control value stored for the blob.
      * @param contentDisposition
-     *      A {@code String} representing the content-disposition value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The content-disposition value stored for the blob.
      * @param contentEncoding
-     *      A {@code String} the content-encoding value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The content-encoding value stored for the blob.
      * @param contentLanguage
-     *      A {@code String} representing the content-language value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The content-language value stored for the blob.
      * @param contentMD5
-     *      A {@code String} representing the content MD5 value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The content-MD5 value stored for the blob.
      * @param contentType
-     *      A {@code String} representing the content type value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The content-type value stored for the blob.
      */
     public BlobHTTPHeaders(String cacheControl, String contentDisposition, String contentEncoding,
                            String contentLanguage, String contentMD5, String contentType) {
@@ -72,8 +67,7 @@ public final class BlobHTTPHeaders {
 
     /**
      * @return
-     *      A {@code String} representing the cache-control value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The cache-control value stored for the blob.
      */
     public String getCacheControl() {
         return cacheControl;
@@ -81,8 +75,7 @@ public final class BlobHTTPHeaders {
 
     /**
      * @return
-     *      A {@code String} representing the content-disposition value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The content-disposition value stored for the blob.
      */
     public String getContentDisposition() {
         return contentDisposition;
@@ -90,8 +83,7 @@ public final class BlobHTTPHeaders {
 
     /**
      * @return
-     *      A {@code String} the content-encoding value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The content-encoding value stored for the blob.
      */
     public String getContentEncoding() {
         return contentEncoding;
@@ -99,8 +91,7 @@ public final class BlobHTTPHeaders {
 
     /**
      * @return
-     *      A {@code String} representing the content-language value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The content-language value stored for the blob.
      */
     public String getContentLanguage() {
         return contentLanguage;
@@ -108,8 +99,7 @@ public final class BlobHTTPHeaders {
 
     /**
      * @return
-     *      A {@code String} representing the content MD5 value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The content-MD5 value stored for the blob.
      */
     public String getContentMD5() {
         return contentMD5;
@@ -117,8 +107,7 @@ public final class BlobHTTPHeaders {
 
     /**
      * @return
-     *      A {@code String} representing the content type value stored for the blob.
-     *      If this field has not been set for the blob, the field returns {@code null}.
+     *      The content-type value stored for the blob.
      */
     public String getContentType() {
         return contentType;

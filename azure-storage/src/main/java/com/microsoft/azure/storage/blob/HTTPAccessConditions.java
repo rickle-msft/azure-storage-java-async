@@ -40,7 +40,7 @@ public final class HTTPAccessConditions {
     private final ETag ifNoneMatch;
 
     /**
-     * Creates a {@link HTTPAccessConditions} object.
+     * Creates a {@code HTTPAccessConditions} object.
      *
      * @param ifModifiedSince
      *      The HTTP If-Modified-Since access condition.
