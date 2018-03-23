@@ -14,8 +14,7 @@
  */
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.*;
-import com.microsoft.rest.v2.RestResponse;
+import com.microsoft.azure.storage.blob.models.*;
 import com.microsoft.rest.v2.http.HttpPipeline;
 import io.reactivex.Single;
 
@@ -89,7 +88,7 @@ public final class ServiceURL extends StorageURL {
     public Single<ServiceListContainersSegmentResponse> listContainersSegment(
             String marker, ListContainersOptions options) {
         options = options == null ? ListContainersOptions.DEFAULT : options;
-        return this.storageClient.services().listContainersSegmentWithRestResponseAsync(options.getPrefix(), marker,
+        return this.storageClient.generatedServices().listContainersSegmentWithRestResponseAsync(options.getPrefix(), marker,
                 options.getMaxResults(), options.getDetails().toIncludeType(), null, null);
     }
 
@@ -101,7 +100,7 @@ public final class ServiceURL extends StorageURL {
      *      Emits the successful response.
      */
     public Single<ServiceGetPropertiesResponse> getProperties() {
-        return this.storageClient.services().getPropertiesWithRestResponseAsync(null, null);
+        return this.storageClient.generatedServices().getPropertiesWithRestResponseAsync(null, null);
     }
 
     /**
@@ -115,7 +114,7 @@ public final class ServiceURL extends StorageURL {
      */
     public Single<ServiceSetPropertiesResponse> setProperties(
             StorageServiceProperties properties) {
-        return this.storageClient.services().setPropertiesWithRestResponseAsync(properties, null,
+        return this.storageClient.generatedServices().setPropertiesWithRestResponseAsync(properties, null,
                 null);
     }
 
@@ -129,7 +128,7 @@ public final class ServiceURL extends StorageURL {
      *      Emits the successful response.
      */
     public Single<ServiceGetStatisticsResponse> getStatistics() {
-        return this.storageClient.services().getStatisticsWithRestResponseAsync(null, null);
+        return this.storageClient.generatedServices().getStatisticsWithRestResponseAsync(null, null);
     }
 
     // TODO: Preflight request

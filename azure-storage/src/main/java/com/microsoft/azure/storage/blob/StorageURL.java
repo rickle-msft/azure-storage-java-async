@@ -14,7 +14,7 @@
  */
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.implementation.StorageClientImpl;
+import com.microsoft.azure.storage.GeneratedStorageClient;
 import com.microsoft.rest.v2.http.HttpPipeline;
 import com.microsoft.rest.v2.http.HttpRequest;
 import com.microsoft.rest.v2.http.HttpResponse;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
  */
 public abstract class StorageURL {
 
-    protected final StorageClientImpl storageClient;
+    protected final GeneratedStorageClient storageClient;
 
     protected StorageURL(URL url, HttpPipeline pipeline) {
         if (url == null) {
@@ -46,7 +46,7 @@ public abstract class StorageURL {
             throw new IllegalArgumentException("pipeline cannot be null.");
         }
 
-        this.storageClient = new StorageClientImpl(pipeline)
+        this.storageClient = new GeneratedStorageClient(pipeline)
                 .withVersion(Constants.HeaderConstants.TARGET_STORAGE_VERSION);
         this.storageClient.withUrl(url.toString());
     }

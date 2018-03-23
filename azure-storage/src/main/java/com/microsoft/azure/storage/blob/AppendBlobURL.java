@@ -14,8 +14,7 @@
  */
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.*;
-import com.microsoft.rest.v2.RestResponse;
+import com.microsoft.azure.storage.blob.models.*;
 import com.microsoft.rest.v2.http.HttpPipeline;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -109,7 +108,7 @@ public final class AppendBlobURL extends BlobURL {
         metadata = metadata == null ? Metadata.NONE : metadata;
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
 
-        return this.storageClient.appendBlobs().createWithRestResponseAsync(0, null,
+        return this.storageClient.generatedAppendBlobs().createWithRestResponseAsync(0, null,
                 headers.getContentType(), headers.getContentEncoding(),
                 headers.getContentLanguage(), headers.getContentMD5(), headers.getCacheControl(), metadata,
                 accessConditions.getLeaseAccessConditions().getLeaseId(),
@@ -138,7 +137,7 @@ public final class AppendBlobURL extends BlobURL {
             Flowable<ByteBuffer> data, long length, BlobAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
 
-        return this.storageClient.appendBlobs().appendBlockWithRestResponseAsync(data, length, null,
+        return this.storageClient.generatedAppendBlobs().appendBlockWithRestResponseAsync(data, length, null,
                 accessConditions.getLeaseAccessConditions().getLeaseId(),
                 accessConditions.getAppendBlobAccessConditions().getIfMaxSizeLessThanOrEqual(),
                 accessConditions.getAppendBlobAccessConditions().getIfAppendPositionEquals(),

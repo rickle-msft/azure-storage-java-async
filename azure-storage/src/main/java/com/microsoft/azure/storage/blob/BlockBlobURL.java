@@ -14,9 +14,8 @@
  */
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.*;
+import com.microsoft.azure.storage.blob.models.*;
 import com.microsoft.rest.v2.http.HttpPipeline;
-import com.microsoft.rest.v2.RestResponse;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
@@ -121,7 +120,7 @@ public final class BlockBlobURL extends BlobURL {
         metadata = metadata == null ? Metadata.NONE : metadata;
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
         // TODO: Metadata protocol layer broken.
-        return this.storageClient.blockBlobs().uploadWithRestResponseAsync(
+        return this.storageClient.generatedBlockBlobs().uploadWithRestResponseAsync(
                 data, length, null, headers.getContentType(), headers.getContentEncoding(),
                 headers.getContentLanguage(), headers.getContentMD5(), headers.getCacheControl(), metadata,
                 accessConditions.getLeaseAccessConditions().getLeaseId(),
@@ -154,7 +153,7 @@ public final class BlockBlobURL extends BlobURL {
             String base64BlockID, Flowable<ByteBuffer> data, long length,
             LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
-        return this.storageClient.blockBlobs().stageBlockWithRestResponseAsync(base64BlockID, length, data,
+        return this.storageClient.generatedBlockBlobs().stageBlockWithRestResponseAsync(base64BlockID, length, data,
                 null, leaseAccessConditions.getLeaseId(), null);
     }
 
@@ -173,7 +172,7 @@ public final class BlockBlobURL extends BlobURL {
     public Single<BlockBlobGetBlockListResponse> getBlockList(
             BlockListType listType, LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
-        return this.storageClient.blockBlobs().getBlockListWithRestResponseAsync(listType,
+        return this.storageClient.generatedBlockBlobs().getBlockListWithRestResponseAsync(listType,
                 null, null, leaseAccessConditions.getLeaseId(), null);
     }
 
@@ -204,7 +203,7 @@ public final class BlockBlobURL extends BlobURL {
         headers = headers == null ? BlobHTTPHeaders.NONE : headers;
         metadata = metadata == null ? Metadata.NONE : metadata;
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
-        return this.storageClient.blockBlobs().commitBlockListWithRestResponseAsync(
+        return this.storageClient.generatedBlockBlobs().commitBlockListWithRestResponseAsync(
                 new BlockLookupList().withLatest(base64BlockIDs), null,
                 headers.getCacheControl(), headers.getContentType(),headers.getContentEncoding(),
                 headers.getContentLanguage(), headers.getContentMD5(), metadata,

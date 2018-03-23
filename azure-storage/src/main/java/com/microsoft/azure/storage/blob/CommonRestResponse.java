@@ -1,7 +1,7 @@
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.BlockBlobCommitBlockListResponse;
-import com.microsoft.azure.storage.models.BlockBlobUploadResponse;
+import com.microsoft.azure.storage.blob.models.BlockBlobCommitBlockListResponse;
+import com.microsoft.azure.storage.blob.models.BlockBlobUploadResponse;
 import com.microsoft.rest.v2.RestResponse;
 
 import java.time.OffsetDateTime;

@@ -14,7 +14,7 @@
  */
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.ListBlobsIncludeItem;
+import com.microsoft.azure.storage.blob.models.ListBlobsIncludeItem;
 
 import java.util.ArrayList;
 

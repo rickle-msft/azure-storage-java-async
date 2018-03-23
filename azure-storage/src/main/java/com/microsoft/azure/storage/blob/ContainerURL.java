@@ -14,8 +14,7 @@
  */
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.*;
-import com.microsoft.rest.v2.RestResponse;
+import com.microsoft.azure.storage.blob.models.*;
 import com.microsoft.rest.v2.http.HttpPipeline;
 import io.reactivex.Single;
 
@@ -152,7 +151,7 @@ public final class ContainerURL extends StorageURL {
     public Single<ContainersCreateResponse> create(
             Metadata metadata, PublicAccessType accessType) {
         metadata = metadata == null ? Metadata.NONE : metadata;
-        return this.storageClient.containers().createWithRestResponseAsync(
+        return this.storageClient.generatedContainers().createWithRestResponseAsync(
                 null, metadata, accessType, null);
     }
 
@@ -177,7 +176,7 @@ public final class ContainerURL extends StorageURL {
             throw new IllegalArgumentException("ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().deleteWithRestResponseAsync(null,
+        return this.storageClient.generatedContainers().deleteWithRestResponseAsync(null,
                 accessConditions.getLeaseID().getLeaseId(),
                 accessConditions.getHttpAccessConditions().getIfModifiedSince(),
                 accessConditions.getHttpAccessConditions().getIfUnmodifiedSince(),
@@ -197,7 +196,7 @@ public final class ContainerURL extends StorageURL {
             LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
 
-        return this.storageClient.containers().getPropertiesWithRestResponseAsync(null,
+        return this.storageClient.generatedContainers().getPropertiesWithRestResponseAsync(null,
                 leaseAccessConditions.getLeaseId(), null);
     }
 
@@ -226,7 +225,7 @@ public final class ContainerURL extends StorageURL {
         }
 
 
-        return this.storageClient.containers().setMetadataWithRestResponseAsync(null,
+        return this.storageClient.generatedContainers().setMetadataWithRestResponseAsync(null,
                 accessConditions.getLeaseID().getLeaseId(), metadata,
                 accessConditions.getHttpAccessConditions().getIfModifiedSince(),null);
     }
@@ -245,7 +244,7 @@ public final class ContainerURL extends StorageURL {
             LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
 
-        return this.storageClient.containers().getAccessPolicyWithRestResponseAsync(
+        return this.storageClient.generatedContainers().getAccessPolicyWithRestResponseAsync(
                 null, leaseAccessConditions.getLeaseId(), null);
     }
 
@@ -272,7 +271,7 @@ public final class ContainerURL extends StorageURL {
         accessConditions = accessConditions == null ? ContainerAccessConditions.NONE : accessConditions;
 
         // TODO: validate that empty list clears permissions and null list does not change list. Document behavior.
-        return this.storageClient.containers().setAccessPolicyWithRestResponseAsync(identifiers, null,
+        return this.storageClient.generatedContainers().setAccessPolicyWithRestResponseAsync(identifiers, null,
                 accessConditions.getLeaseID().getLeaseId(), accessType,
                 accessConditions.getHttpAccessConditions().getIfModifiedSince(),
                 accessConditions.getHttpAccessConditions().getIfUnmodifiedSince(),
@@ -309,7 +308,7 @@ public final class ContainerURL extends StorageURL {
                     "ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().acquireLeaseWithRestResponseAsync(
+        return this.storageClient.generatedContainers().acquireLeaseWithRestResponseAsync(
                 null, duration, proposedID,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
@@ -337,7 +336,7 @@ public final class ContainerURL extends StorageURL {
                     "ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().renewLeaseWithRestResponseAsync(
+        return this.storageClient.generatedContainers().renewLeaseWithRestResponseAsync(
                 null, leaseID,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
@@ -365,7 +364,7 @@ public final class ContainerURL extends StorageURL {
                     "ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().releaseLeaseWithRestResponseAsync(
+        return this.storageClient.generatedContainers().releaseLeaseWithRestResponseAsync(
                 null, leaseID,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
@@ -396,7 +395,7 @@ public final class ContainerURL extends StorageURL {
                     "ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().breakLeaseWithRestResponseAsync(
+        return this.storageClient.generatedContainers().breakLeaseWithRestResponseAsync(
                 null, breakPeriodInSeconds,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
@@ -426,7 +425,7 @@ public final class ContainerURL extends StorageURL {
                     "ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().changeLeaseWithRestResponseAsync(
+        return this.storageClient.generatedContainers().changeLeaseWithRestResponseAsync(
                 null, leaseID, proposedID,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
@@ -452,7 +451,7 @@ public final class ContainerURL extends StorageURL {
     public Single<ContainersListBlobFlatSegmentResponse> listBlobsFlatSegment(
             String marker, ListBlobsOptions options) {
         options = options == null ? ListBlobsOptions.DEFAULT : options;
-        return this.storageClient.containers().listBlobFlatSegmentWithRestResponseAsync(options.getPrefix(),
+        return this.storageClient.generatedContainers().listBlobFlatSegmentWithRestResponseAsync(options.getPrefix(),
                 options.getDelimiter(), marker, options.getMaxResults(),
                 options.getDetails().toList(), null, null);
     }

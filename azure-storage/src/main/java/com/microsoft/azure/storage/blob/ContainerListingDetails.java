@@ -14,7 +14,7 @@
  */
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.ListContainersIncludeType;
+import com.microsoft.azure.storage.blob.models.ListContainersIncludeType;
 
 /**
  * This type allows users to specify additional information the service should return with each container when listing
