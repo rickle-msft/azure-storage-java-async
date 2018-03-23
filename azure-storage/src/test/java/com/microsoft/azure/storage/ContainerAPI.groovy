@@ -6,11 +6,7 @@ import com.microsoft.azure.storage.blob.HTTPAccessConditions
 import com.microsoft.azure.storage.blob.LeaseAccessConditions
 import com.microsoft.azure.storage.blob.Metadata
 import com.microsoft.azure.storage.blob.PageBlobURL
-import com.microsoft.azure.storage.models.Blob
-import com.microsoft.azure.storage.models.ContainerCreateHeaders
-import com.microsoft.azure.storage.models.ContainerGetPropertiesHeaders
-import com.microsoft.azure.storage.models.ContainerLeaseHeaders
-import com.microsoft.azure.storage.models.PublicAccessType
+
 import com.microsoft.rest.v2.RestException
 import com.microsoft.rest.v2.RestResponse
 import spock.lang.*

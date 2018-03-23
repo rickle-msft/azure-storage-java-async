@@ -59,7 +59,7 @@ public final class ListBlobsResponse {
      * The blobs property.
      */
     @JsonProperty(value = "Blobs", required = true)
-    private Blobs blobs;
+    private BlobList blobs;
 
     /**
      * The nextMarker property.
@@ -192,7 +192,7 @@ public final class ListBlobsResponse {
      *
      * @return the blobs value.
      */
-    public Blobs blobs() {
+    public BlobList blobs() {
         return this.blobs;
     }
 
@@ -202,7 +202,7 @@ public final class ListBlobsResponse {
      * @param blobs the blobs value to set.
      * @return the ListBlobsResponse object itself.
      */
-    public ListBlobsResponse withBlobs(Blobs blobs) {
+    public ListBlobsResponse withBlobs(BlobList blobs) {
         this.blobs = blobs;
         return this;
     }

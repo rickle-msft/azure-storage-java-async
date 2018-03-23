@@ -149,7 +149,7 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerCreateResponse> create(
+    public Single<ContainersCreateResponse> create(
             Metadata metadata, PublicAccessType accessType) {
         metadata = metadata == null ? Metadata.NONE : metadata;
         return this.storageClient.containers().createWithRestResponseAsync(
@@ -166,7 +166,7 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerDeleteResponse> delete(
+    public Single<ContainersDeleteResponse> delete(
             ContainerAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? ContainerAccessConditions.NONE : accessConditions;
 
@@ -193,7 +193,7 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerGetPropertiesResponse> getProperties(
+    public Single<ContainersGetPropertiesResponse> getProperties(
             LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
 
@@ -212,7 +212,7 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerSetMetadataResponse> setMetadata(
+    public Single<ContainersSetMetadataResponse> setMetadata(
             Metadata metadata, ContainerAccessConditions accessConditions) {
         metadata = metadata == null ? Metadata.NONE : metadata;
         accessConditions = accessConditions == null ? ContainerAccessConditions.NONE : accessConditions;
@@ -241,11 +241,11 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerGetAclResponse> getAccessPolicy(
+    public Single<ContainersGetAccessPolicyResponse> getAccessPolicy(
             LeaseAccessConditions leaseAccessConditions) {
         leaseAccessConditions = leaseAccessConditions == null ? LeaseAccessConditions.NONE : leaseAccessConditions;
 
-        return this.storageClient.containers().getAclWithRestResponseAsync(
+        return this.storageClient.containers().getAccessPolicyWithRestResponseAsync(
                 null, leaseAccessConditions.getLeaseId(), null);
     }
 
@@ -266,13 +266,13 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerSetAclResponse> setAccessPolicy(
+    public Single<ContainersSetAccessPolicyResponse> setAccessPolicy(
             PublicAccessType accessType, List<SignedIdentifier> identifiers,
             ContainerAccessConditions accessConditions) {
         accessConditions = accessConditions == null ? ContainerAccessConditions.NONE : accessConditions;
 
         // TODO: validate that empty list clears permissions and null list does not change list. Document behavior.
-        return this.storageClient.containers().setAclWithRestResponseAsync(identifiers, null,
+        return this.storageClient.containers().setAccessPolicyWithRestResponseAsync(identifiers, null,
                 accessConditions.getLeaseID().getLeaseId(), accessType,
                 accessConditions.getHttpAccessConditions().getIfModifiedSince(),
                 accessConditions.getHttpAccessConditions().getIfUnmodifiedSince(),
@@ -299,7 +299,7 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerLeaseResponse> acquireLease(
+    public Single<ContainersAcquireLeaseResponse> acquireLease(
             String proposedID, int duration, HTTPAccessConditions httpAccessConditions) {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
         if (!this.validateLeaseOperationAccessConditions(httpAccessConditions)){
@@ -309,8 +309,8 @@ public final class ContainerURL extends StorageURL {
                     "ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().leaseWithRestResponseAsync(LeaseActionType.ACQUIRE,
-                null,null, null, duration, proposedID,
+        return this.storageClient.containers().acquireLeaseWithRestResponseAsync(
+                null, duration, proposedID,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 null);
@@ -327,7 +327,7 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerLeaseResponse> renewLease(
+    public Single<ContainersRenewLeaseResponse> renewLease(
             String leaseID, HTTPAccessConditions httpAccessConditions) {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
         if (!this.validateLeaseOperationAccessConditions(httpAccessConditions)) {
@@ -337,8 +337,8 @@ public final class ContainerURL extends StorageURL {
                     "ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().leaseWithRestResponseAsync(LeaseActionType.RENEW, null,
-                leaseID, null, null, null,
+        return this.storageClient.containers().renewLeaseWithRestResponseAsync(
+                null, leaseID,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 null);
@@ -355,7 +355,7 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerLeaseResponse> releaseLease(
+    public Single<ContainersReleaseLeaseResponse> releaseLease(
             String leaseID, HTTPAccessConditions httpAccessConditions) {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
         if (!this.validateLeaseOperationAccessConditions(httpAccessConditions)) {
@@ -365,8 +365,8 @@ public final class ContainerURL extends StorageURL {
                     "ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().leaseWithRestResponseAsync(LeaseActionType.RELEASE,
-                null, leaseID, null, null, null,
+        return this.storageClient.containers().releaseLeaseWithRestResponseAsync(
+                null, leaseID,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 null);
@@ -386,7 +386,7 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerLeaseResponse> breakLease(
+    public Single<ContainersBreakLeaseResponse> breakLease(
             Integer breakPeriodInSeconds, HTTPAccessConditions httpAccessConditions) {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
         if (!this.validateLeaseOperationAccessConditions(httpAccessConditions)) {
@@ -396,8 +396,8 @@ public final class ContainerURL extends StorageURL {
                     "ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().leaseWithRestResponseAsync(LeaseActionType.BREAK,
-                null, null, breakPeriodInSeconds, null, null,
+        return this.storageClient.containers().breakLeaseWithRestResponseAsync(
+                null, breakPeriodInSeconds,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 null);
@@ -416,7 +416,7 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerLeaseResponse> changeLease(
+    public Single<ContainersChangeLeaseResponse> changeLease(
             String leaseID, String proposedID, HTTPAccessConditions httpAccessConditions) {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
         if (!this.validateLeaseOperationAccessConditions(httpAccessConditions)) {
@@ -426,8 +426,8 @@ public final class ContainerURL extends StorageURL {
                     "ETag access conditions are not supported for this API.");
         }
 
-        return this.storageClient.containers().leaseWithRestResponseAsync(LeaseActionType.RELEASE,
-                null, leaseID, null, null, proposedID,
+        return this.storageClient.containers().changeLeaseWithRestResponseAsync(
+                null, leaseID, proposedID,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 null);
@@ -449,10 +449,10 @@ public final class ContainerURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ContainerListBlobsResponse> listBlobsFlatSegment(
+    public Single<ContainersListBlobFlatSegmentResponse> listBlobsFlatSegment(
             String marker, ListBlobsOptions options) {
         options = options == null ? ListBlobsOptions.DEFAULT : options;
-        return this.storageClient.containers().listBlobsWithRestResponseAsync(options.getPrefix(),
+        return this.storageClient.containers().listBlobFlatSegmentWithRestResponseAsync(options.getPrefix(),
                 options.getDelimiter(), marker, options.getMaxResults(),
                 options.getDetails().toList(), null, null);
     }

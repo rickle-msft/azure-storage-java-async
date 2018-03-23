@@ -2,11 +2,7 @@ package com.microsoft.azure.storage
 
 import com.microsoft.azure.storage.blob.BlobRange
 import com.microsoft.azure.storage.blob.PageBlobURL
-import com.microsoft.azure.storage.models.BlobPutHeaders
-import com.microsoft.azure.storage.models.PageList
-import com.microsoft.azure.storage.models.PageRange
-import com.microsoft.azure.storage.models.PublicAccessType
-import com.microsoft.azure.storage.models.SequenceNumberActionType
+
 import com.microsoft.rest.v2.RestResponse
 import io.reactivex.Flowable
 

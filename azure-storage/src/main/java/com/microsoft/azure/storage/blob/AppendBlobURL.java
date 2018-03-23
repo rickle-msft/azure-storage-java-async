@@ -103,14 +103,14 @@ public final class AppendBlobURL extends BlobURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<BlobPutResponse> create(
+    public Single<AppendBlobCreateResponse> create(
             BlobHTTPHeaders headers, Metadata metadata, BlobAccessConditions accessConditions) {
         headers = headers == null ? BlobHTTPHeaders.NONE : headers;
         metadata = metadata == null ? Metadata.NONE : metadata;
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
 
-        return this.storageClient.blobs().putWithRestResponseAsync(0, BlobType.APPEND_BLOB,
-                null,null, headers.getContentType(), headers.getContentEncoding(),
+        return this.storageClient.appendBlobs().createWithRestResponseAsync(0, null,
+                headers.getContentType(), headers.getContentEncoding(),
                 headers.getContentLanguage(), headers.getContentMD5(), headers.getCacheControl(), metadata,
                 accessConditions.getLeaseAccessConditions().getLeaseId(),
                 headers.getContentDisposition(),
@@ -118,7 +118,7 @@ public final class AppendBlobURL extends BlobURL {
                 accessConditions.getHttpAccessConditions().getIfUnmodifiedSince(),
                 accessConditions.getHttpAccessConditions().getIfMatch().toString(),
                 accessConditions.getHttpAccessConditions().getIfNoneMatch().toString(),
-                null, null, null);
+                null);
     }
 
     /**

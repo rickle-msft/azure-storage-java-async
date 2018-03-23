@@ -5,11 +5,7 @@ import com.microsoft.azure.storage.blob.BlobURL
 
 import com.microsoft.azure.storage.blob.ContainerURL
 import com.microsoft.azure.storage.blob.Metadata
-import com.microsoft.azure.storage.models.BlobGetPropertiesHeaders
-import com.microsoft.azure.storage.models.BlobType
-import com.microsoft.azure.storage.models.CopyStatusType
-import com.microsoft.azure.storage.models.LeaseStateType
-import com.microsoft.azure.storage.models.PublicAccessType
+
 import com.microsoft.rest.v2.util.FlowableUtil
 import io.reactivex.Flowable
 import spock.lang.Unroll

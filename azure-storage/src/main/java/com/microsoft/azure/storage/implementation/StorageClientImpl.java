@@ -119,20 +119,6 @@ public final class StorageClientImpl extends ServiceClient implements StorageCli
     }
 
     /**
-     * The BlockBlobs object to access its operations.
-     */
-    private BlockBlobs blockBlobs;
-
-    /**
-     * Gets the BlockBlobs object to access its operations.
-     *
-     * @return the BlockBlobs object.
-     */
-    public BlockBlobs blockBlobs() {
-        return this.blockBlobs;
-    }
-
-    /**
      * The PageBlobs object to access its operations.
      */
     private PageBlobs pageBlobs;
@@ -161,6 +147,20 @@ public final class StorageClientImpl extends ServiceClient implements StorageCli
     }
 
     /**
+     * The BlockBlobs object to access its operations.
+     */
+    private BlockBlobs blockBlobs;
+
+    /**
+     * Gets the BlockBlobs object to access its operations.
+     *
+     * @return the BlockBlobs object.
+     */
+    public BlockBlobs blockBlobs() {
+        return this.blockBlobs;
+    }
+
+    /**
      * Initializes an instance of StorageClient client.
      */
     public StorageClientImpl() {
@@ -177,8 +177,8 @@ public final class StorageClientImpl extends ServiceClient implements StorageCli
         this.services = new ServicesImpl(this);
         this.containers = new ContainersImpl(this);
         this.blobs = new BlobsImpl(this);
-        this.blockBlobs = new BlockBlobsImpl(this);
         this.pageBlobs = new PageBlobsImpl(this);
         this.appendBlobs = new AppendBlobsImpl(this);
+        this.blockBlobs = new BlockBlobsImpl(this);
     }
 }

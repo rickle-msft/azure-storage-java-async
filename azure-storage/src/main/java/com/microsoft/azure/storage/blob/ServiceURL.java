@@ -86,10 +86,10 @@ public final class ServiceURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ServiceListContainersResponse> listContainersSegment(
+    public Single<ServiceListContainersSegmentResponse> listContainersSegment(
             String marker, ListContainersOptions options) {
         options = options == null ? ListContainersOptions.DEFAULT : options;
-        return this.storageClient.services().listContainersWithRestResponseAsync(options.getPrefix(), marker,
+        return this.storageClient.services().listContainersSegmentWithRestResponseAsync(options.getPrefix(), marker,
                 options.getMaxResults(), options.getDetails().toIncludeType(), null, null);
     }
 
@@ -128,8 +128,8 @@ public final class ServiceURL extends StorageURL {
      * @return
      *      Emits the successful response.
      */
-    public Single<ServiceGetStatsResponse> getStatistics() {
-        return this.storageClient.services().getStatsWithRestResponseAsync(null, null);
+    public Single<ServiceGetStatisticsResponse> getStatistics() {
+        return this.storageClient.services().getStatisticsWithRestResponseAsync(null, null);
     }
 
     // TODO: Preflight request

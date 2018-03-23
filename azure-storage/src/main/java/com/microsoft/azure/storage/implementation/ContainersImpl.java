@@ -11,16 +11,18 @@
 package com.microsoft.azure.storage.implementation;
 
 import com.microsoft.azure.storage.Containers;
-import com.microsoft.azure.storage.models.ContainerCreateResponse;
-import com.microsoft.azure.storage.models.ContainerDeleteResponse;
-import com.microsoft.azure.storage.models.ContainerGetAclResponse;
-import com.microsoft.azure.storage.models.ContainerGetMetadataResponse;
-import com.microsoft.azure.storage.models.ContainerGetPropertiesResponse;
-import com.microsoft.azure.storage.models.ContainerLeaseResponse;
-import com.microsoft.azure.storage.models.ContainerListBlobsResponse;
-import com.microsoft.azure.storage.models.ContainerSetAclResponse;
-import com.microsoft.azure.storage.models.ContainerSetMetadataResponse;
-import com.microsoft.azure.storage.models.LeaseActionType;
+import com.microsoft.azure.storage.models.ContainersAcquireLeaseResponse;
+import com.microsoft.azure.storage.models.ContainersBreakLeaseResponse;
+import com.microsoft.azure.storage.models.ContainersChangeLeaseResponse;
+import com.microsoft.azure.storage.models.ContainersCreateResponse;
+import com.microsoft.azure.storage.models.ContainersDeleteResponse;
+import com.microsoft.azure.storage.models.ContainersGetAccessPolicyResponse;
+import com.microsoft.azure.storage.models.ContainersGetPropertiesResponse;
+import com.microsoft.azure.storage.models.ContainersListBlobFlatSegmentResponse;
+import com.microsoft.azure.storage.models.ContainersReleaseLeaseResponse;
+import com.microsoft.azure.storage.models.ContainersRenewLeaseResponse;
+import com.microsoft.azure.storage.models.ContainersSetAccessPolicyResponse;
+import com.microsoft.azure.storage.models.ContainersSetMetadataResponse;
 import com.microsoft.azure.storage.models.ListBlobsIncludeItem;
 import com.microsoft.azure.storage.models.ListBlobsResponse;
 import com.microsoft.azure.storage.models.PublicAccessType;
@@ -43,7 +45,6 @@ import com.microsoft.rest.v2.annotations.QueryParam;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import io.reactivex.annotations.NonNull;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,39 +84,51 @@ public final class ContainersImpl implements Containers {
     private interface ContainersService {
         @PUT("{containerName}")
         @ExpectedResponses({201})
-        Single<ContainerCreateResponse> create(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-meta-") Map<String, String> metadata, @HeaderParam("x-ms-blob-public-access") PublicAccessType access, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype);
+        Single<ContainersCreateResponse> create(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-meta-") Map<String, String> metadata, @HeaderParam("x-ms-blob-public-access") PublicAccessType access, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype);
 
         @GET("{containerName}")
         @ExpectedResponses({200})
-        Single<ContainerGetPropertiesResponse> getProperties(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype);
+        Single<ContainersGetPropertiesResponse> getProperties(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype);
 
         @DELETE("{containerName}")
         @ExpectedResponses({202})
-        Single<ContainerDeleteResponse> delete(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype);
-
-        @GET("{containerName}")
-        @ExpectedResponses({200})
-        Single<ContainerGetMetadataResponse> getMetadata(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
+        Single<ContainersDeleteResponse> delete(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype);
 
         @PUT("{containerName}")
         @ExpectedResponses({200})
-        Single<ContainerSetMetadataResponse> setMetadata(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-meta-") Map<String, String> metadata, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
+        Single<ContainersSetMetadataResponse> setMetadata(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-meta-") Map<String, String> metadata, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
 
         @GET("{containerName}")
         @ExpectedResponses({200})
-        Single<ContainerGetAclResponse> getAcl(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
+        Single<ContainersGetAccessPolicyResponse> getAccessPolicy(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
 
         @PUT("{containerName}")
         @ExpectedResponses({200})
-        Single<ContainerSetAclResponse> setAcl(@HostParam("url") String url, @BodyParam("application/xml; charset=utf-8") SignedIdentifiersWrapper containerAcl, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-blob-public-access") PublicAccessType access, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
+        Single<ContainersSetAccessPolicyResponse> setAccessPolicy(@HostParam("url") String url, @BodyParam("application/xml; charset=utf-8") SignedIdentifiersWrapper containerAcl, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-blob-public-access") PublicAccessType access, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
 
         @PUT("{containerName}")
-        @ExpectedResponses({200, 201, 202})
-        Single<ContainerLeaseResponse> lease(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-lease-action") LeaseActionType action, @HeaderParam("x-ms-lease-break-period") Integer breakPeriod, @HeaderParam("x-ms-lease-duration") Integer duration, @HeaderParam("x-ms-proposed-lease-id") String proposedLeaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp, @QueryParam("restype") String restype);
+        @ExpectedResponses({201})
+        Single<ContainersAcquireLeaseResponse> acquireLease(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-action") String action, @HeaderParam("x-ms-lease-duration") Integer duration, @HeaderParam("x-ms-proposed-lease-id") String proposedLeaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp, @QueryParam("restype") String restype);
+
+        @PUT("{containerName}")
+        @ExpectedResponses({200})
+        Single<ContainersReleaseLeaseResponse> releaseLease(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-lease-action") String action, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp, @QueryParam("restype") String restype);
+
+        @PUT("{containerName}")
+        @ExpectedResponses({200})
+        Single<ContainersRenewLeaseResponse> renewLease(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-lease-action") String action, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp, @QueryParam("restype") String restype);
+
+        @PUT("{containerName}")
+        @ExpectedResponses({202})
+        Single<ContainersBreakLeaseResponse> breakLease(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-action") String action, @HeaderParam("x-ms-lease-break-period") Integer breakPeriod, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp, @QueryParam("restype") String restype);
+
+        @PUT("{containerName}")
+        @ExpectedResponses({200})
+        Single<ContainersChangeLeaseResponse> changeLease(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-lease-action") String action, @HeaderParam("x-ms-proposed-lease-id") String proposedLeaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp, @QueryParam("restype") String restype);
 
         @GET("{containerName}")
         @ExpectedResponses({200})
-        Single<ContainerListBlobsResponse> listBlobs(@HostParam("url") String url, @QueryParam("prefix") String prefix, @QueryParam("delimiter") String delimiter, @QueryParam("marker") String marker, @QueryParam("maxresults") Integer maxresults, @QueryParam("include") String include, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
+        Single<ContainersListBlobFlatSegmentResponse> listBlobFlatSegment(@HostParam("url") String url, @QueryParam("prefix") String prefix, @QueryParam("delimiter") String delimiter, @QueryParam("marker") String marker, @QueryParam("maxresults") Integer maxresults, @QueryParam("include") String include, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
     }
 
     /**
@@ -143,7 +156,7 @@ public final class ContainersImpl implements Containers {
      *
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerCreateResponse> createWithRestResponseAsync() {
+    public Single<ContainersCreateResponse> createWithRestResponseAsync() {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -207,7 +220,7 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerCreateResponse> createWithRestResponseAsync(Integer timeout, Map<String, String> metadata, PublicAccessType access, String requestId) {
+    public Single<ContainersCreateResponse> createWithRestResponseAsync(Integer timeout, Map<String, String> metadata, PublicAccessType access, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -259,7 +272,7 @@ public final class ContainersImpl implements Containers {
      *
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerGetPropertiesResponse> getPropertiesWithRestResponseAsync() {
+    public Single<ContainersGetPropertiesResponse> getPropertiesWithRestResponseAsync() {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -319,7 +332,7 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerGetPropertiesResponse> getPropertiesWithRestResponseAsync(Integer timeout, String leaseId, String requestId) {
+    public Single<ContainersGetPropertiesResponse> getPropertiesWithRestResponseAsync(Integer timeout, String leaseId, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -369,7 +382,7 @@ public final class ContainersImpl implements Containers {
      *
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerDeleteResponse> deleteWithRestResponseAsync() {
+    public Single<ContainersDeleteResponse> deleteWithRestResponseAsync() {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -445,7 +458,7 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerDeleteResponse> deleteWithRestResponseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+    public Single<ContainersDeleteResponse> deleteWithRestResponseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -481,118 +494,6 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
-     * returns all user-defined metadata for the container.
-     *
-     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     */
-    public void getMetadata() {
-        getMetadataAsync().blockingAwait();
-    }
-
-    /**
-     * returns all user-defined metadata for the container.
-     *
-     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return a ServiceFuture which will be completed with the result of the network request.
-     */
-    public ServiceFuture<Void> getMetadataAsync(ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(getMetadataAsync(), serviceCallback);
-    }
-
-    /**
-     * returns all user-defined metadata for the container.
-     *
-     * @return a Single which performs the network request upon subscription.
-     */
-    public Single<ContainerGetMetadataResponse> getMetadataWithRestResponseAsync() {
-        if (this.client.url() == null) {
-            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
-        }
-        if (this.client.version() == null) {
-            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
-        }
-        final String restype = "container";
-        final String comp = "metadata";
-        final Integer timeout = null;
-        final String leaseId = null;
-        final String requestId = null;
-        return service.getMetadata(this.client.url(), timeout, leaseId, this.client.version(), requestId, restype, comp);
-    }
-
-    /**
-     * returns all user-defined metadata for the container.
-     *
-     * @return a Single which performs the network request upon subscription.
-     */
-    public Completable getMetadataAsync() {
-        return getMetadataWithRestResponseAsync()
-            .toCompletable();
-    }
-
-    /**
-     * returns all user-defined metadata for the container.
-     *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
-     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     */
-    public void getMetadata(Integer timeout, String leaseId, String requestId) {
-        getMetadataAsync(timeout, leaseId, requestId).blockingAwait();
-    }
-
-    /**
-     * returns all user-defined metadata for the container.
-     *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
-     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
-     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return a ServiceFuture which will be completed with the result of the network request.
-     */
-    public ServiceFuture<Void> getMetadataAsync(Integer timeout, String leaseId, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(getMetadataAsync(timeout, leaseId, requestId), serviceCallback);
-    }
-
-    /**
-     * returns all user-defined metadata for the container.
-     *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
-     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return a Single which performs the network request upon subscription.
-     */
-    public Single<ContainerGetMetadataResponse> getMetadataWithRestResponseAsync(Integer timeout, String leaseId, String requestId) {
-        if (this.client.url() == null) {
-            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
-        }
-        if (this.client.version() == null) {
-            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
-        }
-        final String restype = "container";
-        final String comp = "metadata";
-        return service.getMetadata(this.client.url(), timeout, leaseId, this.client.version(), requestId, restype, comp);
-    }
-
-    /**
-     * returns all user-defined metadata for the container.
-     *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
-     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
-     * @return a Single which performs the network request upon subscription.
-     */
-    public Completable getMetadataAsync(Integer timeout, String leaseId, String requestId) {
-        return getMetadataWithRestResponseAsync(timeout, leaseId, requestId)
-            .toCompletable();
-    }
-
-    /**
      * operation sets one or more user-defined name-value pairs for the specified container.
      *
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -617,7 +518,7 @@ public final class ContainersImpl implements Containers {
      *
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerSetMetadataResponse> setMetadataWithRestResponseAsync() {
+    public Single<ContainersSetMetadataResponse> setMetadataWithRestResponseAsync() {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -690,7 +591,7 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerSetMetadataResponse> setMetadataWithRestResponseAsync(Integer timeout, String leaseId, Map<String, String> metadata, OffsetDateTime ifModifiedSince, String requestId) {
+    public Single<ContainersSetMetadataResponse> setMetadataWithRestResponseAsync(Integer timeout, String leaseId, Map<String, String> metadata, OffsetDateTime ifModifiedSince, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -724,26 +625,32 @@ public final class ContainersImpl implements Containers {
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the List&lt;SignedIdentifier&gt; object if successful.
      */
-    public List<SignedIdentifier> getAcl() {
-        return getAclAsync().blockingGet();
+    public List<SignedIdentifier> getAccessPolicy() {
+        return getAccessPolicyAsync().blockingGet();
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<List<SignedIdentifier>> getAclAsync(ServiceCallback<List<SignedIdentifier>> serviceCallback) {
-        return ServiceFuture.fromBody(getAclAsync(), serviceCallback);
+    public ServiceFuture<List<SignedIdentifier>> getAccessPolicyAsync(ServiceCallback<List<SignedIdentifier>> serviceCallback) {
+        return ServiceFuture.fromBody(getAccessPolicyAsync(), serviceCallback);
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerGetAclResponse> getAclWithRestResponseAsync() {
+    public Single<ContainersGetAccessPolicyResponse> getAccessPolicyWithRestResponseAsync() {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -755,18 +662,22 @@ public final class ContainersImpl implements Containers {
         final Integer timeout = null;
         final String leaseId = null;
         final String requestId = null;
-        return service.getAcl(this.client.url(), timeout, leaseId, this.client.version(), requestId, restype, comp);
+        return service.getAccessPolicy(this.client.url(), timeout, leaseId, this.client.version(), requestId, restype, comp);
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
-    public Maybe<List<SignedIdentifier>> getAclAsync() {
-        return getAclWithRestResponseAsync()
-            .flatMapMaybe((ContainerGetAclResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    public Maybe<List<SignedIdentifier>> getAccessPolicyAsync() {
+        return getAccessPolicyWithRestResponseAsync()
+            .flatMapMaybe((ContainersGetAccessPolicyResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -774,11 +685,13 @@ public final class ContainersImpl implements Containers {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the List&lt;SignedIdentifier&gt; object if successful.
      */
-    public List<SignedIdentifier> getAcl(Integer timeout, String leaseId, String requestId) {
-        return getAclAsync(timeout, leaseId, requestId).blockingGet();
+    public List<SignedIdentifier> getAccessPolicy(Integer timeout, String leaseId, String requestId) {
+        return getAccessPolicyAsync(timeout, leaseId, requestId).blockingGet();
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -786,18 +699,20 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<List<SignedIdentifier>> getAclAsync(Integer timeout, String leaseId, String requestId, ServiceCallback<List<SignedIdentifier>> serviceCallback) {
-        return ServiceFuture.fromBody(getAclAsync(timeout, leaseId, requestId), serviceCallback);
+    public ServiceFuture<List<SignedIdentifier>> getAccessPolicyAsync(Integer timeout, String leaseId, String requestId, ServiceCallback<List<SignedIdentifier>> serviceCallback) {
+        return ServiceFuture.fromBody(getAccessPolicyAsync(timeout, leaseId, requestId), serviceCallback);
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerGetAclResponse> getAclWithRestResponseAsync(Integer timeout, String leaseId, String requestId) {
+    public Single<ContainersGetAccessPolicyResponse> getAccessPolicyWithRestResponseAsync(Integer timeout, String leaseId, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -806,41 +721,49 @@ public final class ContainersImpl implements Containers {
         }
         final String restype = "container";
         final String comp = "acl";
-        return service.getAcl(this.client.url(), timeout, leaseId, this.client.version(), requestId, restype, comp);
+        return service.getAccessPolicy(this.client.url(), timeout, leaseId, this.client.version(), requestId, restype, comp);
     }
 
     /**
+     * gets the permissions for the specified container. The permissions indicate whether container data may be accessed publicly.
+     *
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Maybe<List<SignedIdentifier>> getAclAsync(Integer timeout, String leaseId, String requestId) {
-        return getAclWithRestResponseAsync(timeout, leaseId, requestId)
-            .flatMapMaybe((ContainerGetAclResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    public Maybe<List<SignedIdentifier>> getAccessPolicyAsync(Integer timeout, String leaseId, String requestId) {
+        return getAccessPolicyWithRestResponseAsync(timeout, leaseId, requestId)
+            .flatMapMaybe((ContainersGetAccessPolicyResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void setAcl() {
-        setAclAsync().blockingAwait();
+    public void setAccessPolicy() {
+        setAccessPolicyAsync().blockingAwait();
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> setAclAsync(ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(setAclAsync(), serviceCallback);
+    public ServiceFuture<Void> setAccessPolicyAsync(ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(setAccessPolicyAsync(), serviceCallback);
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerSetAclResponse> setAclWithRestResponseAsync() {
+    public Single<ContainersSetAccessPolicyResponse> setAccessPolicyWithRestResponseAsync() {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -864,18 +787,22 @@ public final class ContainersImpl implements Containers {
         if (ifUnmodifiedSince != null) {
             ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
         }
-        return service.setAcl(this.client.url(), new SignedIdentifiersWrapper(containerAcl), timeout, leaseId, access, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, restype, comp);
+        return service.setAccessPolicy(this.client.url(), new SignedIdentifiersWrapper(containerAcl), timeout, leaseId, access, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, restype, comp);
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable setAclAsync() {
-        return setAclWithRestResponseAsync()
+    public Completable setAccessPolicyAsync() {
+        return setAccessPolicyWithRestResponseAsync()
             .toCompletable();
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -886,11 +813,13 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void setAcl(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
-        setAclAsync(containerAcl, timeout, leaseId, access, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
+    public void setAccessPolicy(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        setAccessPolicyAsync(containerAcl, timeout, leaseId, access, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -902,11 +831,13 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> setAclAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(setAclAsync(containerAcl, timeout, leaseId, access, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
+    public ServiceFuture<Void> setAccessPolicyAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(setAccessPolicyAsync(containerAcl, timeout, leaseId, access, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -917,7 +848,7 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerSetAclResponse> setAclWithRestResponseAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+    public Single<ContainersSetAccessPolicyResponse> setAccessPolicyWithRestResponseAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -935,10 +866,12 @@ public final class ContainersImpl implements Containers {
         if (ifUnmodifiedSince != null) {
             ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
         }
-        return service.setAcl(this.client.url(), new SignedIdentifiersWrapper(containerAcl), timeout, leaseId, access, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, restype, comp);
+        return service.setAccessPolicy(this.client.url(), new SignedIdentifiersWrapper(containerAcl), timeout, leaseId, access, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, restype, comp);
     }
 
     /**
+     * sets the permissions for the specified container. The permissions indicate whether blobs in a container may be accessed publicly.
+     *
      * @param containerAcl the acls for the container.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -949,56 +882,47 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable setAclAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
-        return setAclWithRestResponseAsync(containerAcl, timeout, leaseId, access, ifModifiedSince, ifUnmodifiedSince, requestId)
+    public Completable setAccessPolicyAsync(List<SignedIdentifier> containerAcl, Integer timeout, String leaseId, PublicAccessType access, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        return setAccessPolicyWithRestResponseAsync(containerAcl, timeout, leaseId, access, ifModifiedSince, ifUnmodifiedSince, requestId)
             .toCompletable();
     }
 
     /**
-     * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void lease(@NonNull LeaseActionType action) {
-        leaseAsync(action).blockingAwait();
+    public void acquireLease() {
+        acquireLeaseAsync().blockingAwait();
     }
 
     /**
-     * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> leaseAsync(@NonNull LeaseActionType action, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(leaseAsync(action), serviceCallback);
+    public ServiceFuture<Void> acquireLeaseAsync(ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(acquireLeaseAsync(), serviceCallback);
     }
 
     /**
-     * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerLeaseResponse> leaseWithRestResponseAsync(@NonNull LeaseActionType action) {
+    public Single<ContainersAcquireLeaseResponse> acquireLeaseWithRestResponseAsync() {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
-        }
-        if (action == null) {
-            throw new IllegalArgumentException("Parameter action is required and cannot be null.");
         }
         if (this.client.version() == null) {
             throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
         }
+        final String action = "acquire";
         final String comp = "lease";
         final String restype = "container";
         final Integer timeout = null;
-        final String leaseId = null;
-        final Integer breakPeriod = null;
         final Integer duration = null;
         final String proposedLeaseId = null;
         final OffsetDateTime ifModifiedSince = null;
@@ -1012,28 +936,23 @@ public final class ContainersImpl implements Containers {
         if (ifUnmodifiedSince != null) {
             ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
         }
-        return service.lease(this.client.url(), timeout, leaseId, action, breakPeriod, duration, proposedLeaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
+        return service.acquireLease(this.client.url(), timeout, action, duration, proposedLeaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
     }
 
     /**
-     * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
-     * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable leaseAsync(@NonNull LeaseActionType action) {
-        return leaseWithRestResponseAsync(action)
+    public Completable acquireLeaseAsync() {
+        return acquireLeaseWithRestResponseAsync()
             .toCompletable();
     }
 
     /**
-     * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
-     * @param breakPeriod For a break operation, proposed duration the lease should continue before it is broken, in seconds, between 0 and 60. This break period is only used if it is shorter than the time remaining on the lease. If longer, the time remaining on the lease is used. A new lease will not be available before the break period has expired, but the lease may be held for longer than the break period. If this header does not appear with a break operation, a fixed-duration lease breaks after the remaining lease period elapses, and an infinite lease breaks immediately.
      * @param duration Specifies the duration of the lease, in seconds, or negative one (-1) for a lease that never expires. A non-infinite lease can be between 15 and 60 seconds. A lease duration cannot be changed using renew or change.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
@@ -1042,17 +961,14 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void lease(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
-        leaseAsync(action, timeout, leaseId, breakPeriod, duration, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
+    public void acquireLease(Integer timeout, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        acquireLeaseAsync(timeout, duration, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
     }
 
     /**
-     * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
-     * @param breakPeriod For a break operation, proposed duration the lease should continue before it is broken, in seconds, between 0 and 60. This break period is only used if it is shorter than the time remaining on the lease. If longer, the time remaining on the lease is used. A new lease will not be available before the break period has expired, but the lease may be held for longer than the break period. If this header does not appear with a break operation, a fixed-duration lease breaks after the remaining lease period elapses, and an infinite lease breaks immediately.
      * @param duration Specifies the duration of the lease, in seconds, or negative one (-1) for a lease that never expires. A non-infinite lease can be between 15 and 60 seconds. A lease duration cannot be changed using renew or change.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
@@ -1062,17 +978,14 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> leaseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(leaseAsync(action, timeout, leaseId, breakPeriod, duration, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
+    public ServiceFuture<Void> acquireLeaseAsync(Integer timeout, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(acquireLeaseAsync(timeout, duration, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
     }
 
     /**
-     * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
-     * @param breakPeriod For a break operation, proposed duration the lease should continue before it is broken, in seconds, between 0 and 60. This break period is only used if it is shorter than the time remaining on the lease. If longer, the time remaining on the lease is used. A new lease will not be available before the break period has expired, but the lease may be held for longer than the break period. If this header does not appear with a break operation, a fixed-duration lease breaks after the remaining lease period elapses, and an infinite lease breaks immediately.
      * @param duration Specifies the duration of the lease, in seconds, or negative one (-1) for a lease that never expires. A non-infinite lease can be between 15 and 60 seconds. A lease duration cannot be changed using renew or change.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
@@ -1081,16 +994,14 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerLeaseResponse> leaseWithRestResponseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+    public Single<ContainersAcquireLeaseResponse> acquireLeaseWithRestResponseAsync(Integer timeout, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
-        }
-        if (action == null) {
-            throw new IllegalArgumentException("Parameter action is required and cannot be null.");
         }
         if (this.client.version() == null) {
             throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
         }
+        final String action = "acquire";
         final String comp = "lease";
         final String restype = "container";
         DateTimeRfc1123 ifModifiedSinceConverted = null;
@@ -1101,16 +1012,13 @@ public final class ContainersImpl implements Containers {
         if (ifUnmodifiedSince != null) {
             ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
         }
-        return service.lease(this.client.url(), timeout, leaseId, action, breakPeriod, duration, proposedLeaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
+        return service.acquireLease(this.client.url(), timeout, action, duration, proposedLeaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
     }
 
     /**
-     * establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param action Describes what lease action to take. Possible values include: 'acquire', 'renew', 'change', 'release', 'break'.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
-     * @param breakPeriod For a break operation, proposed duration the lease should continue before it is broken, in seconds, between 0 and 60. This break period is only used if it is shorter than the time remaining on the lease. If longer, the time remaining on the lease is used. A new lease will not be available before the break period has expired, but the lease may be held for longer than the break period. If this header does not appear with a break operation, a fixed-duration lease breaks after the remaining lease period elapses, and an infinite lease breaks immediately.
      * @param duration Specifies the duration of the lease, in seconds, or negative one (-1) for a lease that never expires. A non-infinite lease can be between 15 and 60 seconds. A lease duration cannot be changed using renew or change.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
@@ -1119,38 +1027,603 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable leaseAsync(@NonNull LeaseActionType action, Integer timeout, String leaseId, Integer breakPeriod, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
-        return leaseWithRestResponseAsync(action, timeout, leaseId, breakPeriod, duration, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId)
+    public Completable acquireLeaseAsync(Integer timeout, Integer duration, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        return acquireLeaseWithRestResponseAsync(timeout, duration, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId)
             .toCompletable();
     }
 
     /**
-     * The List Blobs operation returns a list of the blobs under the specified container.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
-     * @return the ListBlobsResponse object if successful.
      */
-    public ListBlobsResponse listBlobs() {
-        return listBlobsAsync().blockingGet();
+    public void releaseLease() {
+        releaseLeaseAsync().blockingAwait();
     }
 
     /**
-     * The List Blobs operation returns a list of the blobs under the specified container.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<ListBlobsResponse> listBlobsAsync(ServiceCallback<ListBlobsResponse> serviceCallback) {
-        return ServiceFuture.fromBody(listBlobsAsync(), serviceCallback);
+    public ServiceFuture<Void> releaseLeaseAsync(ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(releaseLeaseAsync(), serviceCallback);
     }
 
     /**
-     * The List Blobs operation returns a list of the blobs under the specified container.
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerListBlobsResponse> listBlobsWithRestResponseAsync() {
+    public Single<ContainersReleaseLeaseResponse> releaseLeaseWithRestResponseAsync() {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String action = "release";
+        final String comp = "lease";
+        final String restype = "container";
+        final Integer timeout = null;
+        final String leaseId = null;
+        final OffsetDateTime ifModifiedSince = null;
+        final OffsetDateTime ifUnmodifiedSince = null;
+        final String requestId = null;
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.releaseLease(this.client.url(), timeout, leaseId, action, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable releaseLeaseAsync() {
+        return releaseLeaseWithRestResponseAsync()
+            .toCompletable();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     */
+    public void releaseLease(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        releaseLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<Void> releaseLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(releaseLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<ContainersReleaseLeaseResponse> releaseLeaseWithRestResponseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String action = "release";
+        final String comp = "lease";
+        final String restype = "container";
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.releaseLease(this.client.url(), timeout, leaseId, action, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable releaseLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        return releaseLeaseWithRestResponseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId)
+            .toCompletable();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     */
+    public void renewLease() {
+        renewLeaseAsync().blockingAwait();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<Void> renewLeaseAsync(ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(renewLeaseAsync(), serviceCallback);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<ContainersRenewLeaseResponse> renewLeaseWithRestResponseAsync() {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String action = "renew";
+        final String comp = "lease";
+        final String restype = "container";
+        final Integer timeout = null;
+        final String leaseId = null;
+        final OffsetDateTime ifModifiedSince = null;
+        final OffsetDateTime ifUnmodifiedSince = null;
+        final String requestId = null;
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.renewLease(this.client.url(), timeout, leaseId, action, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable renewLeaseAsync() {
+        return renewLeaseWithRestResponseAsync()
+            .toCompletable();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     */
+    public void renewLease(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        renewLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<Void> renewLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(renewLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<ContainersRenewLeaseResponse> renewLeaseWithRestResponseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String action = "renew";
+        final String comp = "lease";
+        final String restype = "container";
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.renewLease(this.client.url(), timeout, leaseId, action, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable renewLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        return renewLeaseWithRestResponseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId)
+            .toCompletable();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     */
+    public void breakLease() {
+        breakLeaseAsync().blockingAwait();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<Void> breakLeaseAsync(ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(breakLeaseAsync(), serviceCallback);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<ContainersBreakLeaseResponse> breakLeaseWithRestResponseAsync() {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String action = "break";
+        final String comp = "lease";
+        final String restype = "container";
+        final Integer timeout = null;
+        final Integer breakPeriod = null;
+        final OffsetDateTime ifModifiedSince = null;
+        final OffsetDateTime ifUnmodifiedSince = null;
+        final String requestId = null;
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.breakLease(this.client.url(), timeout, action, breakPeriod, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable breakLeaseAsync() {
+        return breakLeaseWithRestResponseAsync()
+            .toCompletable();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param breakPeriod For a break operation, proposed duration the lease should continue before it is broken, in seconds, between 0 and 60. This break period is only used if it is shorter than the time remaining on the lease. If longer, the time remaining on the lease is used. A new lease will not be available before the break period has expired, but the lease may be held for longer than the break period. If this header does not appear with a break operation, a fixed-duration lease breaks after the remaining lease period elapses, and an infinite lease breaks immediately.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     */
+    public void breakLease(Integer timeout, Integer breakPeriod, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        breakLeaseAsync(timeout, breakPeriod, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param breakPeriod For a break operation, proposed duration the lease should continue before it is broken, in seconds, between 0 and 60. This break period is only used if it is shorter than the time remaining on the lease. If longer, the time remaining on the lease is used. A new lease will not be available before the break period has expired, but the lease may be held for longer than the break period. If this header does not appear with a break operation, a fixed-duration lease breaks after the remaining lease period elapses, and an infinite lease breaks immediately.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<Void> breakLeaseAsync(Integer timeout, Integer breakPeriod, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(breakLeaseAsync(timeout, breakPeriod, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param breakPeriod For a break operation, proposed duration the lease should continue before it is broken, in seconds, between 0 and 60. This break period is only used if it is shorter than the time remaining on the lease. If longer, the time remaining on the lease is used. A new lease will not be available before the break period has expired, but the lease may be held for longer than the break period. If this header does not appear with a break operation, a fixed-duration lease breaks after the remaining lease period elapses, and an infinite lease breaks immediately.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<ContainersBreakLeaseResponse> breakLeaseWithRestResponseAsync(Integer timeout, Integer breakPeriod, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String action = "break";
+        final String comp = "lease";
+        final String restype = "container";
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.breakLease(this.client.url(), timeout, action, breakPeriod, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param breakPeriod For a break operation, proposed duration the lease should continue before it is broken, in seconds, between 0 and 60. This break period is only used if it is shorter than the time remaining on the lease. If longer, the time remaining on the lease is used. A new lease will not be available before the break period has expired, but the lease may be held for longer than the break period. If this header does not appear with a break operation, a fixed-duration lease breaks after the remaining lease period elapses, and an infinite lease breaks immediately.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable breakLeaseAsync(Integer timeout, Integer breakPeriod, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        return breakLeaseWithRestResponseAsync(timeout, breakPeriod, ifModifiedSince, ifUnmodifiedSince, requestId)
+            .toCompletable();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     */
+    public void changeLease() {
+        changeLeaseAsync().blockingAwait();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<Void> changeLeaseAsync(ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(changeLeaseAsync(), serviceCallback);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<ContainersChangeLeaseResponse> changeLeaseWithRestResponseAsync() {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String action = "change";
+        final String comp = "lease";
+        final String restype = "container";
+        final Integer timeout = null;
+        final String leaseId = null;
+        final String proposedLeaseId = null;
+        final OffsetDateTime ifModifiedSince = null;
+        final OffsetDateTime ifUnmodifiedSince = null;
+        final String requestId = null;
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.changeLease(this.client.url(), timeout, leaseId, action, proposedLeaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable changeLeaseAsync() {
+        return changeLeaseWithRestResponseAsync()
+            .toCompletable();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     */
+    public void changeLease(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        changeLeaseAsync(timeout, leaseId, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<Void> changeLeaseAsync(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(changeLeaseAsync(timeout, leaseId, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<ContainersChangeLeaseResponse> changeLeaseWithRestResponseAsync(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String action = "change";
+        final String comp = "lease";
+        final String restype = "container";
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.changeLease(this.client.url(), timeout, leaseId, action, proposedLeaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, this.client.version(), requestId, comp, restype);
+    }
+
+    /**
+     * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
+     *
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable changeLeaseAsync(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        return changeLeaseWithRestResponseAsync(timeout, leaseId, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId)
+            .toCompletable();
+    }
+
+    /**
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
+     *
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the ListBlobsResponse object if successful.
+     */
+    public ListBlobsResponse listBlobFlatSegment() {
+        return listBlobFlatSegmentAsync().blockingGet();
+    }
+
+    /**
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
+     *
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<ListBlobsResponse> listBlobFlatSegmentAsync(ServiceCallback<ListBlobsResponse> serviceCallback) {
+        return ServiceFuture.fromBody(listBlobFlatSegmentAsync(), serviceCallback);
+    }
+
+    /**
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
+     *
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<ContainersListBlobFlatSegmentResponse> listBlobFlatSegmentWithRestResponseAsync() {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -1167,21 +1640,21 @@ public final class ContainersImpl implements Containers {
         final Integer timeout = null;
         final String requestId = null;
         String includeConverted = this.client.serializerAdapter().serializeList(include, CollectionFormat.CSV);
-        return service.listBlobs(this.client.url(), prefix, delimiter, marker, maxresults, includeConverted, timeout, this.client.version(), requestId, restype, comp);
+        return service.listBlobFlatSegment(this.client.url(), prefix, delimiter, marker, maxresults, includeConverted, timeout, this.client.version(), requestId, restype, comp);
     }
 
     /**
-     * The List Blobs operation returns a list of the blobs under the specified container.
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
      *
      * @return a Single which performs the network request upon subscription.
      */
-    public Maybe<ListBlobsResponse> listBlobsAsync() {
-        return listBlobsWithRestResponseAsync()
-            .flatMapMaybe((ContainerListBlobsResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    public Maybe<ListBlobsResponse> listBlobFlatSegmentAsync() {
+        return listBlobFlatSegmentWithRestResponseAsync()
+            .flatMapMaybe((ContainersListBlobFlatSegmentResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 
     /**
-     * The List Blobs operation returns a list of the blobs under the specified container.
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
@@ -1194,12 +1667,12 @@ public final class ContainersImpl implements Containers {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the ListBlobsResponse object if successful.
      */
-    public ListBlobsResponse listBlobs(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
-        return listBlobsAsync(prefix, delimiter, marker, maxresults, include, timeout, requestId).blockingGet();
+    public ListBlobsResponse listBlobFlatSegment(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
+        return listBlobFlatSegmentAsync(prefix, delimiter, marker, maxresults, include, timeout, requestId).blockingGet();
     }
 
     /**
-     * The List Blobs operation returns a list of the blobs under the specified container.
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
@@ -1212,12 +1685,12 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<ListBlobsResponse> listBlobsAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId, ServiceCallback<ListBlobsResponse> serviceCallback) {
-        return ServiceFuture.fromBody(listBlobsAsync(prefix, delimiter, marker, maxresults, include, timeout, requestId), serviceCallback);
+    public ServiceFuture<ListBlobsResponse> listBlobFlatSegmentAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId, ServiceCallback<ListBlobsResponse> serviceCallback) {
+        return ServiceFuture.fromBody(listBlobFlatSegmentAsync(prefix, delimiter, marker, maxresults, include, timeout, requestId), serviceCallback);
     }
 
     /**
-     * The List Blobs operation returns a list of the blobs under the specified container.
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
@@ -1229,7 +1702,7 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainerListBlobsResponse> listBlobsWithRestResponseAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
+    public Single<ContainersListBlobFlatSegmentResponse> listBlobFlatSegmentWithRestResponseAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -1240,11 +1713,11 @@ public final class ContainersImpl implements Containers {
         final String restype = "container";
         final String comp = "list";
         String includeConverted = this.client.serializerAdapter().serializeList(include, CollectionFormat.CSV);
-        return service.listBlobs(this.client.url(), prefix, delimiter, marker, maxresults, includeConverted, timeout, this.client.version(), requestId, restype, comp);
+        return service.listBlobFlatSegment(this.client.url(), prefix, delimiter, marker, maxresults, includeConverted, timeout, this.client.version(), requestId, restype, comp);
     }
 
     /**
-     * The List Blobs operation returns a list of the blobs under the specified container.
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
@@ -1256,8 +1729,8 @@ public final class ContainersImpl implements Containers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Maybe<ListBlobsResponse> listBlobsAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
-        return listBlobsWithRestResponseAsync(prefix, delimiter, marker, maxresults, include, timeout, requestId)
-            .flatMapMaybe((ContainerListBlobsResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    public Maybe<ListBlobsResponse> listBlobFlatSegmentAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
+        return listBlobFlatSegmentWithRestResponseAsync(prefix, delimiter, marker, maxresults, include, timeout, requestId)
+            .flatMapMaybe((ContainersListBlobFlatSegmentResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 }

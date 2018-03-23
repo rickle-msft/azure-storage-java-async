@@ -1,9 +1,7 @@
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.BlobPutHeaders;
-import com.microsoft.azure.storage.models.BlobPutResponse;
-import com.microsoft.azure.storage.models.BlockBlobPutBlockListHeaders;
-import com.microsoft.azure.storage.models.BlockBlobPutBlockListResponse;
+import com.microsoft.azure.storage.models.BlockBlobCommitBlockListResponse;
+import com.microsoft.azure.storage.models.BlockBlobUploadResponse;
 import com.microsoft.rest.v2.RestResponse;
 
 import java.time.OffsetDateTime;
@@ -15,25 +13,25 @@ import java.time.OffsetDateTime;
  */
 public final class CommonRestResponse {
 
-    private RestResponse<BlobPutHeaders, Void> putBlobResponse;
+    private BlockBlobUploadResponse uploadBlobResponse;
 
-    private RestResponse<BlockBlobPutBlockListHeaders, Void> putBlockListResponse;
+    private BlockBlobCommitBlockListResponse commitBlockListResponse;
 
-    static CommonRestResponse createFromPutBlobResponse(BlobPutResponse response) {
+    static CommonRestResponse createFromPutBlobResponse(BlockBlobUploadResponse response) {
         CommonRestResponse commonRestResponse = new CommonRestResponse();
-        commonRestResponse.putBlobResponse = response;
+        commonRestResponse.uploadBlobResponse = response;
         return commonRestResponse;
     }
 
-    static CommonRestResponse createFromPutBlockListResponse(BlockBlobPutBlockListResponse response) {
+    static CommonRestResponse createFromPutBlockListResponse(BlockBlobCommitBlockListResponse response) {
         CommonRestResponse commonRestResponse = new CommonRestResponse();
-        commonRestResponse.putBlockListResponse = response;
+        commonRestResponse.commitBlockListResponse = response;
         return commonRestResponse;
     }
 
     private CommonRestResponse() {
-        putBlobResponse = null;
-        putBlockListResponse = null;
+        uploadBlobResponse = null;
+        commitBlockListResponse = null;
     }
 
     /**
@@ -41,10 +39,10 @@ public final class CommonRestResponse {
      *      An HTTP Etag for the blob at the time of the request.
      */
     public String eTag() {
-        if (putBlobResponse != null) {
-            return putBlobResponse.headers().eTag();
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse.headers().eTag();
         }
-        return putBlockListResponse.headers().eTag();
+        return commitBlockListResponse.headers().eTag();
     }
 
     /**
@@ -52,10 +50,10 @@ public final class CommonRestResponse {
      *      The time when the blob was last modified.
      */
     public OffsetDateTime lastModifiedTime() {
-        if (putBlobResponse != null) {
-            return putBlobResponse.headers().lastModified();
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse.headers().lastModified();
         }
-        return putBlockListResponse.headers().lastModified();
+        return commitBlockListResponse.headers().lastModified();
     }
 
     /**
@@ -63,10 +61,10 @@ public final class CommonRestResponse {
      *      The id of the service request for which this is the response.
      */
     public String requestId() {
-        if (putBlobResponse != null) {
-            return putBlobResponse.headers().requestId();
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse.headers().requestId();
         }
-        return putBlockListResponse.headers().requestId();
+        return commitBlockListResponse.headers().requestId();
     }
 
     /**
@@ -74,10 +72,10 @@ public final class CommonRestResponse {
      *      The date of the response.
      */
     public OffsetDateTime date() {
-        if (putBlobResponse != null) {
-            return putBlobResponse.headers().dateProperty();
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse.headers().dateProperty();
         }
-        return putBlockListResponse.headers().dateProperty();
+        return commitBlockListResponse.headers().dateProperty();
     }
 
     /**
@@ -85,10 +83,10 @@ public final class CommonRestResponse {
      *       The service version responding to the request.
      */
     public String version() {
-        if (putBlobResponse != null) {
-            return putBlobResponse.headers().version();
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse.headers().version();
         }
-        return putBlockListResponse.headers().version();
+        return commitBlockListResponse.headers().version();
     }
 
     /**
@@ -96,10 +94,10 @@ public final class CommonRestResponse {
      *      The underlying response.
      */
     public RestResponse response() {
-        if (putBlobResponse != null) {
-            return putBlobResponse;
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse;
         }
-        return putBlockListResponse;
+        return commitBlockListResponse;
     }
 
 }

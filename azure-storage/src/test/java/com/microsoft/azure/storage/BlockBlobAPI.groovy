@@ -1,7 +1,7 @@
 package com.microsoft.azure.storage
 
 import com.microsoft.azure.storage.blob.BlockBlobURL
-import com.microsoft.azure.storage.models.BlockListType
+
 import io.reactivex.Flowable
 
 class BlockBlobAPI extends APISpec{

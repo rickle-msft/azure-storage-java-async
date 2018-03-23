@@ -1,7 +1,7 @@
 package com.microsoft.azure.storage
 
 import com.microsoft.azure.storage.blob.AppendBlobURL
-import com.microsoft.azure.storage.models.BlobPutHeaders
+
 import com.microsoft.rest.v2.RestResponse
 import io.reactivex.Flowable
 

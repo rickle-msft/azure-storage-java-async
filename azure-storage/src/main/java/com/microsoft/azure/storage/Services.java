@@ -13,8 +13,8 @@ package com.microsoft.azure.storage;
 import com.microsoft.azure.storage.models.ListContainersIncludeType;
 import com.microsoft.azure.storage.models.ListContainersResponse;
 import com.microsoft.azure.storage.models.ServiceGetPropertiesResponse;
-import com.microsoft.azure.storage.models.ServiceGetStatsResponse;
-import com.microsoft.azure.storage.models.ServiceListContainersResponse;
+import com.microsoft.azure.storage.models.ServiceGetStatisticsResponse;
+import com.microsoft.azure.storage.models.ServiceListContainersSegmentResponse;
 import com.microsoft.azure.storage.models.ServiceSetPropertiesResponse;
 import com.microsoft.azure.storage.models.StorageServiceProperties;
 import com.microsoft.azure.storage.models.StorageServiceStats;
@@ -191,7 +191,7 @@ public interface Services {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the StorageServiceStats object if successful.
      */
-    StorageServiceStats getStats();
+    StorageServiceStats getStatistics();
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
@@ -200,21 +200,21 @@ public interface Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<StorageServiceStats> getStatsAsync(ServiceCallback<StorageServiceStats> serviceCallback);
+    ServiceFuture<StorageServiceStats> getStatisticsAsync(ServiceCallback<StorageServiceStats> serviceCallback);
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
      *
      * @return a Single which performs the network request upon subscription.
      */
-    Single<ServiceGetStatsResponse> getStatsWithRestResponseAsync();
+    Single<ServiceGetStatisticsResponse> getStatisticsWithRestResponseAsync();
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
      *
      * @return a Single which performs the network request upon subscription.
      */
-    Maybe<StorageServiceStats> getStatsAsync();
+    Maybe<StorageServiceStats> getStatisticsAsync();
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
@@ -225,7 +225,7 @@ public interface Services {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the StorageServiceStats object if successful.
      */
-    StorageServiceStats getStats(Integer timeout, String requestId);
+    StorageServiceStats getStatistics(Integer timeout, String requestId);
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
@@ -236,7 +236,7 @@ public interface Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<StorageServiceStats> getStatsAsync(Integer timeout, String requestId, ServiceCallback<StorageServiceStats> serviceCallback);
+    ServiceFuture<StorageServiceStats> getStatisticsAsync(Integer timeout, String requestId, ServiceCallback<StorageServiceStats> serviceCallback);
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
@@ -246,7 +246,7 @@ public interface Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    Single<ServiceGetStatsResponse> getStatsWithRestResponseAsync(Integer timeout, String requestId);
+    Single<ServiceGetStatisticsResponse> getStatisticsWithRestResponseAsync(Integer timeout, String requestId);
 
     /**
      * Retrieves statistics related to replication for the Blob service. It is only available on the secondary location endpoint when read-access geo-redundant replication is enabled for the storage account.
@@ -256,41 +256,41 @@ public interface Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    Maybe<StorageServiceStats> getStatsAsync(Integer timeout, String requestId);
+    Maybe<StorageServiceStats> getStatisticsAsync(Integer timeout, String requestId);
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the ListContainersResponse object if successful.
      */
-    ListContainersResponse listContainers();
+    ListContainersResponse listContainersSegment();
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<ListContainersResponse> listContainersAsync(ServiceCallback<ListContainersResponse> serviceCallback);
+    ServiceFuture<ListContainersResponse> listContainersSegmentAsync(ServiceCallback<ListContainersResponse> serviceCallback);
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @return a Single which performs the network request upon subscription.
      */
-    Single<ServiceListContainersResponse> listContainersWithRestResponseAsync();
+    Single<ServiceListContainersSegmentResponse> listContainersSegmentWithRestResponseAsync();
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @return a Single which performs the network request upon subscription.
      */
-    Maybe<ListContainersResponse> listContainersAsync();
+    Maybe<ListContainersResponse> listContainersSegmentAsync();
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
@@ -302,10 +302,10 @@ public interface Services {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the ListContainersResponse object if successful.
      */
-    ListContainersResponse listContainers(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId);
+    ListContainersResponse listContainersSegment(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId);
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
@@ -317,10 +317,10 @@ public interface Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    ServiceFuture<ListContainersResponse> listContainersAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId, ServiceCallback<ListContainersResponse> serviceCallback);
+    ServiceFuture<ListContainersResponse> listContainersSegmentAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId, ServiceCallback<ListContainersResponse> serviceCallback);
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
@@ -331,10 +331,10 @@ public interface Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    Single<ServiceListContainersResponse> listContainersWithRestResponseAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId);
+    Single<ServiceListContainersSegmentResponse> listContainersSegmentWithRestResponseAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId);
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
@@ -345,5 +345,5 @@ public interface Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    Maybe<ListContainersResponse> listContainersAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId);
+    Maybe<ListContainersResponse> listContainersSegmentAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId);
 }

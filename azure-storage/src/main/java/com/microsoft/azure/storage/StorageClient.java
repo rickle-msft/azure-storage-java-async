@@ -66,13 +66,6 @@ public interface StorageClient {
     Blobs blobs();
 
     /**
-     * Gets the BlockBlobs object to access its operations.
-     *
-     * @return the BlockBlobs object.
-     */
-    BlockBlobs blockBlobs();
-
-    /**
      * Gets the PageBlobs object to access its operations.
      *
      * @return the PageBlobs object.
@@ -85,4 +78,11 @@ public interface StorageClient {
      * @return the AppendBlobs object.
      */
     AppendBlobs appendBlobs();
+
+    /**
+     * Gets the BlockBlobs object to access its operations.
+     *
+     * @return the BlockBlobs object.
+     */
+    BlockBlobs blockBlobs();
 }

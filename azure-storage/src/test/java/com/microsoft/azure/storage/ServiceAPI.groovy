@@ -1,7 +1,6 @@
 package com.microsoft.azure.storage
 
 import com.microsoft.azure.storage.blob.ListContainersOptions
-import com.microsoft.azure.storage.models.StorageServiceProperties
 
 class ServiceAPI extends APISpec {
     StorageServiceProperties originalProps = primaryServiceURL.getProperties().blockingGet().body()

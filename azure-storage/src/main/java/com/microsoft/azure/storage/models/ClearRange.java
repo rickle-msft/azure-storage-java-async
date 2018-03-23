@@ -23,20 +23,20 @@ public final class ClearRange {
      * The start property.
      */
     @JsonProperty(value = "Start", required = true)
-    private int start;
+    private long start;
 
     /**
      * The end property.
      */
     @JsonProperty(value = "End", required = true)
-    private int end;
+    private long end;
 
     /**
      * Get the start value.
      *
      * @return the start value.
      */
-    public int start() {
+    public long start() {
         return this.start;
     }
 
@@ -46,7 +46,7 @@ public final class ClearRange {
      * @param start the start value to set.
      * @return the ClearRange object itself.
      */
-    public ClearRange withStart(int start) {
+    public ClearRange withStart(long start) {
         this.start = start;
         return this;
     }
@@ -56,7 +56,7 @@ public final class ClearRange {
      *
      * @return the end value.
      */
-    public int end() {
+    public long end() {
         return this.end;
     }
 
@@ -66,7 +66,7 @@ public final class ClearRange {
      * @param end the end value to set.
      * @return the ClearRange object itself.
      */
-    public ClearRange withEnd(int end) {
+    public ClearRange withEnd(long end) {
         this.end = end;
         return this;
     }

@@ -14,8 +14,8 @@ import com.microsoft.azure.storage.Services;
 import com.microsoft.azure.storage.models.ListContainersIncludeType;
 import com.microsoft.azure.storage.models.ListContainersResponse;
 import com.microsoft.azure.storage.models.ServiceGetPropertiesResponse;
-import com.microsoft.azure.storage.models.ServiceGetStatsResponse;
-import com.microsoft.azure.storage.models.ServiceListContainersResponse;
+import com.microsoft.azure.storage.models.ServiceGetStatisticsResponse;
+import com.microsoft.azure.storage.models.ServiceListContainersSegmentResponse;
 import com.microsoft.azure.storage.models.ServiceSetPropertiesResponse;
 import com.microsoft.azure.storage.models.StorageServiceProperties;
 import com.microsoft.azure.storage.models.StorageServiceStats;
@@ -77,11 +77,11 @@ public final class ServicesImpl implements Services {
 
         @GET("")
         @ExpectedResponses({200})
-        Single<ServiceGetStatsResponse> getStats(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
+        Single<ServiceGetStatisticsResponse> getStatistics(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
 
         @GET("")
         @ExpectedResponses({200})
-        Single<ServiceListContainersResponse> listContainers(@HostParam("url") String url, @QueryParam("prefix") String prefix, @QueryParam("marker") String marker, @QueryParam("maxresults") Integer maxresults, @QueryParam("include") ListContainersIncludeType include, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+        Single<ServiceListContainersSegmentResponse> listContainersSegment(@HostParam("url") String url, @QueryParam("prefix") String prefix, @QueryParam("marker") String marker, @QueryParam("maxresults") Integer maxresults, @QueryParam("include") ListContainersIncludeType include, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
     }
 
     /**
@@ -325,8 +325,8 @@ public final class ServicesImpl implements Services {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the StorageServiceStats object if successful.
      */
-    public StorageServiceStats getStats() {
-        return getStatsAsync().blockingGet();
+    public StorageServiceStats getStatistics() {
+        return getStatisticsAsync().blockingGet();
     }
 
     /**
@@ -336,8 +336,8 @@ public final class ServicesImpl implements Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<StorageServiceStats> getStatsAsync(ServiceCallback<StorageServiceStats> serviceCallback) {
-        return ServiceFuture.fromBody(getStatsAsync(), serviceCallback);
+    public ServiceFuture<StorageServiceStats> getStatisticsAsync(ServiceCallback<StorageServiceStats> serviceCallback) {
+        return ServiceFuture.fromBody(getStatisticsAsync(), serviceCallback);
     }
 
     /**
@@ -345,7 +345,7 @@ public final class ServicesImpl implements Services {
      *
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ServiceGetStatsResponse> getStatsWithRestResponseAsync() {
+    public Single<ServiceGetStatisticsResponse> getStatisticsWithRestResponseAsync() {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -356,7 +356,7 @@ public final class ServicesImpl implements Services {
         final String comp = "stats";
         final Integer timeout = null;
         final String requestId = null;
-        return service.getStats(this.client.url(), timeout, this.client.version(), requestId, restype, comp);
+        return service.getStatistics(this.client.url(), timeout, this.client.version(), requestId, restype, comp);
     }
 
     /**
@@ -364,9 +364,9 @@ public final class ServicesImpl implements Services {
      *
      * @return a Single which performs the network request upon subscription.
      */
-    public Maybe<StorageServiceStats> getStatsAsync() {
-        return getStatsWithRestResponseAsync()
-            .flatMapMaybe((ServiceGetStatsResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    public Maybe<StorageServiceStats> getStatisticsAsync() {
+        return getStatisticsWithRestResponseAsync()
+            .flatMapMaybe((ServiceGetStatisticsResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 
     /**
@@ -378,8 +378,8 @@ public final class ServicesImpl implements Services {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the StorageServiceStats object if successful.
      */
-    public StorageServiceStats getStats(Integer timeout, String requestId) {
-        return getStatsAsync(timeout, requestId).blockingGet();
+    public StorageServiceStats getStatistics(Integer timeout, String requestId) {
+        return getStatisticsAsync(timeout, requestId).blockingGet();
     }
 
     /**
@@ -391,8 +391,8 @@ public final class ServicesImpl implements Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<StorageServiceStats> getStatsAsync(Integer timeout, String requestId, ServiceCallback<StorageServiceStats> serviceCallback) {
-        return ServiceFuture.fromBody(getStatsAsync(timeout, requestId), serviceCallback);
+    public ServiceFuture<StorageServiceStats> getStatisticsAsync(Integer timeout, String requestId, ServiceCallback<StorageServiceStats> serviceCallback) {
+        return ServiceFuture.fromBody(getStatisticsAsync(timeout, requestId), serviceCallback);
     }
 
     /**
@@ -403,7 +403,7 @@ public final class ServicesImpl implements Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ServiceGetStatsResponse> getStatsWithRestResponseAsync(Integer timeout, String requestId) {
+    public Single<ServiceGetStatisticsResponse> getStatisticsWithRestResponseAsync(Integer timeout, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -412,7 +412,7 @@ public final class ServicesImpl implements Services {
         }
         final String restype = "service";
         final String comp = "stats";
-        return service.getStats(this.client.url(), timeout, this.client.version(), requestId, restype, comp);
+        return service.getStatistics(this.client.url(), timeout, this.client.version(), requestId, restype, comp);
     }
 
     /**
@@ -423,38 +423,38 @@ public final class ServicesImpl implements Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Maybe<StorageServiceStats> getStatsAsync(Integer timeout, String requestId) {
-        return getStatsWithRestResponseAsync(timeout, requestId)
-            .flatMapMaybe((ServiceGetStatsResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    public Maybe<StorageServiceStats> getStatisticsAsync(Integer timeout, String requestId) {
+        return getStatisticsWithRestResponseAsync(timeout, requestId)
+            .flatMapMaybe((ServiceGetStatisticsResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the ListContainersResponse object if successful.
      */
-    public ListContainersResponse listContainers() {
-        return listContainersAsync().blockingGet();
+    public ListContainersResponse listContainersSegment() {
+        return listContainersSegmentAsync().blockingGet();
     }
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<ListContainersResponse> listContainersAsync(ServiceCallback<ListContainersResponse> serviceCallback) {
-        return ServiceFuture.fromBody(listContainersAsync(), serviceCallback);
+    public ServiceFuture<ListContainersResponse> listContainersSegmentAsync(ServiceCallback<ListContainersResponse> serviceCallback) {
+        return ServiceFuture.fromBody(listContainersSegmentAsync(), serviceCallback);
     }
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ServiceListContainersResponse> listContainersWithRestResponseAsync() {
+    public Single<ServiceListContainersSegmentResponse> listContainersSegmentWithRestResponseAsync() {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -468,21 +468,21 @@ public final class ServicesImpl implements Services {
         final ListContainersIncludeType include = null;
         final Integer timeout = null;
         final String requestId = null;
-        return service.listContainers(this.client.url(), prefix, marker, maxresults, include, timeout, this.client.version(), requestId, comp);
+        return service.listContainersSegment(this.client.url(), prefix, marker, maxresults, include, timeout, this.client.version(), requestId, comp);
     }
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @return a Single which performs the network request upon subscription.
      */
-    public Maybe<ListContainersResponse> listContainersAsync() {
-        return listContainersWithRestResponseAsync()
-            .flatMapMaybe((ServiceListContainersResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    public Maybe<ListContainersResponse> listContainersSegmentAsync() {
+        return listContainersSegmentWithRestResponseAsync()
+            .flatMapMaybe((ServiceListContainersSegmentResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
@@ -494,12 +494,12 @@ public final class ServicesImpl implements Services {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the ListContainersResponse object if successful.
      */
-    public ListContainersResponse listContainers(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId) {
-        return listContainersAsync(prefix, marker, maxresults, include, timeout, requestId).blockingGet();
+    public ListContainersResponse listContainersSegment(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId) {
+        return listContainersSegmentAsync(prefix, marker, maxresults, include, timeout, requestId).blockingGet();
     }
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
@@ -511,12 +511,12 @@ public final class ServicesImpl implements Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<ListContainersResponse> listContainersAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId, ServiceCallback<ListContainersResponse> serviceCallback) {
-        return ServiceFuture.fromBody(listContainersAsync(prefix, marker, maxresults, include, timeout, requestId), serviceCallback);
+    public ServiceFuture<ListContainersResponse> listContainersSegmentAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId, ServiceCallback<ListContainersResponse> serviceCallback) {
+        return ServiceFuture.fromBody(listContainersSegmentAsync(prefix, marker, maxresults, include, timeout, requestId), serviceCallback);
     }
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
@@ -527,7 +527,7 @@ public final class ServicesImpl implements Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ServiceListContainersResponse> listContainersWithRestResponseAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId) {
+    public Single<ServiceListContainersSegmentResponse> listContainersSegmentWithRestResponseAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -535,11 +535,11 @@ public final class ServicesImpl implements Services {
             throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
         }
         final String comp = "list";
-        return service.listContainers(this.client.url(), prefix, marker, maxresults, include, timeout, this.client.version(), requestId, comp);
+        return service.listContainersSegment(this.client.url(), prefix, marker, maxresults, include, timeout, this.client.version(), requestId, comp);
     }
 
     /**
-     * The List Containers operation returns a list of the containers under the specified account.
+     * The List Containers Segment operation returns a list of the containers under the specified account.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
@@ -550,8 +550,8 @@ public final class ServicesImpl implements Services {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Maybe<ListContainersResponse> listContainersAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId) {
-        return listContainersWithRestResponseAsync(prefix, marker, maxresults, include, timeout, requestId)
-            .flatMapMaybe((ServiceListContainersResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    public Maybe<ListContainersResponse> listContainersSegmentAsync(String prefix, String marker, Integer maxresults, ListContainersIncludeType include, Integer timeout, String requestId) {
+        return listContainersSegmentWithRestResponseAsync(prefix, marker, maxresults, include, timeout, requestId)
+            .flatMapMaybe((ServiceListContainersSegmentResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 }
