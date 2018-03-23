@@ -281,10 +281,11 @@ public final class SharedKeyCredentials implements ICredentials {
      */
     String computeHmac256(final String stringToSign) throws InvalidKeyException {
         try {
+            Mac localMac = (Mac) this.hmacSha256.clone();
             byte[] utf8Bytes = stringToSign.getBytes(Constants.UTF8_CHARSET);
             return Base64.getEncoder().encodeToString(this.hmacSha256.doFinal(utf8Bytes));
         }
-        catch (final UnsupportedEncodingException e) {
+        catch (final UnsupportedEncodingException | CloneNotSupportedException e) {
             throw new Error(e);
         }
     }
