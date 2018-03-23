@@ -36,17 +36,17 @@ public final class AccountSASSignatureValues {
     public String version = Constants.HeaderConstants.TARGET_STORAGE_VERSION;
 
     /**
-     * A {@link SASProtocol} value representing the allowed Internet protocols.
+     * {@link SASProtocol}
      */
     public SASProtocol protocol;
 
     /**
-     * A {@code java.util.Date} object which contains the shared access signature start time.
+     * When the SAS will take effect.
      */
     public OffsetDateTime startTime;
 
     /**
-     * A {@code java.util.Date} object which contains the shared access signature expiry time.
+     * The time after which the SAS will no longer work.
      */
     public OffsetDateTime expiryTime;
 
@@ -57,18 +57,18 @@ public final class AccountSASSignatureValues {
     public String permissions;
 
     /**
-     * An {@link IPRange} representing the IP addresses permitted to use this SAS.
+     * {@link IPRange}
      */
     public IPRange ipRange;
 
     /**
-     * A {@code String} that contains the values that indicate the services accessible with this SAS. Please refer to
-     * {@link AccountSASService} to construct this value.
+     * The values that indicate the services accessible with this SAS. Please refer to {@link AccountSASService} to
+     * construct this value.
      */
     public String services;
 
     /**
-     * A {@code String} that contains the values that indicate the resource types accessible with this SAS. Please refer
+     * The values that indicate the resource types accessible with this SAS. Please refer
      * to {@link AccountSASResourceType} to construct this value.
      */
     public String resourceTypes;
