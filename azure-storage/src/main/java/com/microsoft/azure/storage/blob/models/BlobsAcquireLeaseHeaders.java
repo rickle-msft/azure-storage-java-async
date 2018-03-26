@@ -38,6 +38,12 @@ public final class BlobsAcquireLeaseHeaders {
     private DateTimeRfc1123 lastModified;
 
     /**
+     * Uniquely identifies a blobs's lease.
+     */
+    @JsonProperty(value = "x-ms-lease-id")
+    private String leaseId;
+
+    /**
      * This header uniquely identifies the request that was made and can be
      * used for troubleshooting the request.
      */
@@ -103,6 +109,26 @@ public final class BlobsAcquireLeaseHeaders {
         } else {
             this.lastModified = new DateTimeRfc1123(lastModified);
         }
+        return this;
+    }
+
+    /**
+     * Get the leaseId value.
+     *
+     * @return the leaseId value.
+     */
+    public String leaseId() {
+        return this.leaseId;
+    }
+
+    /**
+     * Set the leaseId value.
+     *
+     * @param leaseId the leaseId value to set.
+     * @return the BlobsAcquireLeaseHeaders object itself.
+     */
+    public BlobsAcquireLeaseHeaders withLeaseId(String leaseId) {
+        this.leaseId = leaseId;
         return this;
     }
 

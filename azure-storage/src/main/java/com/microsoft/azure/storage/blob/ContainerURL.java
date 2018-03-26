@@ -440,7 +440,7 @@ public final class ContainerURL extends StorageURL {
      * <a href="https://docs.microsoft.com/rest/api/storageservices/list-blobs">Azure Docs</a>.
      *
      * @param marker
-     *      A {@code String} value that identifies the portion of the list to be returned with the next list operation.
+     *      Identifies the portion of the list to be returned with the next list operation.
      *      This value is returned in the response of a previous list operation. Set to null if this is the first
      *      segment.
      * @param options
@@ -451,10 +451,37 @@ public final class ContainerURL extends StorageURL {
     public Single<ContainersListBlobFlatSegmentResponse> listBlobsFlatSegment(
             String marker, ListBlobsOptions options) {
         options = options == null ? ListBlobsOptions.DEFAULT : options;
+
         return this.storageClient.generatedContainers().listBlobFlatSegmentWithRestResponseAsync(
                 options.getPrefix(), marker, options.getMaxResults(),
                 options.getDetails().toList(), null, null);
     }
 
-    //TODO: List Blobs Heirarchy Segment
+    /**
+     * Returns a single segment of blobs and blob prefixes starting from the specified Marker. Use an empty
+     * marker to start enumeration from the beginning. Blob names are returned in lexicographic order.
+     * After getting a segment, process it, and then call ListBlobs again (passing the the previously-returned
+     * Marker) to get the next segment. For more information, see the
+     * <a href="https://docs.microsoft.com/rest/api/storageservices/list-blobs">Azure Docs</a>.
+     *
+     * @param marker
+     *      Identifies the portion of the list to be returned with the next list operation. This value is returned in
+     *      the response of a previous list operation. Set to null if this is the first segment.
+     * @param delimiter
+     *      The operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs
+     *      whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may
+     *      be a single character or a string.
+     * @param options
+     *      {@link ListBlobsOptions}
+     * @return
+     *      Emits the successful response.
+     */
+    public Single<ContainersListBlobHierarchySegmentResponse> listBlobsHierarchySegment(
+            String marker, String delimiter, ListBlobsOptions options) {
+        options = options == null ? ListBlobsOptions.DEFAULT : options;
+
+        return this.storageClient.generatedContainers().listBlobHierarchySegmentWithRestResponseAsync(
+                delimiter, options.getPrefix(), marker, options.getMaxResults(),
+                options.getDetails().toList(), null, null);
+    }
 }

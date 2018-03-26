@@ -5,6 +5,8 @@ import com.microsoft.azure.storage.blob.PageBlobURL
 import com.microsoft.azure.storage.blob.models.PageBlobCreateResponse
 import com.microsoft.azure.storage.blob.models.PageList
 import com.microsoft.azure.storage.blob.models.PageRange
+import com.microsoft.azure.storage.blob.models.PublicAccessType
+import com.microsoft.azure.storage.blob.models.SequenceNumberActionType
 import io.reactivex.Flowable
 
 class PageBlobAPI extends APISpec {
@@ -49,7 +51,7 @@ class PageBlobAPI extends APISpec {
         PageList pages = bu.getPageRanges(null, null).blockingGet().body()
 
         then:
-        pages.pageRange() == null
+        pages.pageRange().size() == 0
     }
 
     def "Page blob get page ranges"() {
@@ -83,8 +85,7 @@ class PageBlobAPI extends APISpec {
 
     def "Page blob sequence number"() {
         setup:
-        bu.updateSequenceNumber(SequenceNumberActionType.UPDATE, 5, null, null)
-                .blockingGet()
+        bu.updateSequenceNumber(SequenceNumberActionType.UPDATE, 5, null).blockingGet()
 
         expect:
         bu.getProperties(null).blockingGet().headers().blobSequenceNumber() == 5

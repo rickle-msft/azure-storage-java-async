@@ -7,9 +7,12 @@ import com.microsoft.azure.storage.blob.LeaseAccessConditions
 import com.microsoft.azure.storage.blob.Metadata
 import com.microsoft.azure.storage.blob.PageBlobURL
 import com.microsoft.azure.storage.blob.models.Blob
+import com.microsoft.azure.storage.blob.models.BlobList
+import com.microsoft.azure.storage.blob.models.BlobPrefix
 import com.microsoft.azure.storage.blob.models.ContainersAcquireLeaseHeaders
 import com.microsoft.azure.storage.blob.models.ContainersCreateResponse
 import com.microsoft.azure.storage.blob.models.ContainersGetPropertiesHeaders
+import com.microsoft.azure.storage.blob.models.ListBlobsResponse
 import com.microsoft.azure.storage.blob.models.PublicAccessType
 import com.microsoft.rest.v2.RestException
 import spock.lang.*
@@ -139,7 +142,7 @@ class ContainerAPI extends APISpec {
 
     }
 
-    def "Container get acl"() {
+    def "Container set get access policy"() {
         setup:
         cu.setAccessPolicy(PublicAccessType.BLOB, null, null).blockingGet()
 
@@ -197,9 +200,10 @@ class ContainerAPI extends APISpec {
         null     | null       | null         | null        | garbageLeaseID  || 412        | false
         null     | null       | null         | null        | receivedLeaseID || 202        | false
     }
-    def "container list blobs"() {
+    def "Container list blobs flat"() {
         setup:
-        PageBlobURL bu = cu.createPageBlobURL("page")
+        String name = generateBlobName()
+        PageBlobURL bu = cu.createPageBlobURL(name)
         bu.create(512, null, null, null, null).blockingGet()
 
         when:
@@ -207,6 +211,29 @@ class ContainerAPI extends APISpec {
 
         then:
         blobs.size() == 1
-        blobs.get(0).name().equals("page")
+        blobs.get(0).name().equals(name)
+    }
+
+    def "container list blobs hierarchy"() {
+        setup:
+        String name1 = generateBlobName()
+        String name2 = generateBlobName() + "/"
+        PageBlobURL bu = cu.createPageBlobURL(name1)
+        bu.create(512, null, null, null, null).blockingGet()
+        PageBlobURL bu2 = cu.createPageBlobURL(name2)
+        bu2.create(512, null, null, null, null).blockingGet()
+
+        when:
+        BlobList response = cu.listBlobsHierarchySegment(null, "/", null).blockingGet()
+                .body().blobs()
+        List<Blob> blobs = response.blob()
+        List<BlobPrefix> prefixes = response.blobPrefix()
+
+        then:
+        blobs.size() == 1
+        blobs.get(0).name().equals(name1)
+
+        prefixes.size() == 1
+        prefixes.get(0).name().equals(name2)
     }
 }

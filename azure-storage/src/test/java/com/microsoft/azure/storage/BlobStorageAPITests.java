@@ -174,7 +174,7 @@ public class BlobStorageAPITests {
             List<Blob> blobs = cu.listBlobsFlatSegment(null,
                     new ListBlobsOptions(new BlobListingDetails(
                             true, false, true, true),
-                            null, null, null)).blockingGet().body().blobs().blob();
+                            null, null)).blockingGet().body().blobs().blob();
             Assert.assertEquals(4, blobs.size());
 
             // Commit the list of blocks. Download the blob to verify.

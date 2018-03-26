@@ -5,8 +5,11 @@ import com.microsoft.azure.storage.blob.BlobURL
 
 import com.microsoft.azure.storage.blob.ContainerURL
 import com.microsoft.azure.storage.blob.Metadata
+import com.microsoft.azure.storage.blob.models.BlobType
 import com.microsoft.azure.storage.blob.models.BlobsGetPropertiesHeaders
 import com.microsoft.azure.storage.blob.models.CopyStatusType
+import com.microsoft.azure.storage.blob.models.LeaseStateType
+import com.microsoft.azure.storage.blob.models.PublicAccessType
 import com.microsoft.rest.v2.util.FlowableUtil
 import io.reactivex.Flowable
 import spock.lang.Unroll
@@ -46,7 +49,7 @@ class BlobAPI extends APISpec{
     }
 
     @Unroll
-    def "Blob set properties"() {
+    def "Blob set HTTP headers"() {
         setup:
         BlobHTTPHeaders putHeaders = new BlobHTTPHeaders(cacheControl, contentDisposition, contentEncoding,
                 contentLanguage, contentMD5, contentType)
@@ -63,8 +66,8 @@ class BlobAPI extends APISpec{
         receivedHeaders.contentType() == contentType
 
         where:
-        cacheControl | contentDisposition | contentEncoding | contentLanguage | contentMD5                    | contentType
-        null         | null               | null            | null            | null                          | null
+        cacheControl | contentDisposition | contentEncoding | contentLanguage | contentMD5                                                                                                     | contentType
+        null         | null               | null            | null            | null                                                                                                           | null
         "control"    | "disposition"      | "encoding"      | "language"      | new String(Base64.getEncoder().encode(MessageDigest.getInstance("MD5").digest(defaultData.array()))) | "type"
 
     }
