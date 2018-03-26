@@ -1,8 +1,7 @@
 package com.microsoft.azure.storage
 
 import com.microsoft.azure.storage.blob.AppendBlobURL
-
-import com.microsoft.rest.v2.RestResponse
+import com.microsoft.azure.storage.blob.models.AppendBlobCreateResponse
 import io.reactivex.Flowable
 
 class AppendBlobAPI extends APISpec {
@@ -18,7 +17,7 @@ class AppendBlobAPI extends APISpec {
         bu = cu.createAppendBlobURL(generateBlobName())
 
         when:
-        RestResponse<BlobPutHeaders, Void> response =
+        AppendBlobCreateResponse response =
                 bu.create(null, null, null).blockingGet()
 
         then:

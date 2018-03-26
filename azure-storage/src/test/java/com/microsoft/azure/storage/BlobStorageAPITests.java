@@ -9,8 +9,7 @@ import com.linkedin.flashback.scene.SceneConfiguration;
 import com.linkedin.flashback.scene.SceneMode;
 import com.linkedin.flashback.smartproxy.FlashbackRunner;
 import com.microsoft.azure.storage.blob.*;
-import com.microsoft.azure.storage.models.*;
-import com.microsoft.rest.v2.RestResponse;
+import com.microsoft.azure.storage.blob.models.*;
 import com.microsoft.rest.v2.http.*;
 import com.microsoft.rest.v2.util.FlowableUtil;
 import io.reactivex.Flowable;
@@ -97,7 +96,7 @@ public class BlobStorageAPITests {
             List<Container> containerList = new ArrayList<>();
             String marker = null;
             do {
-                RestResponse<ServiceListContainersHeaders, ListContainersResponse> resp = su.listContainersSegment(
+                ServiceListContainersSegmentResponse resp = su.listContainersSegment(
                         marker, new ListContainersOptions(null, "java", null)).blockingGet();
                 containerList.addAll(resp.body().containers());
                 marker = resp.body().marker();
@@ -122,7 +121,7 @@ public class BlobStorageAPITests {
                     "myContentEncoding", "myLanguage", null,
                     "myType");
             bu.setHTTPHeaders(headers, null).blockingGet();
-            BlobGetPropertiesHeaders receivedHeaders = bu.getProperties(
+            BlobsGetPropertiesHeaders receivedHeaders = bu.getProperties(
                     null).blockingGet().headers();
             Assert.assertEquals(headers.getCacheControl(), receivedHeaders.cacheControl());
             Assert.assertEquals(headers.getContentDisposition(), receivedHeaders.contentDisposition());
@@ -262,8 +261,8 @@ public class BlobStorageAPITests {
             Assert.assertEquals(cr.end(), 511);
 
             pbu.resize(512L * 4L, null).blockingGet();
-            pbu.updateSequenceNumber(SequenceNumberActionType.INCREMENT, null, null, null).blockingGet();
-            BlobGetPropertiesHeaders pageHeaders = pbu.getProperties(null).blockingGet().headers();
+            pbu.updateSequenceNumber(SequenceNumberActionType.INCREMENT, null, null).blockingGet();
+            BlobsGetPropertiesHeaders pageHeaders = pbu.getProperties(null).blockingGet().headers();
             Assert.assertEquals(1, pageHeaders.blobSequenceNumber().longValue());
             Assert.assertEquals((long)(512*4), pageHeaders.contentLength().longValue());
 

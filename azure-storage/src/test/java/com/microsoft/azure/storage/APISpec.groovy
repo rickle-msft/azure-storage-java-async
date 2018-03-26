@@ -16,16 +16,17 @@ import com.microsoft.azure.storage.blob.PipelineOptions
 import com.microsoft.azure.storage.blob.ServiceURL
 import com.microsoft.azure.storage.blob.SharedKeyCredentials
 import com.microsoft.azure.storage.blob.StorageURL
-
+import com.microsoft.azure.storage.blob.models.Container
+import com.microsoft.azure.storage.blob.models.LeaseStateType
 import com.microsoft.rest.v2.http.HttpClient
 import com.microsoft.rest.v2.http.HttpClientConfiguration
 import com.microsoft.rest.v2.http.HttpPipeline
-import org.joda.time.DateTime
 import org.spockframework.lang.ISpecificationContext
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.nio.ByteBuffer
+import java.time.OffsetDateTime
 
 class APISpec extends Specification {
     @Shared
@@ -65,9 +66,9 @@ class APISpec extends Specification {
     The values below are used to create data-driven tests for access conditions.
      */
     // TODO: Change from joda time
-    static final Date oldDate = new DateTime().minusDays(1).toDate()
+    static final OffsetDateTime oldDate = OffsetDateTime.now().minusDays(1)
 
-    static final Date newDate = new DateTime().plusDays(1).toDate()
+    static final OffsetDateTime newDate = OffsetDateTime.now().plusDays(1)
 
     /*
     Note that this value is only used to check if we are depending on the received etag. This value will not actually

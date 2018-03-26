@@ -19,6 +19,7 @@ import com.microsoft.azure.storage.blob.models.ContainersDeleteResponse;
 import com.microsoft.azure.storage.blob.models.ContainersGetAccessPolicyResponse;
 import com.microsoft.azure.storage.blob.models.ContainersGetPropertiesResponse;
 import com.microsoft.azure.storage.blob.models.ContainersListBlobFlatSegmentResponse;
+import com.microsoft.azure.storage.blob.models.ContainersListBlobHierarchySegmentResponse;
 import com.microsoft.azure.storage.blob.models.ContainersReleaseLeaseResponse;
 import com.microsoft.azure.storage.blob.models.ContainersRenewLeaseResponse;
 import com.microsoft.azure.storage.blob.models.ContainersSetAccessPolicyResponse;
@@ -45,6 +46,7 @@ import com.microsoft.rest.v2.annotations.QueryParam;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+import io.reactivex.annotations.NonNull;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,7 +130,11 @@ public final class GeneratedContainers {
 
         @GET("{containerName}")
         @ExpectedResponses({200})
-        Single<ContainersListBlobFlatSegmentResponse> listBlobFlatSegment(@HostParam("url") String url, @QueryParam("prefix") String prefix, @QueryParam("delimiter") String delimiter, @QueryParam("marker") String marker, @QueryParam("maxresults") Integer maxresults, @QueryParam("include") String include, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
+        Single<ContainersListBlobFlatSegmentResponse> listBlobFlatSegment(@HostParam("url") String url, @QueryParam("prefix") String prefix, @QueryParam("marker") String marker, @QueryParam("maxresults") Integer maxresults, @QueryParam("include") String include, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
+
+        @GET("{containerName}")
+        @ExpectedResponses({200})
+        Single<ContainersListBlobHierarchySegmentResponse> listBlobHierarchySegment(@HostParam("url") String url, @QueryParam("prefix") String prefix, @QueryParam("delimiter") String delimiter, @QueryParam("marker") String marker, @QueryParam("maxresults") Integer maxresults, @QueryParam("include") String include, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("restype") String restype, @QueryParam("comp") String comp);
     }
 
     /**
@@ -646,23 +652,23 @@ public final class GeneratedContainers {
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void releaseLease(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
-        releaseLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
+    public void releaseLease(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        releaseLeaseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
     }
 
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -670,24 +676,27 @@ public final class GeneratedContainers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> releaseLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(releaseLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
+    public ServiceFuture<Void> releaseLeaseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(releaseLeaseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
     }
 
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainersReleaseLeaseResponse> releaseLeaseWithRestResponseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+    public Single<ContainersReleaseLeaseResponse> releaseLeaseWithRestResponseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (leaseId == null) {
+            throw new IllegalArgumentException("Parameter leaseId is required and cannot be null.");
         }
         if (this.client.version() == null) {
             throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
@@ -709,39 +718,39 @@ public final class GeneratedContainers {
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable releaseLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
-        return releaseLeaseWithRestResponseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId)
+    public Completable releaseLeaseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        return releaseLeaseWithRestResponseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, requestId)
             .toCompletable();
     }
 
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void renewLease(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
-        renewLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
+    public void renewLease(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        renewLeaseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
     }
 
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -749,24 +758,27 @@ public final class GeneratedContainers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> renewLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(renewLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
+    public ServiceFuture<Void> renewLeaseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(renewLeaseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
     }
 
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainersRenewLeaseResponse> renewLeaseWithRestResponseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+    public Single<ContainersRenewLeaseResponse> renewLeaseWithRestResponseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (leaseId == null) {
+            throw new IllegalArgumentException("Parameter leaseId is required and cannot be null.");
         }
         if (this.client.version() == null) {
             throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
@@ -788,16 +800,16 @@ public final class GeneratedContainers {
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable renewLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
-        return renewLeaseWithRestResponseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, requestId)
+    public Completable renewLeaseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        return renewLeaseWithRestResponseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, requestId)
             .toCompletable();
     }
 
@@ -883,25 +895,25 @@ public final class GeneratedContainers {
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void changeLease(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
-        changeLeaseAsync(timeout, leaseId, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
+    public void changeLease(@NonNull String leaseId, @NonNull String proposedLeaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        changeLeaseAsync(leaseId, proposedLeaseId, timeout, ifModifiedSince, ifUnmodifiedSince, requestId).blockingAwait();
     }
 
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
@@ -909,25 +921,31 @@ public final class GeneratedContainers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> changeLeaseAsync(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(changeLeaseAsync(timeout, leaseId, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
+    public ServiceFuture<Void> changeLeaseAsync(@NonNull String leaseId, @NonNull String proposedLeaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(changeLeaseAsync(leaseId, proposedLeaseId, timeout, ifModifiedSince, ifUnmodifiedSince, requestId), serviceCallback);
     }
 
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainersChangeLeaseResponse> changeLeaseWithRestResponseAsync(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+    public Single<ContainersChangeLeaseResponse> changeLeaseWithRestResponseAsync(@NonNull String leaseId, @NonNull String proposedLeaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (leaseId == null) {
+            throw new IllegalArgumentException("Parameter leaseId is required and cannot be null.");
+        }
+        if (proposedLeaseId == null) {
+            throw new IllegalArgumentException("Parameter proposedLeaseId is required and cannot be null.");
         }
         if (this.client.version() == null) {
             throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
@@ -949,17 +967,17 @@ public final class GeneratedContainers {
     /**
      * [Update] establishes and manages a lock on a container for delete operations. The lock duration can be 15 to 60 seconds, or can be infinite.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable changeLeaseAsync(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
-        return changeLeaseWithRestResponseAsync(timeout, leaseId, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, requestId)
+    public Completable changeLeaseAsync(@NonNull String leaseId, @NonNull String proposedLeaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String requestId) {
+        return changeLeaseWithRestResponseAsync(leaseId, proposedLeaseId, timeout, ifModifiedSince, ifUnmodifiedSince, requestId)
             .toCompletable();
     }
 
@@ -967,7 +985,6 @@ public final class GeneratedContainers {
      * [Update] The List Blobs operation returns a list of the blobs under the specified container.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
-     * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
      * @param maxresults Specifies the maximum number of containers to return. If the request does not specify maxresults, or specifies a value greater than 5000, the server will return up to 5000 items. Note that if the listing operation crosses a partition boundary, then the service will return a continuation token for retrieving the remainder of the results. For this reason, it is possible that the service will return fewer results than specified by maxresults, or than the default of 5000.
      * @param include Include this parameter to specify one or more datasets to include in the response.
@@ -977,15 +994,14 @@ public final class GeneratedContainers {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the ListBlobsResponse object if successful.
      */
-    public ListBlobsResponse listBlobFlatSegment(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
-        return listBlobFlatSegmentAsync(prefix, delimiter, marker, maxresults, include, timeout, requestId).blockingGet();
+    public ListBlobsResponse listBlobFlatSegment(String prefix, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
+        return listBlobFlatSegmentAsync(prefix, marker, maxresults, include, timeout, requestId).blockingGet();
     }
 
     /**
      * [Update] The List Blobs operation returns a list of the blobs under the specified container.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
-     * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
      * @param maxresults Specifies the maximum number of containers to return. If the request does not specify maxresults, or specifies a value greater than 5000, the server will return up to 5000 items. Note that if the listing operation crosses a partition boundary, then the service will return a continuation token for retrieving the remainder of the results. For this reason, it is possible that the service will return fewer results than specified by maxresults, or than the default of 5000.
      * @param include Include this parameter to specify one or more datasets to include in the response.
@@ -995,15 +1011,14 @@ public final class GeneratedContainers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<ListBlobsResponse> listBlobFlatSegmentAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId, ServiceCallback<ListBlobsResponse> serviceCallback) {
-        return ServiceFuture.fromBody(listBlobFlatSegmentAsync(prefix, delimiter, marker, maxresults, include, timeout, requestId), serviceCallback);
+    public ServiceFuture<ListBlobsResponse> listBlobFlatSegmentAsync(String prefix, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId, ServiceCallback<ListBlobsResponse> serviceCallback) {
+        return ServiceFuture.fromBody(listBlobFlatSegmentAsync(prefix, marker, maxresults, include, timeout, requestId), serviceCallback);
     }
 
     /**
      * [Update] The List Blobs operation returns a list of the blobs under the specified container.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
-     * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
      * @param maxresults Specifies the maximum number of containers to return. If the request does not specify maxresults, or specifies a value greater than 5000, the server will return up to 5000 items. Note that if the listing operation crosses a partition boundary, then the service will return a continuation token for retrieving the remainder of the results. For this reason, it is possible that the service will return fewer results than specified by maxresults, or than the default of 5000.
      * @param include Include this parameter to specify one or more datasets to include in the response.
@@ -1012,7 +1027,7 @@ public final class GeneratedContainers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<ContainersListBlobFlatSegmentResponse> listBlobFlatSegmentWithRestResponseAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
+    public Single<ContainersListBlobFlatSegmentResponse> listBlobFlatSegmentWithRestResponseAsync(String prefix, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -1023,14 +1038,13 @@ public final class GeneratedContainers {
         final String restype = "container";
         final String comp = "list";
         String includeConverted = this.client.serializerAdapter().serializeList(include, CollectionFormat.CSV);
-        return service.listBlobFlatSegment(this.client.url(), prefix, delimiter, marker, maxresults, includeConverted, timeout, this.client.version(), requestId, restype, comp);
+        return service.listBlobFlatSegment(this.client.url(), prefix, marker, maxresults, includeConverted, timeout, this.client.version(), requestId, restype, comp);
     }
 
     /**
      * [Update] The List Blobs operation returns a list of the blobs under the specified container.
      *
      * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
-     * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
      * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
      * @param maxresults Specifies the maximum number of containers to return. If the request does not specify maxresults, or specifies a value greater than 5000, the server will return up to 5000 items. Note that if the listing operation crosses a partition boundary, then the service will return a continuation token for retrieving the remainder of the results. For this reason, it is possible that the service will return fewer results than specified by maxresults, or than the default of 5000.
      * @param include Include this parameter to specify one or more datasets to include in the response.
@@ -1039,8 +1053,92 @@ public final class GeneratedContainers {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Maybe<ListBlobsResponse> listBlobFlatSegmentAsync(String prefix, String delimiter, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
-        return listBlobFlatSegmentWithRestResponseAsync(prefix, delimiter, marker, maxresults, include, timeout, requestId)
+    public Maybe<ListBlobsResponse> listBlobFlatSegmentAsync(String prefix, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
+        return listBlobFlatSegmentWithRestResponseAsync(prefix, marker, maxresults, include, timeout, requestId)
             .flatMapMaybe((ContainersListBlobFlatSegmentResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    }
+
+    /**
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
+     *
+     * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
+     * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
+     * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
+     * @param maxresults Specifies the maximum number of containers to return. If the request does not specify maxresults, or specifies a value greater than 5000, the server will return up to 5000 items. Note that if the listing operation crosses a partition boundary, then the service will return a continuation token for retrieving the remainder of the results. For this reason, it is possible that the service will return fewer results than specified by maxresults, or than the default of 5000.
+     * @param include Include this parameter to specify one or more datasets to include in the response.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the ListBlobsResponse object if successful.
+     */
+    public ListBlobsResponse listBlobHierarchySegment(@NonNull String delimiter, String prefix, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
+        return listBlobHierarchySegmentAsync(delimiter, prefix, marker, maxresults, include, timeout, requestId).blockingGet();
+    }
+
+    /**
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
+     *
+     * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
+     * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
+     * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
+     * @param maxresults Specifies the maximum number of containers to return. If the request does not specify maxresults, or specifies a value greater than 5000, the server will return up to 5000 items. Note that if the listing operation crosses a partition boundary, then the service will return a continuation token for retrieving the remainder of the results. For this reason, it is possible that the service will return fewer results than specified by maxresults, or than the default of 5000.
+     * @param include Include this parameter to specify one or more datasets to include in the response.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<ListBlobsResponse> listBlobHierarchySegmentAsync(@NonNull String delimiter, String prefix, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId, ServiceCallback<ListBlobsResponse> serviceCallback) {
+        return ServiceFuture.fromBody(listBlobHierarchySegmentAsync(delimiter, prefix, marker, maxresults, include, timeout, requestId), serviceCallback);
+    }
+
+    /**
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
+     *
+     * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
+     * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
+     * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
+     * @param maxresults Specifies the maximum number of containers to return. If the request does not specify maxresults, or specifies a value greater than 5000, the server will return up to 5000 items. Note that if the listing operation crosses a partition boundary, then the service will return a continuation token for retrieving the remainder of the results. For this reason, it is possible that the service will return fewer results than specified by maxresults, or than the default of 5000.
+     * @param include Include this parameter to specify one or more datasets to include in the response.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<ContainersListBlobHierarchySegmentResponse> listBlobHierarchySegmentWithRestResponseAsync(@NonNull String delimiter, String prefix, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (delimiter == null) {
+            throw new IllegalArgumentException("Parameter delimiter is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        Validator.validate(include);
+        final String restype = "container";
+        final String comp = "list";
+        String includeConverted = this.client.serializerAdapter().serializeList(include, CollectionFormat.CSV);
+        return service.listBlobHierarchySegment(this.client.url(), prefix, delimiter, marker, maxresults, includeConverted, timeout, this.client.version(), requestId, restype, comp);
+    }
+
+    /**
+     * [Update] The List Blobs operation returns a list of the blobs under the specified container.
+     *
+     * @param delimiter When the request includes this parameter, the operation returns a BlobPrefix element in the response body that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. The delimiter may be a single character or a string.
+     * @param prefix Filters the results to return only containers whose name begins with the specified prefix.
+     * @param marker A string value that identifies the portion of the list of containers to be returned with the next listing operation. The operation returns the NextMarker value within the response body if the listing operation did not return all containers remaining to be listed with the current page. The NextMarker value can be used as the value for the marker parameter in a subsequent call to request the next page of list items. The marker value is opaque to the client.
+     * @param maxresults Specifies the maximum number of containers to return. If the request does not specify maxresults, or specifies a value greater than 5000, the server will return up to 5000 items. Note that if the listing operation crosses a partition boundary, then the service will return a continuation token for retrieving the remainder of the results. For this reason, it is possible that the service will return fewer results than specified by maxresults, or than the default of 5000.
+     * @param include Include this parameter to specify one or more datasets to include in the response.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Maybe<ListBlobsResponse> listBlobHierarchySegmentAsync(@NonNull String delimiter, String prefix, String marker, Integer maxresults, List<ListBlobsIncludeItem> include, Integer timeout, String requestId) {
+        return listBlobHierarchySegmentWithRestResponseAsync(delimiter, prefix, marker, maxresults, include, timeout, requestId)
+            .flatMapMaybe((ContainersListBlobHierarchySegmentResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
     }
 }

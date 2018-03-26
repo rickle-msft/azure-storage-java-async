@@ -6,9 +6,12 @@ import com.microsoft.azure.storage.blob.HTTPAccessConditions
 import com.microsoft.azure.storage.blob.LeaseAccessConditions
 import com.microsoft.azure.storage.blob.Metadata
 import com.microsoft.azure.storage.blob.PageBlobURL
-
+import com.microsoft.azure.storage.blob.models.Blob
+import com.microsoft.azure.storage.blob.models.ContainersAcquireLeaseHeaders
+import com.microsoft.azure.storage.blob.models.ContainersCreateResponse
+import com.microsoft.azure.storage.blob.models.ContainersGetPropertiesHeaders
+import com.microsoft.azure.storage.blob.models.PublicAccessType
 import com.microsoft.rest.v2.RestException
-import com.microsoft.rest.v2.RestResponse
 import spock.lang.*
 
 class ContainerAPI extends APISpec {
@@ -19,7 +22,7 @@ class ContainerAPI extends APISpec {
         cu = primaryServiceURL.createContainerURL(generateContainerName())
 
         when:
-        RestResponse<ContainerCreateHeaders, Void> response = cu.create(null, null).blockingGet()
+        ContainersCreateResponse response = cu.create(null, null).blockingGet()
 
         then:
         response.statusCode() == 201
@@ -64,7 +67,7 @@ class ContainerAPI extends APISpec {
 
     def "Container get properties null"() {
         when:
-        ContainerGetPropertiesHeaders headers =
+        ContainersGetPropertiesHeaders headers =
                 cu.getProperties(null).blockingGet().headers()
 
         then:
@@ -77,7 +80,7 @@ class ContainerAPI extends APISpec {
     @Unroll
     def "Container get properties AC"(){
         setup:
-        ContainerLeaseHeaders headers =
+        ContainersAcquireLeaseHeaders headers =
                 cu.acquireLease(UUID.randomUUID().toString(), -1, null)
                         .blockingGet().headers()
         if (leaseID.equals(receivedLeaseID)) {
@@ -147,13 +150,13 @@ class ContainerAPI extends APISpec {
     @Unroll
     def "Container delete AC"() {
         setup:
-        ContainerGetPropertiesHeaders headers =
+        ContainersGetPropertiesHeaders headers =
                 cu.getProperties(null).blockingGet().headers()
         if (match.equals(receivedEtag)) {
             match = new ETag(headers.eTag())
         }
         if (leaseID != null) {
-            ContainerLeaseHeaders headers2 =
+            ContainersAcquireLeaseHeaders headers2 =
                     cu.acquireLease(UUID.randomUUID().toString(), -1, null).blockingGet().headers()
             if (leaseID.equals(receivedLeaseID)) {
                 leaseID = headers2.leaseId()

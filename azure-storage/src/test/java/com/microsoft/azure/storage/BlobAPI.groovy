@@ -5,7 +5,8 @@ import com.microsoft.azure.storage.blob.BlobURL
 
 import com.microsoft.azure.storage.blob.ContainerURL
 import com.microsoft.azure.storage.blob.Metadata
-
+import com.microsoft.azure.storage.blob.models.BlobsGetPropertiesHeaders
+import com.microsoft.azure.storage.blob.models.CopyStatusType
 import com.microsoft.rest.v2.util.FlowableUtil
 import io.reactivex.Flowable
 import spock.lang.Unroll
@@ -35,7 +36,7 @@ class BlobAPI extends APISpec{
 
     def "Blob get properties all null"() {
         when:
-        BlobGetPropertiesHeaders headers = bu.getProperties(null).blockingGet().headers()
+        BlobsGetPropertiesHeaders headers = bu.getProperties(null).blockingGet().headers()
 
         then:
         headers.blobType() == BlobType.BLOCK_BLOB
@@ -50,7 +51,7 @@ class BlobAPI extends APISpec{
         BlobHTTPHeaders putHeaders = new BlobHTTPHeaders(cacheControl, contentDisposition, contentEncoding,
                 contentLanguage, contentMD5, contentType)
         bu.setHTTPHeaders(putHeaders, null).blockingGet()
-        BlobGetPropertiesHeaders receivedHeaders =
+        BlobsGetPropertiesHeaders receivedHeaders =
                 bu.getProperties(null).blockingGet().headers()
 
         expect:

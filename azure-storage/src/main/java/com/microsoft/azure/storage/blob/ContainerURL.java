@@ -337,7 +337,7 @@ public final class ContainerURL extends StorageURL {
         }
 
         return this.storageClient.generatedContainers().renewLeaseWithRestResponseAsync(
-                null, leaseID,
+                leaseID, null,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 null);
@@ -365,7 +365,7 @@ public final class ContainerURL extends StorageURL {
         }
 
         return this.storageClient.generatedContainers().releaseLeaseWithRestResponseAsync(
-                null, leaseID,
+                leaseID, null,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 null);
@@ -426,7 +426,7 @@ public final class ContainerURL extends StorageURL {
         }
 
         return this.storageClient.generatedContainers().changeLeaseWithRestResponseAsync(
-                null, leaseID, proposedID,
+                leaseID, proposedID, null,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 null);
@@ -451,8 +451,8 @@ public final class ContainerURL extends StorageURL {
     public Single<ContainersListBlobFlatSegmentResponse> listBlobsFlatSegment(
             String marker, ListBlobsOptions options) {
         options = options == null ? ListBlobsOptions.DEFAULT : options;
-        return this.storageClient.generatedContainers().listBlobFlatSegmentWithRestResponseAsync(options.getPrefix(),
-                options.getDelimiter(), marker, options.getMaxResults(),
+        return this.storageClient.generatedContainers().listBlobFlatSegmentWithRestResponseAsync(
+                options.getPrefix(), marker, options.getMaxResults(),
                 options.getDetails().toList(), null, null);
     }
 

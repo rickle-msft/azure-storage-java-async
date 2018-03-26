@@ -10,12 +10,16 @@
 
 package com.microsoft.azure.storage;
 
+import com.microsoft.azure.storage.blob.models.PageBlobClearPagesResponse;
 import com.microsoft.azure.storage.blob.models.PageBlobCopyIncrementalResponse;
 import com.microsoft.azure.storage.blob.models.PageBlobCreateResponse;
+import com.microsoft.azure.storage.blob.models.PageBlobGetPageRangesDiffResponse;
 import com.microsoft.azure.storage.blob.models.PageBlobGetPageRangesResponse;
+import com.microsoft.azure.storage.blob.models.PageBlobResizeResponse;
+import com.microsoft.azure.storage.blob.models.PageBlobUpdateSequenceNumberResponse;
 import com.microsoft.azure.storage.blob.models.PageBlobUploadPagesResponse;
 import com.microsoft.azure.storage.blob.models.PageList;
-import com.microsoft.azure.storage.blob.models.PageWriteType;
+import com.microsoft.azure.storage.blob.models.SequenceNumberActionType;
 import com.microsoft.rest.v2.DateTimeRfc1123;
 import com.microsoft.rest.v2.RestProxy;
 import com.microsoft.rest.v2.ServiceCallback;
@@ -77,11 +81,27 @@ public final class GeneratedPageBlobs {
 
         @PUT("{containerName}/{blob}")
         @ExpectedResponses({201})
-        Single<PageBlobUploadPagesResponse> uploadPages(@HostParam("url") String url, @BodyParam("application/octet-stream") Flowable<ByteBuffer> body, @HeaderParam("Content-Length") long contentLength, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-range") String range, @HeaderParam("x-ms-page-write") PageWriteType pageWrite, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-if-sequence-number-le") Long ifSequenceNumberLessThanOrEqualTo, @HeaderParam("x-ms-if-sequence-number-lt") Long ifSequenceNumberLessThan, @HeaderParam("x-ms-if-sequence-number-eq") Long ifSequenceNumberEqualTo, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+        Single<PageBlobUploadPagesResponse> uploadPages(@HostParam("url") String url, @BodyParam("application/octet-stream") Flowable<ByteBuffer> body, @HeaderParam("Content-Length") long contentLength, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-range") String range, @HeaderParam("x-ms-page-write") String pageWrite, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-if-sequence-number-le") Long ifSequenceNumberLessThanOrEqualTo, @HeaderParam("x-ms-if-sequence-number-lt") Long ifSequenceNumberLessThan, @HeaderParam("x-ms-if-sequence-number-eq") Long ifSequenceNumberEqualTo, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+
+        @PUT("{containerName}/{blob}")
+        @ExpectedResponses({201})
+        Single<PageBlobClearPagesResponse> clearPages(@HostParam("url") String url, @HeaderParam("Content-Length") long contentLength, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-range") String range, @HeaderParam("x-ms-page-write") String pageWrite, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("x-ms-if-sequence-number-le") Long ifSequenceNumberLessThanOrEqualTo, @HeaderParam("x-ms-if-sequence-number-lt") Long ifSequenceNumberLessThan, @HeaderParam("x-ms-if-sequence-number-eq") Long ifSequenceNumberEqualTo, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
 
         @GET("{containerName}/{blob}")
         @ExpectedResponses({200})
-        Single<PageBlobGetPageRangesResponse> getPageRanges(@HostParam("url") String url, @QueryParam("snapshot") String snapshot, @QueryParam("timeout") Integer timeout, @QueryParam("prevsnapshot") String prevsnapshot, @HeaderParam("x-ms-range") String range, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+        Single<PageBlobGetPageRangesResponse> getPageRanges(@HostParam("url") String url, @QueryParam("snapshot") String snapshot, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-range") String range, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+
+        @GET("{containerName}/{blob}")
+        @ExpectedResponses({200})
+        Single<PageBlobGetPageRangesDiffResponse> getPageRangesDiff(@HostParam("url") String url, @QueryParam("snapshot") String snapshot, @QueryParam("timeout") Integer timeout, @QueryParam("prevsnapshot") String prevsnapshot, @HeaderParam("x-ms-range") String range, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+
+        @PUT("{containerName}/{blob}")
+        @ExpectedResponses({200})
+        Single<PageBlobResizeResponse> resize(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-blob-content-length") long blobContentLength, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+
+        @PUT("{containerName}/{blob}")
+        @ExpectedResponses({200})
+        Single<PageBlobUpdateSequenceNumberResponse> updateSequenceNumber(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-sequence-number-action") SequenceNumberActionType sequenceNumberAction, @HeaderParam("x-ms-blob-sequence-number") Long blobSequenceNumber, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
 
         @PUT("{containerName}/{blob}")
         @ExpectedResponses({202})
@@ -219,9 +239,6 @@ public final class GeneratedPageBlobs {
      *
      * @param body Initial data.
      * @param contentLength The length of the request.
-     * @param pageWrite Required. You may specify one of the following options:
-     *   - Update: Writes the bytes specified by the request body into the specified range. The Range and Content-Length headers must match to perform the update.
-     *   - Clear: Clears the specified range and releases the space used in storage for that range. To clear a range, set the Content-Length header to zero, and the Range header to a value that indicates the range to clear, up to maximum blob size. Possible values include: 'update', 'clear'.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param range Return only the bytes of the blob in the specified range.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -236,8 +253,8 @@ public final class GeneratedPageBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void uploadPages(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, @NonNull PageWriteType pageWrite, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
-        uploadPagesAsync(body, contentLength, pageWrite, timeout, range, leaseId, ifSequenceNumberLessThanOrEqualTo, ifSequenceNumberLessThan, ifSequenceNumberEqualTo, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
+    public void uploadPages(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        uploadPagesAsync(body, contentLength, timeout, range, leaseId, ifSequenceNumberLessThanOrEqualTo, ifSequenceNumberLessThan, ifSequenceNumberEqualTo, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
     }
 
     /**
@@ -245,9 +262,6 @@ public final class GeneratedPageBlobs {
      *
      * @param body Initial data.
      * @param contentLength The length of the request.
-     * @param pageWrite Required. You may specify one of the following options:
-     *   - Update: Writes the bytes specified by the request body into the specified range. The Range and Content-Length headers must match to perform the update.
-     *   - Clear: Clears the specified range and releases the space used in storage for that range. To clear a range, set the Content-Length header to zero, and the Range header to a value that indicates the range to clear, up to maximum blob size. Possible values include: 'update', 'clear'.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param range Return only the bytes of the blob in the specified range.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -263,8 +277,8 @@ public final class GeneratedPageBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> uploadPagesAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, @NonNull PageWriteType pageWrite, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(uploadPagesAsync(body, contentLength, pageWrite, timeout, range, leaseId, ifSequenceNumberLessThanOrEqualTo, ifSequenceNumberLessThan, ifSequenceNumberEqualTo, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
+    public ServiceFuture<Void> uploadPagesAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(uploadPagesAsync(body, contentLength, timeout, range, leaseId, ifSequenceNumberLessThanOrEqualTo, ifSequenceNumberLessThan, ifSequenceNumberEqualTo, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
     }
 
     /**
@@ -272,9 +286,6 @@ public final class GeneratedPageBlobs {
      *
      * @param body Initial data.
      * @param contentLength The length of the request.
-     * @param pageWrite Required. You may specify one of the following options:
-     *   - Update: Writes the bytes specified by the request body into the specified range. The Range and Content-Length headers must match to perform the update.
-     *   - Clear: Clears the specified range and releases the space used in storage for that range. To clear a range, set the Content-Length header to zero, and the Range header to a value that indicates the range to clear, up to maximum blob size. Possible values include: 'update', 'clear'.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param range Return only the bytes of the blob in the specified range.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -289,19 +300,17 @@ public final class GeneratedPageBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<PageBlobUploadPagesResponse> uploadPagesWithRestResponseAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, @NonNull PageWriteType pageWrite, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public Single<PageBlobUploadPagesResponse> uploadPagesWithRestResponseAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
         if (body == null) {
             throw new IllegalArgumentException("Parameter body is required and cannot be null.");
         }
-        if (pageWrite == null) {
-            throw new IllegalArgumentException("Parameter pageWrite is required and cannot be null.");
-        }
         if (this.client.version() == null) {
             throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
         }
+        final String pageWrite = "update";
         final String comp = "page";
         DateTimeRfc1123 ifModifiedSinceConverted = null;
         if (ifModifiedSince != null) {
@@ -319,9 +328,6 @@ public final class GeneratedPageBlobs {
      *
      * @param body Initial data.
      * @param contentLength The length of the request.
-     * @param pageWrite Required. You may specify one of the following options:
-     *   - Update: Writes the bytes specified by the request body into the specified range. The Range and Content-Length headers must match to perform the update.
-     *   - Clear: Clears the specified range and releases the space used in storage for that range. To clear a range, set the Content-Length header to zero, and the Range header to a value that indicates the range to clear, up to maximum blob size. Possible values include: 'update', 'clear'.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param range Return only the bytes of the blob in the specified range.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
@@ -336,8 +342,114 @@ public final class GeneratedPageBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable uploadPagesAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, @NonNull PageWriteType pageWrite, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
-        return uploadPagesWithRestResponseAsync(body, contentLength, pageWrite, timeout, range, leaseId, ifSequenceNumberLessThanOrEqualTo, ifSequenceNumberLessThan, ifSequenceNumberEqualTo, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
+    public Completable uploadPagesAsync(@NonNull Flowable<ByteBuffer> body, @NonNull long contentLength, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        return uploadPagesWithRestResponseAsync(body, contentLength, timeout, range, leaseId, ifSequenceNumberLessThanOrEqualTo, ifSequenceNumberLessThan, ifSequenceNumberEqualTo, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
+            .toCompletable();
+    }
+
+    /**
+     * The Clear Pages operation clears a set of pages from a page blob.
+     *
+     * @param contentLength The length of the request.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param range Return only the bytes of the blob in the specified range.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifSequenceNumberLessThanOrEqualTo Specify this header value to operate only on a blob if it has a sequence number less than or equal to the specified.
+     * @param ifSequenceNumberLessThan Specify this header value to operate only on a blob if it has a sequence number less than the specified.
+     * @param ifSequenceNumberEqualTo Specify this header value to operate only on a blob if it has the specified sequence number.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     */
+    public void clearPages(@NonNull long contentLength, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        clearPagesAsync(contentLength, timeout, range, leaseId, ifSequenceNumberLessThanOrEqualTo, ifSequenceNumberLessThan, ifSequenceNumberEqualTo, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
+    }
+
+    /**
+     * The Clear Pages operation clears a set of pages from a page blob.
+     *
+     * @param contentLength The length of the request.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param range Return only the bytes of the blob in the specified range.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifSequenceNumberLessThanOrEqualTo Specify this header value to operate only on a blob if it has a sequence number less than or equal to the specified.
+     * @param ifSequenceNumberLessThan Specify this header value to operate only on a blob if it has a sequence number less than the specified.
+     * @param ifSequenceNumberEqualTo Specify this header value to operate only on a blob if it has the specified sequence number.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<Void> clearPagesAsync(@NonNull long contentLength, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(clearPagesAsync(contentLength, timeout, range, leaseId, ifSequenceNumberLessThanOrEqualTo, ifSequenceNumberLessThan, ifSequenceNumberEqualTo, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
+    }
+
+    /**
+     * The Clear Pages operation clears a set of pages from a page blob.
+     *
+     * @param contentLength The length of the request.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param range Return only the bytes of the blob in the specified range.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifSequenceNumberLessThanOrEqualTo Specify this header value to operate only on a blob if it has a sequence number less than or equal to the specified.
+     * @param ifSequenceNumberLessThan Specify this header value to operate only on a blob if it has a sequence number less than the specified.
+     * @param ifSequenceNumberEqualTo Specify this header value to operate only on a blob if it has the specified sequence number.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<PageBlobClearPagesResponse> clearPagesWithRestResponseAsync(@NonNull long contentLength, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String pageWrite = "clear";
+        final String comp = "page";
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.clearPages(this.client.url(), contentLength, timeout, range, pageWrite, leaseId, ifSequenceNumberLessThanOrEqualTo, ifSequenceNumberLessThan, ifSequenceNumberEqualTo, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, ifMatches, ifNoneMatch, this.client.version(), requestId, comp);
+    }
+
+    /**
+     * The Clear Pages operation clears a set of pages from a page blob.
+     *
+     * @param contentLength The length of the request.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param range Return only the bytes of the blob in the specified range.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifSequenceNumberLessThanOrEqualTo Specify this header value to operate only on a blob if it has a sequence number less than or equal to the specified.
+     * @param ifSequenceNumberLessThan Specify this header value to operate only on a blob if it has a sequence number less than the specified.
+     * @param ifSequenceNumberEqualTo Specify this header value to operate only on a blob if it has the specified sequence number.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable clearPagesAsync(@NonNull long contentLength, Integer timeout, String range, String leaseId, Long ifSequenceNumberLessThanOrEqualTo, Long ifSequenceNumberLessThan, Long ifSequenceNumberEqualTo, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        return clearPagesWithRestResponseAsync(contentLength, timeout, range, leaseId, ifSequenceNumberLessThanOrEqualTo, ifSequenceNumberLessThan, ifSequenceNumberEqualTo, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
             .toCompletable();
     }
 
@@ -346,7 +458,6 @@ public final class GeneratedPageBlobs {
      *
      * @param snapshot The snapshot parameter is an opaque DateTime value that, when present, specifies the blob snapshot to retrieve. For more information on working with blob snapshots, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/creating-a-snapshot-of-a-blob"&gt;Creating a Snapshot of a Blob.&lt;/a&gt;.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param prevsnapshot Optional in version 2015-07-08 and newer. The prevsnapshot parameter is a DateTime value that specifies that the response will contain only pages that were changed between target blob and previous snapshot. Changed pages include both updated and cleared pages. The target blob may be a snapshot, as long as the snapshot specified by prevsnapshot is the older of the two. Note that incremental snapshots are currently supported only for blobs created on or after January 1, 2016.
      * @param range Return only the bytes of the blob in the specified range.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
@@ -358,8 +469,8 @@ public final class GeneratedPageBlobs {
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return the PageList object if successful.
      */
-    public PageList getPageRanges(String snapshot, Integer timeout, String prevsnapshot, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
-        return getPageRangesAsync(snapshot, timeout, prevsnapshot, range, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingGet();
+    public PageList getPageRanges(String snapshot, Integer timeout, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        return getPageRangesAsync(snapshot, timeout, range, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingGet();
     }
 
     /**
@@ -367,7 +478,6 @@ public final class GeneratedPageBlobs {
      *
      * @param snapshot The snapshot parameter is an opaque DateTime value that, when present, specifies the blob snapshot to retrieve. For more information on working with blob snapshots, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/creating-a-snapshot-of-a-blob"&gt;Creating a Snapshot of a Blob.&lt;/a&gt;.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param prevsnapshot Optional in version 2015-07-08 and newer. The prevsnapshot parameter is a DateTime value that specifies that the response will contain only pages that were changed between target blob and previous snapshot. Changed pages include both updated and cleared pages. The target blob may be a snapshot, as long as the snapshot specified by prevsnapshot is the older of the two. Note that incremental snapshots are currently supported only for blobs created on or after January 1, 2016.
      * @param range Return only the bytes of the blob in the specified range.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
@@ -379,8 +489,8 @@ public final class GeneratedPageBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<PageList> getPageRangesAsync(String snapshot, Integer timeout, String prevsnapshot, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<PageList> serviceCallback) {
-        return ServiceFuture.fromBody(getPageRangesAsync(snapshot, timeout, prevsnapshot, range, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
+    public ServiceFuture<PageList> getPageRangesAsync(String snapshot, Integer timeout, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<PageList> serviceCallback) {
+        return ServiceFuture.fromBody(getPageRangesAsync(snapshot, timeout, range, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
     }
 
     /**
@@ -388,7 +498,6 @@ public final class GeneratedPageBlobs {
      *
      * @param snapshot The snapshot parameter is an opaque DateTime value that, when present, specifies the blob snapshot to retrieve. For more information on working with blob snapshots, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/creating-a-snapshot-of-a-blob"&gt;Creating a Snapshot of a Blob.&lt;/a&gt;.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
-     * @param prevsnapshot Optional in version 2015-07-08 and newer. The prevsnapshot parameter is a DateTime value that specifies that the response will contain only pages that were changed between target blob and previous snapshot. Changed pages include both updated and cleared pages. The target blob may be a snapshot, as long as the snapshot specified by prevsnapshot is the older of the two. Note that incremental snapshots are currently supported only for blobs created on or after January 1, 2016.
      * @param range Return only the bytes of the blob in the specified range.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
@@ -399,7 +508,7 @@ public final class GeneratedPageBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<PageBlobGetPageRangesResponse> getPageRangesWithRestResponseAsync(String snapshot, Integer timeout, String prevsnapshot, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public Single<PageBlobGetPageRangesResponse> getPageRangesWithRestResponseAsync(String snapshot, Integer timeout, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -415,11 +524,73 @@ public final class GeneratedPageBlobs {
         if (ifUnmodifiedSince != null) {
             ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
         }
-        return service.getPageRanges(this.client.url(), snapshot, timeout, prevsnapshot, range, leaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, ifMatches, ifNoneMatch, this.client.version(), requestId, comp);
+        return service.getPageRanges(this.client.url(), snapshot, timeout, range, leaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, ifMatches, ifNoneMatch, this.client.version(), requestId, comp);
     }
 
     /**
      * The Get Page Ranges operation returns the list of valid page ranges for a page blob or snapshot of a page blob.
+     *
+     * @param snapshot The snapshot parameter is an opaque DateTime value that, when present, specifies the blob snapshot to retrieve. For more information on working with blob snapshots, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/creating-a-snapshot-of-a-blob"&gt;Creating a Snapshot of a Blob.&lt;/a&gt;.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param range Return only the bytes of the blob in the specified range.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Maybe<PageList> getPageRangesAsync(String snapshot, Integer timeout, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        return getPageRangesWithRestResponseAsync(snapshot, timeout, range, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
+            .flatMapMaybe((PageBlobGetPageRangesResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    }
+
+    /**
+     * [Update] The Get Page Ranges Diff operation returns the list of valid page ranges for a page blob that were changed between target blob and previous snapshot.
+     *
+     * @param snapshot The snapshot parameter is an opaque DateTime value that, when present, specifies the blob snapshot to retrieve. For more information on working with blob snapshots, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/creating-a-snapshot-of-a-blob"&gt;Creating a Snapshot of a Blob.&lt;/a&gt;.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param prevsnapshot Optional in version 2015-07-08 and newer. The prevsnapshot parameter is a DateTime value that specifies that the response will contain only pages that were changed between target blob and previous snapshot. Changed pages include both updated and cleared pages. The target blob may be a snapshot, as long as the snapshot specified by prevsnapshot is the older of the two. Note that incremental snapshots are currently supported only for blobs created on or after January 1, 2016.
+     * @param range Return only the bytes of the blob in the specified range.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     * @return the PageList object if successful.
+     */
+    public PageList getPageRangesDiff(String snapshot, Integer timeout, String prevsnapshot, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        return getPageRangesDiffAsync(snapshot, timeout, prevsnapshot, range, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingGet();
+    }
+
+    /**
+     * [Update] The Get Page Ranges Diff operation returns the list of valid page ranges for a page blob that were changed between target blob and previous snapshot.
+     *
+     * @param snapshot The snapshot parameter is an opaque DateTime value that, when present, specifies the blob snapshot to retrieve. For more information on working with blob snapshots, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/creating-a-snapshot-of-a-blob"&gt;Creating a Snapshot of a Blob.&lt;/a&gt;.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param prevsnapshot Optional in version 2015-07-08 and newer. The prevsnapshot parameter is a DateTime value that specifies that the response will contain only pages that were changed between target blob and previous snapshot. Changed pages include both updated and cleared pages. The target blob may be a snapshot, as long as the snapshot specified by prevsnapshot is the older of the two. Note that incremental snapshots are currently supported only for blobs created on or after January 1, 2016.
+     * @param range Return only the bytes of the blob in the specified range.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<PageList> getPageRangesDiffAsync(String snapshot, Integer timeout, String prevsnapshot, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<PageList> serviceCallback) {
+        return ServiceFuture.fromBody(getPageRangesDiffAsync(snapshot, timeout, prevsnapshot, range, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
+    }
+
+    /**
+     * [Update] The Get Page Ranges Diff operation returns the list of valid page ranges for a page blob that were changed between target blob and previous snapshot.
      *
      * @param snapshot The snapshot parameter is an opaque DateTime value that, when present, specifies the blob snapshot to retrieve. For more information on working with blob snapshots, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/creating-a-snapshot-of-a-blob"&gt;Creating a Snapshot of a Blob.&lt;/a&gt;.
      * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
@@ -434,9 +605,229 @@ public final class GeneratedPageBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Maybe<PageList> getPageRangesAsync(String snapshot, Integer timeout, String prevsnapshot, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
-        return getPageRangesWithRestResponseAsync(snapshot, timeout, prevsnapshot, range, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
-            .flatMapMaybe((PageBlobGetPageRangesResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    public Single<PageBlobGetPageRangesDiffResponse> getPageRangesDiffWithRestResponseAsync(String snapshot, Integer timeout, String prevsnapshot, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String comp = "pagelist";
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.getPageRangesDiff(this.client.url(), snapshot, timeout, prevsnapshot, range, leaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, ifMatches, ifNoneMatch, this.client.version(), requestId, comp);
+    }
+
+    /**
+     * [Update] The Get Page Ranges Diff operation returns the list of valid page ranges for a page blob that were changed between target blob and previous snapshot.
+     *
+     * @param snapshot The snapshot parameter is an opaque DateTime value that, when present, specifies the blob snapshot to retrieve. For more information on working with blob snapshots, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/creating-a-snapshot-of-a-blob"&gt;Creating a Snapshot of a Blob.&lt;/a&gt;.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param prevsnapshot Optional in version 2015-07-08 and newer. The prevsnapshot parameter is a DateTime value that specifies that the response will contain only pages that were changed between target blob and previous snapshot. Changed pages include both updated and cleared pages. The target blob may be a snapshot, as long as the snapshot specified by prevsnapshot is the older of the two. Note that incremental snapshots are currently supported only for blobs created on or after January 1, 2016.
+     * @param range Return only the bytes of the blob in the specified range.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Maybe<PageList> getPageRangesDiffAsync(String snapshot, Integer timeout, String prevsnapshot, String range, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        return getPageRangesDiffWithRestResponseAsync(snapshot, timeout, prevsnapshot, range, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
+            .flatMapMaybe((PageBlobGetPageRangesDiffResponse res) -> res.body() == null ? Maybe.empty() : Maybe.just(res.body()));
+    }
+
+    /**
+     * Resize the Blob.
+     *
+     * @param blobContentLength This header specifies the maximum size for the page blob, up to 1 TB. The page blob size must be aligned to a 512-byte boundary.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     */
+    public void resize(@NonNull long blobContentLength, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        resizeAsync(blobContentLength, timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
+    }
+
+    /**
+     * Resize the Blob.
+     *
+     * @param blobContentLength This header specifies the maximum size for the page blob, up to 1 TB. The page blob size must be aligned to a 512-byte boundary.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<Void> resizeAsync(@NonNull long blobContentLength, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(resizeAsync(blobContentLength, timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
+    }
+
+    /**
+     * Resize the Blob.
+     *
+     * @param blobContentLength This header specifies the maximum size for the page blob, up to 1 TB. The page blob size must be aligned to a 512-byte boundary.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<PageBlobResizeResponse> resizeWithRestResponseAsync(@NonNull long blobContentLength, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String comp = "properties";
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.resize(this.client.url(), timeout, leaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, ifMatches, ifNoneMatch, blobContentLength, this.client.version(), requestId, comp);
+    }
+
+    /**
+     * Resize the Blob.
+     *
+     * @param blobContentLength This header specifies the maximum size for the page blob, up to 1 TB. The page blob size must be aligned to a 512-byte boundary.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable resizeAsync(@NonNull long blobContentLength, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        return resizeWithRestResponseAsync(blobContentLength, timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
+            .toCompletable();
+    }
+
+    /**
+     * Update the sequence number of the blob.
+     *
+     * @param sequenceNumberAction Required if the x-ms-blob-sequence-number header is set for the request. This property applies to page blobs only. This property indicates how the service should modify the blob's sequence number. Possible values include: 'max', 'update', 'increment'.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
+     */
+    public void updateSequenceNumber(@NonNull SequenceNumberActionType sequenceNumberAction, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobSequenceNumber, String requestId) {
+        updateSequenceNumberAsync(sequenceNumberAction, timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, blobSequenceNumber, requestId).blockingAwait();
+    }
+
+    /**
+     * Update the sequence number of the blob.
+     *
+     * @param sequenceNumberAction Required if the x-ms-blob-sequence-number header is set for the request. This property applies to page blobs only. This property indicates how the service should modify the blob's sequence number. Possible values include: 'max', 'update', 'increment'.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a ServiceFuture which will be completed with the result of the network request.
+     */
+    public ServiceFuture<Void> updateSequenceNumberAsync(@NonNull SequenceNumberActionType sequenceNumberAction, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobSequenceNumber, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(updateSequenceNumberAsync(sequenceNumberAction, timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, blobSequenceNumber, requestId), serviceCallback);
+    }
+
+    /**
+     * Update the sequence number of the blob.
+     *
+     * @param sequenceNumberAction Required if the x-ms-blob-sequence-number header is set for the request. This property applies to page blobs only. This property indicates how the service should modify the blob's sequence number. Possible values include: 'max', 'update', 'increment'.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Single<PageBlobUpdateSequenceNumberResponse> updateSequenceNumberWithRestResponseAsync(@NonNull SequenceNumberActionType sequenceNumberAction, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobSequenceNumber, String requestId) {
+        if (this.client.url() == null) {
+            throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (sequenceNumberAction == null) {
+            throw new IllegalArgumentException("Parameter sequenceNumberAction is required and cannot be null.");
+        }
+        if (this.client.version() == null) {
+            throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
+        }
+        final String comp = "properties";
+        DateTimeRfc1123 ifModifiedSinceConverted = null;
+        if (ifModifiedSince != null) {
+            ifModifiedSinceConverted = new DateTimeRfc1123(ifModifiedSince);
+        }
+        DateTimeRfc1123 ifUnmodifiedSinceConverted = null;
+        if (ifUnmodifiedSince != null) {
+            ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
+        }
+        return service.updateSequenceNumber(this.client.url(), timeout, leaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, ifMatches, ifNoneMatch, sequenceNumberAction, blobSequenceNumber, this.client.version(), requestId, comp);
+    }
+
+    /**
+     * Update the sequence number of the blob.
+     *
+     * @param sequenceNumberAction Required if the x-ms-blob-sequence-number header is set for the request. This property applies to page blobs only. This property indicates how the service should modify the blob's sequence number. Possible values include: 'max', 'update', 'increment'.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
+     * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
+     * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
+     * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
+     * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
+     * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
+     * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
+     * @throws IllegalArgumentException thrown if parameters fail the validation.
+     * @return a Single which performs the network request upon subscription.
+     */
+    public Completable updateSequenceNumberAsync(@NonNull SequenceNumberActionType sequenceNumberAction, Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, Long blobSequenceNumber, String requestId) {
+        return updateSequenceNumberWithRestResponseAsync(sequenceNumberAction, timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, blobSequenceNumber, requestId)
+            .toCompletable();
     }
 
     /**

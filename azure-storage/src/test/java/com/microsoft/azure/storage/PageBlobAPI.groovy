@@ -2,8 +2,9 @@ package com.microsoft.azure.storage
 
 import com.microsoft.azure.storage.blob.BlobRange
 import com.microsoft.azure.storage.blob.PageBlobURL
-
-import com.microsoft.rest.v2.RestResponse
+import com.microsoft.azure.storage.blob.models.PageBlobCreateResponse
+import com.microsoft.azure.storage.blob.models.PageList
+import com.microsoft.azure.storage.blob.models.PageRange
 import io.reactivex.Flowable
 
 class PageBlobAPI extends APISpec {
@@ -19,7 +20,7 @@ class PageBlobAPI extends APISpec {
         bu = cu.createPageBlobURL(generateBlobName())
 
         when:
-        RestResponse<BlobPutHeaders, Void> response =
+        PageBlobCreateResponse response =
         bu.create(512, null, null, null, null).blockingGet()
 
         then:

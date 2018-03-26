@@ -282,8 +282,7 @@ public class BlobURL extends StorageURL {
         accessConditions = accessConditions == null ? BlobAccessConditions.NONE : accessConditions;
 
         return this.storageClient.generatedBlobs().setHTTPHeadersWithRestResponseAsync(
-                null,
-                headers.getCacheControl(), headers.getContentType(), headers.getContentMD5(),
+                null, headers.getCacheControl(), headers.getContentType(), headers.getContentMD5(),
                 headers.getContentEncoding(), headers.getContentLanguage(),
                 accessConditions.getLeaseAccessConditions().getLeaseId(),
                 accessConditions.getHttpAccessConditions().getIfModifiedSince(),
@@ -291,7 +290,7 @@ public class BlobURL extends StorageURL {
                 accessConditions.getHttpAccessConditions().getIfMatch().toString(),
                 accessConditions.getHttpAccessConditions().getIfNoneMatch().toString(),
                 headers.getContentDisposition(),
-                null, null, null, null);
+                null);
     }
 
     /**
@@ -395,7 +394,7 @@ public class BlobURL extends StorageURL {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
 
         return this.storageClient.generatedBlobs().renewLeaseWithRestResponseAsync(
-                null, leaseID,
+                leaseID, null,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 httpAccessConditions.getIfMatch().toString(),
@@ -418,8 +417,8 @@ public class BlobURL extends StorageURL {
             String leaseID, HTTPAccessConditions httpAccessConditions) {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
 
-        return this.storageClient.generatedBlobs().releaseLeaseWithRestResponseAsync(null,
-                leaseID,
+        return this.storageClient.generatedBlobs().releaseLeaseWithRestResponseAsync(
+                leaseID, null,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 httpAccessConditions.getIfMatch().toString(),
@@ -473,7 +472,7 @@ public class BlobURL extends StorageURL {
         httpAccessConditions = httpAccessConditions == null ? HTTPAccessConditions.NONE : httpAccessConditions;
 
         return this.storageClient.generatedBlobs().changeLeaseWithRestResponseAsync(
-                null, leaseId, proposedID,
+                leaseId, proposedID, null,
                 httpAccessConditions.getIfModifiedSince(),
                 httpAccessConditions.getIfUnmodifiedSince(),
                 httpAccessConditions.getIfMatch().toString(), httpAccessConditions.getIfNoneMatch().toString(),

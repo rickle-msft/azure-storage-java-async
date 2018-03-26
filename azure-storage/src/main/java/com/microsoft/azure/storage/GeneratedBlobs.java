@@ -27,7 +27,6 @@ import com.microsoft.azure.storage.blob.models.BlobsSetTierResponse;
 import com.microsoft.azure.storage.blob.models.BlobsStartCopyFromURLResponse;
 import com.microsoft.azure.storage.blob.models.BlobsUndeleteResponse;
 import com.microsoft.azure.storage.blob.models.DeleteSnapshotsOptionType;
-import com.microsoft.azure.storage.blob.models.SequenceNumberActionType;
 import com.microsoft.rest.v2.DateTimeRfc1123;
 import com.microsoft.rest.v2.RestProxy;
 import com.microsoft.rest.v2.ServiceCallback;
@@ -102,7 +101,7 @@ public final class GeneratedBlobs {
 
         @PUT("{containerName}/{blob}")
         @ExpectedResponses({200})
-        Single<BlobsSetHTTPHeadersResponse> setHTTPHeaders(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-blob-cache-control") String blobCacheControl, @HeaderParam("x-ms-blob-content-type") String blobContentType, @HeaderParam("x-ms-blob-content-md5") String blobContentMD5, @HeaderParam("x-ms-blob-content-encoding") String blobContentEncoding, @HeaderParam("x-ms-blob-content-language") String blobContentLanguage, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-blob-content-disposition") String blobContentDisposition, @HeaderParam("x-ms-blob-content-length") Long blobContentLength, @HeaderParam("x-ms-sequence-number-action") SequenceNumberActionType sequenceNumberAction, @HeaderParam("x-ms-blob-sequence-number") Long blobSequenceNumber, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
+        Single<BlobsSetHTTPHeadersResponse> setHTTPHeaders(@HostParam("url") String url, @QueryParam("timeout") Integer timeout, @HeaderParam("x-ms-blob-cache-control") String blobCacheControl, @HeaderParam("x-ms-blob-content-type") String blobContentType, @HeaderParam("x-ms-blob-content-md5") String blobContentMD5, @HeaderParam("x-ms-blob-content-encoding") String blobContentEncoding, @HeaderParam("x-ms-blob-content-language") String blobContentLanguage, @HeaderParam("x-ms-lease-id") String leaseId, @HeaderParam("If-Modified-Since") DateTimeRfc1123 ifModifiedSince, @HeaderParam("If-Unmodified-Since") DateTimeRfc1123 ifUnmodifiedSince, @HeaderParam("If-Match") String ifMatches, @HeaderParam("If-None-Match") String ifNoneMatch, @HeaderParam("x-ms-blob-content-disposition") String blobContentDisposition, @HeaderParam("x-ms-version") String version, @HeaderParam("x-ms-client-request-id") String requestId, @QueryParam("comp") String comp);
 
         @PUT("{containerName}/{blob}")
         @ExpectedResponses({200})
@@ -494,15 +493,12 @@ public final class GeneratedBlobs {
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param blobContentDisposition Optional. Sets the blob's Content-Disposition header.
-     * @param blobContentLength This header specifies the maximum size for the page blob, up to 1 TB. The page blob size must be aligned to a 512-byte boundary.
-     * @param sequenceNumberAction Required if the x-ms-blob-sequence-number header is set for the request. This property applies to page blobs only. This property indicates how the service should modify the blob's sequence number. Possible values include: 'max', 'update', 'increment'.
-     * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void setHTTPHeaders(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId) {
-        setHTTPHeadersAsync(timeout, blobCacheControl, blobContentType, blobContentMD5, blobContentEncoding, blobContentLanguage, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, blobContentDisposition, blobContentLength, sequenceNumberAction, blobSequenceNumber, requestId).blockingAwait();
+    public void setHTTPHeaders(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, String requestId) {
+        setHTTPHeadersAsync(timeout, blobCacheControl, blobContentType, blobContentMD5, blobContentEncoding, blobContentLanguage, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, blobContentDisposition, requestId).blockingAwait();
     }
 
     /**
@@ -520,16 +516,13 @@ public final class GeneratedBlobs {
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param blobContentDisposition Optional. Sets the blob's Content-Disposition header.
-     * @param blobContentLength This header specifies the maximum size for the page blob, up to 1 TB. The page blob size must be aligned to a 512-byte boundary.
-     * @param sequenceNumberAction Required if the x-ms-blob-sequence-number header is set for the request. This property applies to page blobs only. This property indicates how the service should modify the blob's sequence number. Possible values include: 'max', 'update', 'increment'.
-     * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @param serviceCallback the async ServiceCallback to handle successful and failed responses.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> setHTTPHeadersAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(setHTTPHeadersAsync(timeout, blobCacheControl, blobContentType, blobContentMD5, blobContentEncoding, blobContentLanguage, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, blobContentDisposition, blobContentLength, sequenceNumberAction, blobSequenceNumber, requestId), serviceCallback);
+    public ServiceFuture<Void> setHTTPHeadersAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(setHTTPHeadersAsync(timeout, blobCacheControl, blobContentType, blobContentMD5, blobContentEncoding, blobContentLanguage, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, blobContentDisposition, requestId), serviceCallback);
     }
 
     /**
@@ -547,14 +540,11 @@ public final class GeneratedBlobs {
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param blobContentDisposition Optional. Sets the blob's Content-Disposition header.
-     * @param blobContentLength This header specifies the maximum size for the page blob, up to 1 TB. The page blob size must be aligned to a 512-byte boundary.
-     * @param sequenceNumberAction Required if the x-ms-blob-sequence-number header is set for the request. This property applies to page blobs only. This property indicates how the service should modify the blob's sequence number. Possible values include: 'max', 'update', 'increment'.
-     * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<BlobsSetHTTPHeadersResponse> setHTTPHeadersWithRestResponseAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId) {
+    public Single<BlobsSetHTTPHeadersResponse> setHTTPHeadersWithRestResponseAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
         }
@@ -570,7 +560,7 @@ public final class GeneratedBlobs {
         if (ifUnmodifiedSince != null) {
             ifUnmodifiedSinceConverted = new DateTimeRfc1123(ifUnmodifiedSince);
         }
-        return service.setHTTPHeaders(this.client.url(), timeout, blobCacheControl, blobContentType, blobContentMD5, blobContentEncoding, blobContentLanguage, leaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, ifMatches, ifNoneMatch, blobContentDisposition, blobContentLength, sequenceNumberAction, blobSequenceNumber, this.client.version(), requestId, comp);
+        return service.setHTTPHeaders(this.client.url(), timeout, blobCacheControl, blobContentType, blobContentMD5, blobContentEncoding, blobContentLanguage, leaseId, ifModifiedSinceConverted, ifUnmodifiedSinceConverted, ifMatches, ifNoneMatch, blobContentDisposition, this.client.version(), requestId, comp);
     }
 
     /**
@@ -588,15 +578,12 @@ public final class GeneratedBlobs {
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
      * @param ifNoneMatch Specify an ETag value to operate only on blobs without a matching value.
      * @param blobContentDisposition Optional. Sets the blob's Content-Disposition header.
-     * @param blobContentLength This header specifies the maximum size for the page blob, up to 1 TB. The page blob size must be aligned to a 512-byte boundary.
-     * @param sequenceNumberAction Required if the x-ms-blob-sequence-number header is set for the request. This property applies to page blobs only. This property indicates how the service should modify the blob's sequence number. Possible values include: 'max', 'update', 'increment'.
-     * @param blobSequenceNumber Set for page blobs only. The sequence number is a user-controlled value that you can use to track requests. The value of the sequence number must be between 0 and 2^63 - 1.
      * @param requestId Provides a client-generated, opaque value with a 1 KB character limit that is recorded in the analytics logs when storage analytics logging is enabled.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable setHTTPHeadersAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, Long blobContentLength, SequenceNumberActionType sequenceNumberAction, Long blobSequenceNumber, String requestId) {
-        return setHTTPHeadersWithRestResponseAsync(timeout, blobCacheControl, blobContentType, blobContentMD5, blobContentEncoding, blobContentLanguage, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, blobContentDisposition, blobContentLength, sequenceNumberAction, blobSequenceNumber, requestId)
+    public Completable setHTTPHeadersAsync(Integer timeout, String blobCacheControl, String blobContentType, String blobContentMD5, String blobContentEncoding, String blobContentLanguage, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String blobContentDisposition, String requestId) {
+        return setHTTPHeadersWithRestResponseAsync(timeout, blobCacheControl, blobContentType, blobContentMD5, blobContentEncoding, blobContentLanguage, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, blobContentDisposition, requestId)
             .toCompletable();
     }
 
@@ -783,8 +770,8 @@ public final class GeneratedBlobs {
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -793,15 +780,15 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void releaseLease(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
-        releaseLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
+    public void releaseLease(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        releaseLeaseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
     }
 
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -811,15 +798,15 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> releaseLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(releaseLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
+    public ServiceFuture<Void> releaseLeaseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(releaseLeaseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
     }
 
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -828,9 +815,12 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<BlobsReleaseLeaseResponse> releaseLeaseWithRestResponseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public Single<BlobsReleaseLeaseResponse> releaseLeaseWithRestResponseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (leaseId == null) {
+            throw new IllegalArgumentException("Parameter leaseId is required and cannot be null.");
         }
         if (this.client.version() == null) {
             throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
@@ -851,8 +841,8 @@ public final class GeneratedBlobs {
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -861,16 +851,16 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable releaseLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
-        return releaseLeaseWithRestResponseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
+    public Completable releaseLeaseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        return releaseLeaseWithRestResponseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
             .toCompletable();
     }
 
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -879,15 +869,15 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void renewLease(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
-        renewLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
+    public void renewLease(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        renewLeaseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
     }
 
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -897,15 +887,15 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> renewLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(renewLeaseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
+    public ServiceFuture<Void> renewLeaseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(renewLeaseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
     }
 
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -914,9 +904,12 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<BlobsRenewLeaseResponse> renewLeaseWithRestResponseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public Single<BlobsRenewLeaseResponse> renewLeaseWithRestResponseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (leaseId == null) {
+            throw new IllegalArgumentException("Parameter leaseId is required and cannot be null.");
         }
         if (this.client.version() == null) {
             throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
@@ -937,8 +930,8 @@ public final class GeneratedBlobs {
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -947,17 +940,17 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable renewLeaseAsync(Integer timeout, String leaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
-        return renewLeaseWithRestResponseAsync(timeout, leaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
+    public Completable renewLeaseAsync(@NonNull String leaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        return renewLeaseWithRestResponseAsync(leaseId, timeout, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
             .toCompletable();
     }
 
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -966,16 +959,16 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      */
-    public void changeLease(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
-        changeLeaseAsync(timeout, leaseId, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
+    public void changeLease(@NonNull String leaseId, @NonNull String proposedLeaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        changeLeaseAsync(leaseId, proposedLeaseId, timeout, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId).blockingAwait();
     }
 
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -985,16 +978,16 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a ServiceFuture which will be completed with the result of the network request.
      */
-    public ServiceFuture<Void> changeLeaseAsync(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
-        return ServiceFuture.fromBody(changeLeaseAsync(timeout, leaseId, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
+    public ServiceFuture<Void> changeLeaseAsync(@NonNull String leaseId, @NonNull String proposedLeaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId, ServiceCallback<Void> serviceCallback) {
+        return ServiceFuture.fromBody(changeLeaseAsync(leaseId, proposedLeaseId, timeout, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId), serviceCallback);
     }
 
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -1003,9 +996,15 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Single<BlobsChangeLeaseResponse> changeLeaseWithRestResponseAsync(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+    public Single<BlobsChangeLeaseResponse> changeLeaseWithRestResponseAsync(@NonNull String leaseId, @NonNull String proposedLeaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
         if (this.client.url() == null) {
             throw new IllegalArgumentException("Parameter this.client.url() is required and cannot be null.");
+        }
+        if (leaseId == null) {
+            throw new IllegalArgumentException("Parameter leaseId is required and cannot be null.");
+        }
+        if (proposedLeaseId == null) {
+            throw new IllegalArgumentException("Parameter proposedLeaseId is required and cannot be null.");
         }
         if (this.client.version() == null) {
             throw new IllegalArgumentException("Parameter this.client.version() is required and cannot be null.");
@@ -1026,9 +1025,9 @@ public final class GeneratedBlobs {
     /**
      * [Update] The Lease Blob operation establishes and manages a lock on a blob for write and delete operations.
      *
-     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param leaseId If specified, the operation only succeeds if the container's lease is active and matches this ID.
      * @param proposedLeaseId Proposed lease ID, in a GUID string format. The Blob service returns 400 (Invalid request) if the proposed lease ID is not in the correct format. See Guid Constructor (String) for a list of valid GUID string formats.
+     * @param timeout The timeout parameter is expressed in seconds. For more information, see &lt;a href="https://docs.microsoft.com/en-us/rest/api/storageservices/fileservices/setting-timeouts-for-blob-service-operations"&gt;Setting Timeouts for Blob Service Operations.&lt;/a&gt;.
      * @param ifModifiedSince Specify this header value to operate only on a blob if it has been modified since the specified date/time.
      * @param ifUnmodifiedSince Specify this header value to operate only on a blob if it has not been modified since the specified date/time.
      * @param ifMatches Specify an ETag value to operate only on blobs with a matching value.
@@ -1037,8 +1036,8 @@ public final class GeneratedBlobs {
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @return a Single which performs the network request upon subscription.
      */
-    public Completable changeLeaseAsync(Integer timeout, String leaseId, String proposedLeaseId, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
-        return changeLeaseWithRestResponseAsync(timeout, leaseId, proposedLeaseId, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
+    public Completable changeLeaseAsync(@NonNull String leaseId, @NonNull String proposedLeaseId, Integer timeout, OffsetDateTime ifModifiedSince, OffsetDateTime ifUnmodifiedSince, String ifMatches, String ifNoneMatch, String requestId) {
+        return changeLeaseWithRestResponseAsync(leaseId, proposedLeaseId, timeout, ifModifiedSince, ifUnmodifiedSince, ifMatches, ifNoneMatch, requestId)
             .toCompletable();
     }
 
