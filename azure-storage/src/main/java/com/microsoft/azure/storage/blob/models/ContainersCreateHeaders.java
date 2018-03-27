@@ -192,9 +192,9 @@ public final class ContainersCreateHeaders {
      * Set the errorCode value.
      *
      * @param errorCode the errorCode value to set.
-     * @return the ContainerCreateHeaders object itself.
+     * @return the ContainersCreateHeaders object itself.
      */
-    public ContainerCreateHeaders withErrorCode(String errorCode) {
+    public ContainersCreateHeaders withErrorCode(String errorCode) {
         this.errorCode = errorCode;
         return this;
     }

@@ -8,38 +8,38 @@
  * regenerated.
  */
 
-package com.microsoft.azure.storage.models;
+package com.microsoft.azure.storage.blob.models;
 
 import com.microsoft.rest.v2.RestException;
 import com.microsoft.rest.v2.http.HttpResponse;
 
 /**
- * Exception thrown for an invalid response with Error information.
+ * Exception thrown for an invalid response with ResponseError information.
  */
-public final class ErrorException extends RestException {
+public final class ResponseErrorException extends RestException {
     /**
-     * Initializes a new instance of the ErrorException class.
+     * Initializes a new instance of the ResponseErrorException class.
      *
      * @param message the exception message or the response content if a message is not available.
      * @param response the HTTP response.
      */
-    public ErrorException(String message, HttpResponse response) {
+    public ResponseErrorException(String message, HttpResponse response) {
         super(message, response);
     }
 
     /**
-     * Initializes a new instance of the ErrorException class.
+     * Initializes a new instance of the ResponseErrorException class.
      *
      * @param message the exception message or the response content if a message is not available.
      * @param response the HTTP response.
      * @param body the deserialized response body.
      */
-    public ErrorException(String message, HttpResponse response, Error body) {
+    public ResponseErrorException(String message, HttpResponse response, ResponseError body) {
         super(message, response, body);
     }
 
     @Override
-    public Error body() {
-        return (Error) super.body();
+    public ResponseError body() {
+        return (ResponseError) super.body();
     }
 }

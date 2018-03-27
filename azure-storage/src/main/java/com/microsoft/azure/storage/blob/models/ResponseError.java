@@ -8,17 +8,17 @@
  * regenerated.
  */
 
-package com.microsoft.azure.storage.models;
+package com.microsoft.azure.storage.blob.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 /**
- * The Error model.
+ * The ResponseError model.
  */
-@JacksonXmlRootElement(localName = "Error")
-public final class Error {
+@JacksonXmlRootElement(localName = "ResponseError")
+public final class ResponseError {
     /**
      * The code property.
      */
@@ -44,9 +44,9 @@ public final class Error {
      * Set the code value.
      *
      * @param code the code value to set.
-     * @return the Error object itself.
+     * @return the ResponseError object itself.
      */
-    public Error withCode(String code) {
+    public ResponseError withCode(String code) {
         this.code = code;
         return this;
     }
@@ -64,9 +64,9 @@ public final class Error {
      * Set the message value.
      *
      * @param message the message value to set.
-     * @return the Error object itself.
+     * @return the ResponseError object itself.
      */
-    public Error withMessage(String message) {
+    public ResponseError withMessage(String message) {
         this.message = message;
         return this;
     }
