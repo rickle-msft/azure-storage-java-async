@@ -31,6 +31,13 @@ import java.security.NoSuchAlgorithmException;
 import java.time.OffsetDateTime;
 import java.util.*;
 
+/**
+ * SharedKeyCredentials are a means of signing and authenticating storage requests. The key can be obtained from the
+ * Azure portal. This factory will create policies which take care of all the details of creating strings to sign,
+ * signing them, and setting the Authentication header. While this is a common way of authenticating with the service,
+ * recommended practice is using {@link TokenCredentials}. Pass this as the credentials in the construction of a new
+ * {@link HttpPipeline} via the {@link StorageURL} type.
+ */
 public final class SharedKeyCredentials implements ICredentials {
 
     private final String accountName;
@@ -46,7 +53,7 @@ public final class SharedKeyCredentials implements ICredentials {
      * @param accountName
      *      The account name associated with the request.
      * @param accountKey
-     *      A string that represent the account access accountKey.
+     *      The account access key used to authenticate the request.
      */
     public SharedKeyCredentials(String accountName, String accountKey) throws InvalidKeyException {
         this.accountName = accountName;
@@ -274,10 +281,11 @@ public final class SharedKeyCredentials implements ICredentials {
      */
     String computeHmac256(final String stringToSign) throws InvalidKeyException {
         try {
+            Mac localMac = (Mac) this.hmacSha256.clone();
             byte[] utf8Bytes = stringToSign.getBytes(Constants.UTF8_CHARSET);
             return Base64.getEncoder().encodeToString(this.hmacSha256.doFinal(utf8Bytes));
         }
-        catch (final UnsupportedEncodingException e) {
+        catch (final UnsupportedEncodingException | CloneNotSupportedException e) {
             throw new Error(e);
         }
     }

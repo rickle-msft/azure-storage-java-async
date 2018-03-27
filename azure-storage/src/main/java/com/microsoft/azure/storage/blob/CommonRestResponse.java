@@ -1,80 +1,103 @@
 package com.microsoft.azure.storage.blob;
 
-import com.microsoft.azure.storage.models.BlobPutHeaders;
-import com.microsoft.azure.storage.models.BlobPutResponse;
-import com.microsoft.azure.storage.models.BlockBlobPutBlockListHeaders;
-import com.microsoft.azure.storage.models.BlockBlobPutBlockListResponse;
+import com.microsoft.azure.storage.blob.models.BlockBlobCommitBlockListResponse;
+import com.microsoft.azure.storage.blob.models.BlockBlobUploadResponse;
 import com.microsoft.rest.v2.RestResponse;
 
 import java.time.OffsetDateTime;
 
 /**
  * A generic wrapper for any type of blob REST API response. Used and returned by methods in the {@link Highlevel}
- * class.
+ * class. The methods there return this type because they represent composite operations which may conclude with any of
+ * several possible REST calls depending on the data provided.
  */
 public final class CommonRestResponse {
 
-    private RestResponse<BlobPutHeaders, Void> putBlobResponse;
+    private BlockBlobUploadResponse uploadBlobResponse;
 
-    private RestResponse<BlockBlobPutBlockListHeaders, Void> putBlockListResponse;
+    private BlockBlobCommitBlockListResponse commitBlockListResponse;
 
-    static CommonRestResponse createFromPutBlobResponse(BlobPutResponse response) {
+    static CommonRestResponse createFromPutBlobResponse(BlockBlobUploadResponse response) {
         CommonRestResponse commonRestResponse = new CommonRestResponse();
-        commonRestResponse.putBlobResponse = response;
+        commonRestResponse.uploadBlobResponse = response;
         return commonRestResponse;
     }
 
-    static CommonRestResponse createFromPutBlockListResponse(BlockBlobPutBlockListResponse response) {
+    static CommonRestResponse createFromPutBlockListResponse(BlockBlobCommitBlockListResponse response) {
         CommonRestResponse commonRestResponse = new CommonRestResponse();
-        commonRestResponse.putBlockListResponse = response;
+        commonRestResponse.commitBlockListResponse = response;
         return commonRestResponse;
     }
 
     private CommonRestResponse() {
-        putBlobResponse = null;
-        putBlockListResponse = null;
+        uploadBlobResponse = null;
+        commitBlockListResponse = null;
     }
 
+    /**
+     * @return
+     *      An HTTP Etag for the blob at the time of the request.
+     */
     public String eTag() {
-        if (putBlobResponse != null) {
-            return putBlobResponse.headers().eTag();
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse.headers().eTag();
         }
-        return putBlockListResponse.headers().eTag();
+        return commitBlockListResponse.headers().eTag();
     }
 
+    /**
+     * @return
+     *      The time when the blob was last modified.
+     */
     public OffsetDateTime lastModifiedTime() {
-        if (putBlobResponse != null) {
-            return putBlobResponse.headers().lastModified();
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse.headers().lastModified();
         }
-        return putBlockListResponse.headers().lastModified();
+        return commitBlockListResponse.headers().lastModified();
     }
 
+    /**
+     * @return
+     *      The id of the service request for which this is the response.
+     */
     public String requestId() {
-        if (putBlobResponse != null) {
-            return putBlobResponse.headers().requestId();
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse.headers().requestId();
         }
-        return putBlockListResponse.headers().requestId();
+        return commitBlockListResponse.headers().requestId();
     }
 
+    /**
+     * @return
+     *      The date of the response.
+     */
     public OffsetDateTime date() {
-        if (putBlobResponse != null) {
-            return putBlobResponse.headers().dateProperty();
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse.headers().dateProperty();
         }
-        return putBlockListResponse.headers().dateProperty();
+        return commitBlockListResponse.headers().dateProperty();
     }
 
+    /**
+     * @return
+     *       The service version responding to the request.
+     */
     public String version() {
-        if (putBlobResponse != null) {
-            return putBlobResponse.headers().version();
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse.headers().version();
         }
-        return putBlockListResponse.headers().version();
+        return commitBlockListResponse.headers().version();
     }
 
+    /**
+     * @return
+     *      The underlying response.
+     */
     public RestResponse response() {
-        if (putBlobResponse != null) {
-            return putBlobResponse;
+        if (uploadBlobResponse != null) {
+            return uploadBlobResponse;
         }
-        return putBlockListResponse;
+        return commitBlockListResponse;
     }
 
 }
